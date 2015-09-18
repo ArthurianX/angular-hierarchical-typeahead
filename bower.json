@@ -1,0 +1,36 @@
+{
+  "name": "angular-yearselector",
+  "version": "0.1.0",
+  "main": [
+    "dist/angular-yearselector.js",
+    "dist/angular-yearselector.css"
+  ],
+  "dependencies": {
+    "angular": "~1.3",
+    "angular-animate": "~1.3",
+    "moment": "~2.10.6"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "components",
+    "test",
+    "temp",
+    "demo",
+    "lib",
+    "./angular-yearselector.css",
+    "./angular-yearselector.html",
+    "./angular-yearselector.js",
+    "Gruntfile.js",
+    "package.json",
+    "README.md"
+  ],
+  "devDependencies": {
+    "angular-mocks": "~1.3",
+    "jquery": "~2.1.0"
+  },
+  "resolutions": {
+    "angular": "1.3.19"
+  }
+}

@@ -1,0 +1,9 @@
+<div class="year-selectordrp passing-over">
+    <a href="javascript:;"
+       ng-repeat="year in yearsSelDRP track by $index"
+       ng-class="{\'active\': year.active, \'inbetween\': year.inbetween}"
+       ng-click="selectYear(year.year)">
+        {{year.year}}
+    </a>
+
+</div>
