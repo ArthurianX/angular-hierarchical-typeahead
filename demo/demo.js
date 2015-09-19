@@ -14,5 +14,4 @@ angular.module('app').controller('DemoCtrl',function($scope,$http){
 
 	};
 
-
 });
