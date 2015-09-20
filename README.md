@@ -50,11 +50,11 @@ A full usage would look like this: `<div year-selector="{model: 'myModel', years
 
 ## Delayed / Triggered attachment
 
-I made this a thing because the use I need to use the library requires me to hook it up on a element that appears at a later point, in my case a jQuery driven daterangepicker that is triggered at another point.
+I made this a thing because the functionality I needed to use the library requires me to hook it up on a element that appears at a later point, in my case a jQuery driven daterangepicker (:-1:) that is triggered at another point.
 
 The way this works is that it takes from the configuration file a `selector` and when the selector is triggered the directive does a search for that `selector`. If the selector is found, it attaches the directive to it.
 
-The initial directive will be hidden.
+If `attachTo` has a selector in it, the directive won't show at all, only on triggering.
 
 
 
