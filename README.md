@@ -47,5 +47,16 @@ There's also a full set of options:
 
 A full usage would look like this: `<div year-selector="{model: 'myModel', years: 15, attachTo: '.mySelector', attachNow: triggerAttachment, externalCallback: updateYearSelection, range: false, drag: false}"></div>`
 
+
+## Delayed / Triggered attachment
+
+I made this a thing because the use I need to use the library requires me to hook it up on a element that appears at a later point, in my case a jQuery driven daterangepicker that is triggered at another point.
+
+The way this works is that it takes from the configuration file a `selector` and when the selector is triggered the directive does a search for that `selector`. If the selector is found, it attaches the directive to it.
+
+The initial directive will be hidden.
+
+
+
 ## Release History
  * v0.1.0 - Initial release.
