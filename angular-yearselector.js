@@ -100,7 +100,6 @@ angular.module('yearSelector')
                             }
 
                             //Middle Case - Slice the most close part.
-
                             if ((position && ((arr[2] < arr[1])&&(arr[2] > arr[0]))) ||
                                 (!position && ((arr[2] > arr[0])&&(arr[2] < arr[1])))) {
                                 if ( (arr[1] - half) > (arr[0] - half)) {
