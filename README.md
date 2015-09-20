@@ -1,6 +1,6 @@
 # agular-yearselector [![Build Status](https://travis-ci.org/arthurianx/angular-yearselector.png?branch=master)](https://travis-ci.org/arthurianx/angular-yearselector)
 
-> Show busy/loading indicators on any $http or $resource request, or on any promise.
+> Inline year selector with callbacks, drag and drop and range selection. WIP.
 
 ## Demo
 
