@@ -16,6 +16,8 @@ bower install agular-yearselector --save
 
 Add `dist/angular-yearselector.js` and `dist/angular-yearselector.css` to your index.html.
 
+*IMPORTANT*: At this point, `year-selector` depends on `moment.js`. Please add it as a dependency.
+
 Add `yearSelector` as a module dependency for your module.
 
 ```js
@@ -31,7 +33,7 @@ You can use it like this:
 ```html
 <div year-selector="{model: 'myModel'}"></div>
 ```
-IMPORTANT: The model scope variable needs to be entered as a string.
+*IMPORTANT*: The model scope variable needs to be entered as a string.
 
 There's also a full set of options:
 
