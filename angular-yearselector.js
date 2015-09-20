@@ -5,9 +5,8 @@ angular.module('yearSelector')
     .directive('yearSelector',['$document', '$timeout', '$compile','$templateCache',
         function($document, $timeout, $compile, $templateCache){
             return {
-                restrict: 'EA',
+                restrict: 'A',
                 templateUrl: 'angular-yearselector.html',
-                replace: false,
                 link: function(scope, element, attrs) {
 
                     /** Utilities */
@@ -43,18 +42,29 @@ angular.module('yearSelector')
                      * */
 
                     var defaults = {
-                        templateUrl: 'angular-yearselector.html',
-                        delay:0,
-                        minDuration:0,
-                        backdrop: true,
-                        message:'Please Wait...',
-                        wrapperClass: 'cg-busy cg-busy-animation'
+                        years: 10,
+                        model: '',
+                        attachTo: false,
+                        compileOnCallback: false,
+                        range: true,
+                        drag: true
                     };
+
+                    //scope.$watchCollection(attrs.yearSelector,function(options){
+
+                    scope.$watch(attrs.yearSelector,function(options){
+                        console.log(options);
+                        options = angular.extend(angular.copy(defaults), options);
+
+
+                        //options.compileOnCallback();
+                    });
+
+
 
                     //$http.get(defaults.templateUrl, {cache: $templateCache}).success(function(indicatorTemplate){});
 
                     var startDate = moment(moment().subtract('years', 10)).startOf('year');
-                    var endDate = moment();
                     var yearsNumber = moment().year() - moment(startDate).year();
 
                     scope.yearsSelDRP = [];

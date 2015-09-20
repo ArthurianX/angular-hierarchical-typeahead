@@ -10,6 +10,7 @@ angular.module('app').controller('DemoCtrl',function($scope,$http){
 
 	$scope.demo = function(){
 
+        console.log($scope);
 		$scope.promise = $http.get('http://httpbin.org/delay/3');
 
 	};

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="app">
 <head>
-  <title>Angular Busy Demo</title>
+  <title>Angular YearSelector Demo</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -81,7 +81,7 @@
 
         <div class="col-md-offset-1 col-md-7" style="padding-top:28px">
 
-          <div year-selector>
+          <div year-selector="{years: 15, model: message, attachTo: 'body', compileOnCallback: demo, range: false, drag: true }">
             <table class="table table-bordered">
               <thead>
                 <tr>
