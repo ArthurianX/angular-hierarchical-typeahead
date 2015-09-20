@@ -32,7 +32,39 @@ angular.module('yearSelector')
                     }
 
                     function momentify(arr) {
-                        return arr;
+                        var start, end;
+
+                        if (arr.length > 1) {
+
+                            if (arr[0] < arr[1]) {
+                                //>
+                                start = moment().year(scope.yearsSelDRP[arr[0]].year).startOf('year').format('MM-DD-YYYY');
+
+                                if (scope.yearsSelDRP[arr[1]].year === moment().year()) {
+                                    end = moment().format('MM-DD-YYYY');
+                                } else {
+                                    end = moment(moment().year(scope.yearsSelDRP[arr[1]].year)).endOf('year').format('MM-DD-YYYY');
+                                }
+
+                                return start + ':' + end;
+                            } else {
+                                //<
+                                start = moment().year(scope.yearsSelDRP[arr[1]].year).startOf('year').format('MM-DD-YYYY');
+
+                                if (scope.yearsSelDRP[arr[0]].year === moment().year()) {
+                                    end = moment().format('MM-DD-YYYY');
+                                } else {
+                                    end = moment(moment().year(scope.yearsSelDRP[arr[0]].year)).endOf('year').format('MM-DD-YYYY');
+                                }
+
+                                return start + ':' + end;
+                            }
+
+                        } else {
+                            return scope.yearsSelDRP[arr].year;
+                        }
+
+
                     }
 
                     /** Defaults */
