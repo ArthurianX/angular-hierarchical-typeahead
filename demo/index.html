@@ -1,136 +1,171 @@
 <!DOCTYPE html>
 <html ng-app="app">
 <head>
-  <title>Angular YearSelector Demo</title>
+    <title>Angular YearSelector Demo</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
-  <link href="../dist/angular-yearselector.css" rel="stylesheet">
-  <link href="gh-fork-ribbon.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../dist/angular-yearselector.css" rel="stylesheet">
+    <link href="gh-fork-ribbon.css" rel="stylesheet">
 
 </head>
 <body ng-controller="DemoCtrl" style="padding-top:0px">
 
-  <div>
+<div>
 
     <div class="github-fork-ribbon-wrapper right">
-      <div class="github-fork-ribbon">
-        <a href="https://github.com/arthurianx/angular-yearselector">Star on GitHub</a>
-      </div>
+        <div class="github-fork-ribbon">
+            <a href="https://github.com/arthurianx/angular-yearselector">Star on GitHub</a>
+        </div>
     </div>
 
     <div class="container">
-      <div class="row">
+        <div class="row">
 
-        <div class="col-md-12">
-            <h2>angular-yearselector</h2>
-            <p class="lead">Inline year selector with range support</p>
+            <div class="col-md-12">
+                <h2>angular-yearselector</h2>
+                <p class="lead">Inline year selector with range support</p>
+            </div>
+
         </div>
 
-      </div>
+        <div class="row">
+            <div class="col-md-8">
+                <form class="form-horizontal" role="form">
+                    <legend>Options</legend>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Option</th>
+                            <th>Value</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>years</td>
+                            <td>integer</td>
+                            <td>The number of years the selector should have. Starting from the current year down.</td>
+                        </tr>
+                        <tr>
+                            <td>model</td>
+                            <td>scope variable</td>
+                            <td>The model that's gonna updated on a new selection. It's needs to be read as a string so make sure it's a string (model: 'myScopeVar')</td>
+                        </tr>
+                        <tr>
+                            <td>attachTo</td>
+                            <td>class/#/tag</td>
+                            <td>If we're going to attach the selector to another element we need to supply a selector (with it's punctuation).</td>
+                        </tr>
+                        <tr>
+                            <td>attachNow</td>
+                            <td>scope variable</td>
+                            <td>This is the listener that the directive will trigger the deferred attachment from.</td>
+                        </tr>
+                        <tr>
+                            <td>externalCallback</td>
+                            <td>fn</td>
+                            <td>Function used to do callback in the current controller's scope</td>
+                        </tr>
+                        <tr>
+                            <td>range</td>
+                            <td>bool</td>
+                            <td>Enables selection of ranges.</td>
+                        </tr>
+                        <tr>
+                            <td>drag</td>
+                            <td>bool</td>
+                            <td>Enables the dragging of the selected active year to change the selection or the range.</td>
+                        </tr>
+                        </tbody>
+                    </table>
 
-      <div class="row">
+                </form>
+            </div>
+        </div>
 
-        <div class="col-md-4">
+        <div class="row">
 
-          <form class="form-horizontal" role="form">
-            <legend>Demo Options</legend>
-            <div class="form-group">
-              <label for="delayInput" class="col-sm-5 control-label">Delay (ms)</label>
-              <div class="col-sm-4">
-                <input type="text" class="form-control" id="delayInput" ng-model="delay">
-              </div>
+            <div class="col-md-4">
+
+                <form class="form-horizontal" role="form">
+                    <legend>Demo</legend>
+                    <div class="form-group">
+                        <label for="delayInput" class="col-sm-5 control-label">Years</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="delayInput" ng-model="ctrYears">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="delayInput" class="col-sm-5 control-label">Attach To</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="delayInput" ng-disabled="!ctrAttachTo" ng-model="ctrAttachTo">
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="checkbox" class="form-control" id="delayInput" ng-click="ctrAttachToEnable()">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="delayInput" class="col-sm-5 control-label">Attach Now</label>
+                        <div class="col-sm-4">
+                            <button ng-disabled="!ctrAttachTo" ng-click="ctrAttachNow = true">Trigger Outside Attach</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="delayInput" class="col-sm-5 control-label">Callback</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="delayInput" ng-model="ctrCallback">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="delayInput" class="col-sm-5 control-label">Drag</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="delayInput" ng-model="ctrDrag">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="delayInput" class="col-sm-5 control-label">Range</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="delayInput" ng-model="ctrRange">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-offset-5 col-sm-7" style="padding-right:0px">
+                        <button class="btn btn-default pull-right" ng-click="demo()">Reset</button>
+                    </div>
+                </form>
+
             </div>
-            <div class="form-group">
-              <label for="durationInput" class="col-sm-5 control-label">Min Duration (ms)</label>
-              <div class="col-sm-4">
-                <input type="text" class="form-control" id="durationInput" ng-model="minDuration">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="message" class="col-sm-5 control-label">Message</label>
-              <div class="col-sm-6">
-                <input type="text" class="form-control" id="message" ng-model="message">
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="col-sm-offset-5 col-sm-5">
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox" ng-model="backdrop"> Show Backdrop
-                  </label>
+
+            <div class="col-md-offset-1 col-md-7" style="padding-top:28px">
+
+                <h5>Default</h5>
+                <p><input type="text" ng-model="defaultModel"/></p>
+                <div year-selector="{years: ctrYears, model: 'defaultModel', attachTo: ctrAttachTo, attachNow: ctrAttachNow, externalCallback: ctrCallback, range: ctrRange, drag: ctrDrag }"></div>
+
+                <div class="delayed-attachment">
+                    <legend>Outside attachment</legend>
+                    <p>Delayed & triggered attachment will happen here.</p>
                 </div>
-              </div>
             </div>
-            <div class="form-group">
-              <label for="template" class="col-sm-5 control-label">Template Url</label>
-              <div class="col-sm-7">
-                <select class="form-control" id="template" ng-model="templateUrl">
-                  <option value=''>Standard</option>
-                  <option value='custom-template.html'>custom-template.html</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-sm-offset-5 col-sm-7" style="padding-right:0px">
-              <button class="btn btn-default pull-right" ng-click="demo()">Demo</button>
-            </div>
-          </form>
 
         </div>
-
-        <div class="col-md-offset-1 col-md-7" style="padding-top:28px">
-
-          <div year-selector="{years: 15, model: message, attachTo: 'body', compileOnCallback: demo, range: false, drag: true }">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>First Name</th>
-                  <th>Last Name</th>
-                  <th>Username</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td rowspan="2">1</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                </tr>
-                <tr>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@TwBootstrap</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>Jacob</td>
-                  <td>Thornton</td>
-                  <td>@fat</td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td colspan="2">Larry the Bird</td>
-                  <td>@twitter</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-      </div>
 
     </div>
 
-  </div>
+</div>
 
 
-  <script src="../bower_components/angular/angular.js"></script>
-  <script src="../bower_components/angular-animate/angular-animate.js"></script>
-  <script src="../bower_components/moment/moment.js"></script>
-  <script src="../dist/angular-yearselector.js"></script>
-  <script src="demo.js"></script>
+<script src="../bower_components/angular/angular.js"></script>
+<script src="../bower_components/angular-animate/angular-animate.js"></script>
+<script src="../bower_components/moment/moment.js"></script>
+<script src="../dist/angular-yearselector.js"></script>
+<script src="demo.js"></script>
 
 </body>
 </html>

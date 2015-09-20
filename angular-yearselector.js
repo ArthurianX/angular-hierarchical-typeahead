@@ -2,8 +2,8 @@
 angular.module('yearSelector',[]);
 
 angular.module('yearSelector')
-    .directive('yearSelector',['$document', '$timeout', '$compile','$templateCache',
-        function($document, $timeout, $compile, $templateCache){
+    .directive('yearSelector',['$parse', '$document', '$http', '$timeout', '$compile','$templateCache',
+        function($parse, $document, $http, $timeout, $compile, $templateCache){
             return {
                 restrict: 'A',
                 templateUrl: 'angular-yearselector.html',
@@ -31,50 +31,32 @@ angular.module('yearSelector')
                         return -1;
                     }
 
-                    /**
-                     * Options:
-                     * attachTo: element or the assigned element
-                     * compileOnCallback: function that triggers the directive on the attached element
-                     * years: how many years should the inline selector be
-                     * range: this will enable range selection
-                     * standalone: replaces the container, if false it will append itself to the last element of the contain
-                     * model:
-                     * */
+                    function momentify(arr) {
+                        return arr;
+                    }
+
+                    /** Defaults */
 
                     var defaults = {
                         years: 10,
                         model: '',
                         attachTo: false,
-                        compileOnCallback: false,
+                        attachNow: false,
+                        externalCallback: false,
                         range: true,
-                        drag: true
+                        drag: true,
+                        templateUrl: 'angular-yearselector.html'
                     };
 
-                    //scope.$watchCollection(attrs.yearSelector,function(options){
+                    /** Initialisation */
 
-                    scope.$watch(attrs.yearSelector,function(options){
-                        console.log(options);
-                        options = angular.extend(angular.copy(defaults), options);
-
-
-                        //options.compileOnCallback();
-                    });
-
-
-
-                    //$http.get(defaults.templateUrl, {cache: $templateCache}).success(function(indicatorTemplate){});
-
-                    var startDate = moment(moment().subtract('years', 10)).startOf('year');
-                    var yearsNumber = moment().year() - moment(startDate).year();
-
-                    scope.yearsSelDRP = [];
-                    var i;
-                    for (i=1; i <= yearsNumber; i ++) {
-                        scope.yearsSelDRP.push({year: moment().year() - (yearsNumber-i), active: false, inbetween: false});
-                    }
-
-                    //This is a map of all active years.
                     var activeMap = [];
+                    scope.yearsSelDRP = [];
+                    scope.dragEnabled = false;
+                    scope.buttonSize = 40;
+                    var isRanged = true;
+                    var startDate, yearsNumber, setModel, blockWidth ;
+
 
                     var checkInterval = function(arr){
 
@@ -84,6 +66,7 @@ angular.module('yearSelector')
                                 arr[i].inbetween = false;
                             }
                         };
+
                         var checkPosition = function(arr) {
 
                             var position;
@@ -96,7 +79,7 @@ angular.module('yearSelector')
 
                             var half = Math.floor(position ? arr[1]-arr[0] : arr[0] - arr[1]);
 
-                            console.log('Position ', position, 'Half ', half, 'Array ', arr);
+                            //console.log('Position ', position, 'Half ', half, 'Array ', arr);
 
                             //Far right LR case
                             if (position && (arr[2] > arr[1])) {
@@ -122,7 +105,7 @@ angular.module('yearSelector')
 
                             if ((position && ((arr[2] < arr[1])&&(arr[2] > arr[0]))) ||
                                 (!position && ((arr[2] > arr[0])&&(arr[2] < arr[1])))) {
-                                console.log('Should drop in the middle case');
+                                //console.log('Should drop in the middle case');
                                 if ( (arr[1] - half) > (arr[0] - half)) {
                                     return [arr[0], '0'];
                                 } else {
@@ -151,7 +134,6 @@ angular.module('yearSelector')
                         };
 
                         if (activeMap.length === 2) {
-                            console.log('We have 2 active, inbetween go.');
                             activateInbetween();
                         } else if (activeMap.length > 2){
 
@@ -165,7 +147,10 @@ angular.module('yearSelector')
                         }
                     };
 
+                    /** Years Selection */
+
                     scope.selectYear = function(year) {
+                        //TODO: Disable / Enable range
                         var indexToPush = findIndex(scope.yearsSelDRP, 'year', year);
 
                         if (activeMap.indexOf(indexToPush) > -1) {
@@ -178,17 +163,18 @@ angular.module('yearSelector')
                         scope.yearsSelDRP[indexToPush].active = true;
 
                         checkInterval(scope.yearsSelDRP, year);
+
+                        setModel(momentify(activeMap));
                     };
 
                     var dragSelect = function(before, after) {
-                        console.log('Start dragselect with ', before, after);
+                        //console.log('Start dragselect with ', before, after);
 
                         if (activeMap.indexOf(after) > -1) {
                             //Means we're dragging over the same element
                             //Just leave it selected.
                             return;
                         }
-                        console.log('Not canceleed', activeMap);
 
                         scope.yearsSelDRP[before].active = false;
                         activeMap.splice(activeMap.indexOf(before), 1);
@@ -198,60 +184,121 @@ angular.module('yearSelector')
 
                         checkInterval(scope.yearsSelDRP);
 
-                        console.log('Should be finished', activeMap);
+                        setModel(momentify(activeMap));
                         scope.$apply();
                     };
 
                     /** Sizing logic */
 
-                    var blockWidth = element.prop('offsetWidth');
+                    var buttonSizing = function(element){
 
-                    scope.buttonSize = (blockWidth / scope.yearsSelDRP.length) - 4;
-                    console.log(blockWidth, scope.buttonSize);
+                        blockWidth = element.prop('offsetWidth');
 
+                        scope.buttonSize = (blockWidth / scope.yearsSelDRP.length) - 4;
+
+                    };
 
                     /** Dragging Logic */
 
-                    var startX, startY, x, y, startDrag, endDrag;
-                    var cursor = angular.element(element.children().children()[0]);
-                    console.log(cursor);
-                    var offsetLeft = element[0].getBoundingClientRect().left;
+                    var enableDragging = function(element){
 
-                    element.on('mousedown', function(event){
+                        scope.dragEnabled = true;
 
+                        var startX, startY, x, y, startDrag, endDrag;
+                        var cursor = angular.element(element.children().children()[0]);
+                        var offsetLeft = element[0].getBoundingClientRect().left;
 
-                        var handle = angular.element(event.srcElement);
-                        console.log(handle);
+                        element.on('mousedown', function(event){
 
-                        if (handle.hasClass('active')){
+                            var handle = angular.element(event.srcElement);
+                            if (handle.hasClass('active')){
+                                startDrag = handle[0].tabIndex;
+                                cursor.css('left', handle.prop('offsetLeft') + 'px');
+                                $timeout(function(){
+                                    $document.on('mousemove', mousemove);
+                                    $document.on('mouseup', mouseup);
+                                }, 100);
+                            }
 
-                            startDrag = handle[0].tabIndex;
-                            cursor.css('left', handle.prop('offsetLeft') + 'px');
-                            $timeout(function(){
-                                $document.on('mousemove', mousemove);
-                                $document.on('mouseup', mouseup);
-                            }, 100);
+                        });
+
+                        function mousemove(event) {
+                            x = event.pageX - offsetLeft - ( ( scope.buttonSize + 4 ) / 2 );
+                            cursor.css('left',  x + 'px');
                         }
 
+                        function mouseup(event) {
+                            $document.unbind('mousemove', mousemove);
+                            $document.unbind('mouseup', mouseup);
+                            cursor.css('left', '-500px');
+                            var positionInBlock = event.pageX - offsetLeft;
+
+                            dragSelect (startDrag, Math.round(positionInBlock / scope.buttonSize) -1);
+                        }
+
+                    };
+
+                    /** Delayed attaching */
+
+                    var startAttaching = function(el){
+
+                        var attachEl = angular.element($document[0].querySelector(el));
+
+                        buttonSizing(attachEl);
+
+                        $http.get(defaults.templateUrl, {cache: $templateCache}).success(function(template){
+
+                            attachEl.append(template);
+                            console.log(attachEl);
+                            $compile(attachEl)(scope);
+                            enableDragging(attachEl);
+
+                        });
+
+
+                    };
+
+
+
+                    scope.$watch(attrs.yearSelector,function(options){
+
+                        options = angular.extend(angular.copy(defaults), options);
+
+                        startDate = moment(moment().subtract('years', options.years)).startOf('year');
+                        yearsNumber = moment().year() - moment(startDate).year();
+
+                        scope.yearsSelDRP = [];
+                        for (var i=1; i <= yearsNumber; i ++) {
+                            scope.yearsSelDRP.push({year: moment().year() - (yearsNumber-i), active: false, inbetween: false});
+                        }
+
+                        if (!options.range) {
+                            isRanged = false;
+                        }
+
+                        if (options.drag && !options.attachTo) {
+                            //Enable if dragging is enabled and no attachment
+                            enableDragging(element);
+                        }
+
+                        if (options.attachTo) {
+
+                            //Remove directive's DOM elements but leave the handlers.
+                            element.remove();
+
+                            if (options.attachNow) {
+                                startAttaching(options.attachTo);
+                            }
+
+                        } else {
+                            //Do the size calculation only if it's not attached.
+                            buttonSizing(element);
+                        }
+
+                        setModel = function(param){
+                            scope[options.model] = param;
+                        };
                     });
-
-                    function mousemove(event) {
-                        x = event.pageX - offsetLeft - ( ( scope.buttonSize + 4 ) / 2 );
-                        cursor.css('left',  x + 'px');
-                    }
-
-                    function mouseup(event) {
-                        $document.unbind('mousemove', mousemove);
-                        $document.unbind('mouseup', mouseup);
-                        cursor.css('left', '-500px');
-                        var positionInBlock = event.pageX - offsetLeft;
-
-                        dragSelect (startDrag, Math.round(positionInBlock / scope.buttonSize) -1);
-                    }
-
-                    //$compile(yearSelector)(scope);
-
-
                 }
             };
         }

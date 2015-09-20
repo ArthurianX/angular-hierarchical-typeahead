@@ -4,7 +4,7 @@
     </div>
     <button href="javascript:;"
        ng-repeat="year in yearsSelDRP track by $index"
-       ng-class="{'active': year.active, 'inbetween': year.inbetween}"
+       ng-class="{'active': year.active, 'inbetween': year.inbetween, 'draggable': dragEnabled}"
        ng-click="selectYear(year.year)"
        ng-style="{'width': buttonSize + 'px'}"
        tabindex="{{$index}}">

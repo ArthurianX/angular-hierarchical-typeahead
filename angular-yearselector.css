@@ -3,8 +3,9 @@
     padding:1px 0px;
     border:0px solid #eee;
     margin:6px 0 0 0;
-    z-index: inherit}
-.ar-year-selector button{
+    z-index: inherit;
+    overflow: hidden}
+.ar-year-selector button {
     color:#4e5860;
     background-color: rgba(236,239,241, 0.6);
     padding:2px 4px;
@@ -15,9 +16,10 @@
     transition:background-color 0.3s ease;
     z-index: 10;
     position: relative;
-    outline: none}
+    outline: none }
 .ar-year-selector button:hover{text-decoration:none;background-color:#357ebd;color:#fff}
-.ar-year-selector button.active{border-color:#aebcc1;background-color:#357ebd;color:#fff; cursor: move}
+.ar-year-selector button.active{border-color:#aebcc1;background-color:#357ebd;color:#fff;}
+.ar-year-selector button.active.draggable{cursor: move}
 .ar-year-selector button.inbetween{border-color:#e8eced;background-color:rgba(226,226,226, 0.8)}
 .ar-year-selector button.inbetween:hover{color: #357ebd}
 .ar-year-selector .cursor {
