@@ -194,6 +194,8 @@ angular.module('yearSelector')
 
                         blockWidth = element.prop('offsetWidth');
 
+                        console.log(blockWidth);
+
                         scope.buttonSize = (blockWidth / scope.yearsSelDRP.length) - 4;
 
                     };

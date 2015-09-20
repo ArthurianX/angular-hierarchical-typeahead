@@ -17,6 +17,12 @@
     z-index: 10;
     position: relative;
     outline: none }
+.ar-year-selector button.first-el {
+ margin-left: 0px;
+}
+.ar-year-selector button.last-el {
+    margin-right: 0px;
+}
 .ar-year-selector button:hover{text-decoration:none;background-color:#357ebd;color:#fff}
 .ar-year-selector button.active{border-color:#aebcc1;background-color:#357ebd;color:#fff;}
 .ar-year-selector button.active.draggable{cursor: move}

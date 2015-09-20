@@ -30,60 +30,7 @@
 
         </div>
 
-        <div class="row">
-            <div class="col-md-8">
-                <form class="form-horizontal" role="form">
-                    <legend>Options</legend>
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th>Option</th>
-                            <th>Value</th>
-                            <th>Description</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>years</td>
-                            <td>integer</td>
-                            <td>The number of years the selector should have. Starting from the current year down.</td>
-                        </tr>
-                        <tr>
-                            <td>model</td>
-                            <td>scope variable</td>
-                            <td>The model that's gonna updated on a new selection. It's needs to be read as a string so make sure it's a string (model: 'myScopeVar')</td>
-                        </tr>
-                        <tr>
-                            <td>attachTo</td>
-                            <td>class/#/tag</td>
-                            <td>If we're going to attach the selector to another element we need to supply a selector (with it's punctuation).</td>
-                        </tr>
-                        <tr>
-                            <td>attachNow</td>
-                            <td>scope variable</td>
-                            <td>This is the listener that the directive will trigger the deferred attachment from.</td>
-                        </tr>
-                        <tr>
-                            <td>externalCallback</td>
-                            <td>fn</td>
-                            <td>Function used to do callback in the current controller's scope</td>
-                        </tr>
-                        <tr>
-                            <td>range</td>
-                            <td>bool</td>
-                            <td>Enables selection of ranges.</td>
-                        </tr>
-                        <tr>
-                            <td>drag</td>
-                            <td>bool</td>
-                            <td>Enables the dragging of the selected active year to change the selection or the range.</td>
-                        </tr>
-                        </tbody>
-                    </table>
 
-                </form>
-            </div>
-        </div>
 
         <div class="row">
 
@@ -154,6 +101,61 @@
                 </div>
             </div>
 
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <form class="form-horizontal" role="form">
+                    <legend>Options</legend>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Option</th>
+                            <th>Value</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>years</td>
+                            <td>integer</td>
+                            <td>The number of years the selector should have. Starting from the current year down.</td>
+                        </tr>
+                        <tr>
+                            <td>model</td>
+                            <td>scope variable</td>
+                            <td>The model that's gonna updated on a new selection. It's needs to be read as a string so make sure it's a string (model: 'myScopeVar')</td>
+                        </tr>
+                        <tr>
+                            <td>attachTo</td>
+                            <td>class/#/tag</td>
+                            <td>If we're going to attach the selector to another element we need to supply a selector (with it's punctuation).</td>
+                        </tr>
+                        <tr>
+                            <td>attachNow</td>
+                            <td>scope variable</td>
+                            <td>This is the listener that the directive will trigger the deferred attachment from.</td>
+                        </tr>
+                        <tr>
+                            <td>externalCallback</td>
+                            <td>fn</td>
+                            <td>Function used to do callback in the current controller's scope</td>
+                        </tr>
+                        <tr>
+                            <td>range</td>
+                            <td>bool</td>
+                            <td>Enables selection of ranges.</td>
+                        </tr>
+                        <tr>
+                            <td>drag</td>
+                            <td>bool</td>
+                            <td>Enables the dragging of the selected active year to change the selection or the range.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </form>
+            </div>
         </div>
 
     </div>

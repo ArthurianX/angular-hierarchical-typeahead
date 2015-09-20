@@ -194,6 +194,8 @@ angular.module('yearSelector')
 
                         blockWidth = element.prop('offsetWidth');
 
+                        console.log(blockWidth);
+
                         scope.buttonSize = (blockWidth / scope.yearsSelDRP.length) - 4;
 
                     };
@@ -315,7 +317,7 @@ angular.module('yearSelector').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "    <button href=\"javascript:;\"\n" +
     "       ng-repeat=\"year in yearsSelDRP track by $index\"\n" +
-    "       ng-class=\"{'active': year.active, 'inbetween': year.inbetween, 'draggable': dragEnabled}\"\n" +
+    "       ng-class=\"{'active': year.active, 'inbetween': year.inbetween, 'draggable': dragEnabled, 'first-el': $index == 0, 'last-el': $index == (yearsSelDRP.length - 1) }\"\n" +
     "       ng-click=\"selectYear(year.year)\"\n" +
     "       ng-style=\"{'width': buttonSize + 'px'}\"\n" +
     "       tabindex=\"{{$index}}\">\n" +
