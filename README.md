@@ -24,20 +24,26 @@ angular.module('your_app', ['yearSelector']);
 
 ## Options
 
-The `year-selector` directive expects either a template or a configuration object.
+The `year-selector` directive, by default, expects only the model object, which will give you the selected date or range
 
-In other words.  You may do this:
-
-```html
-<div year-selector="mySmt"></div>
-```
-
-or this:
+You can use it like this:
 
 ```html
-<div year-selector="{}"></div>
+<div year-selector="{model: 'myModel'}"></div>
 ```
-* `message` - Optional.  Defaults to 'Please Wait...'.  The message to show in the indicator.  This value may be updated while the promise is active.  The indicator will reflect the updated values as they're changed.
+IMPORTANT: The model scope variable needs to be entered as a string.
+
+There's also a full set of options:
+
+* `years` - Optional.  Defaults to `10` years. You can input a number of years from which you can select or a scope variable with the length you need. Mind you, if you put 40 years in a really small container it won't look good. This is a TODO.
+* `model` - Required.  The scope variable or what have you to pass the selected date / range.
+* `attachTo` - Optional.  Defaults to `false`. Accepts selectors with their respective punctuation (`.class`, `#someId`, `someTag`). In case you want to display the selector at a later point, and on another element that did not exist previously, you need to set here a selector on which the yearSelector will attach itself on.
+* `attachNow` - Optional (but required when `attachTo` is defined). Defaults to `false`, only `bool`. This is a listener object that when changed from your scope it will attach the yearSelector on the previously set selector.
+* `externalCallback` - Optional. Defaults to `false`. On each selection of a year this callback will fire a callback with the selected year, and the whole range if it exists.
+* `range` - Optional. Defaults to `true`. There is the option to select a range of years.
+* `drag` - Optional. Defaults to `true`. There is the option to enable dragging of the `active` years with the mouse for a easier selection.
+
+A full usage would look like this: `<div year-selector="{model: 'myModel', years: 15, attachTo: '.mySelector', attachNow: triggerAttachment, externalCallback: updateYearSelection, range: false, drag: false}"></div>`
 
 ## Release History
  * v0.1.0 - Initial release.

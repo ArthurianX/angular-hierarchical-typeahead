@@ -79,8 +79,6 @@ angular.module('yearSelector')
 
                             var half = Math.floor(position ? arr[1]-arr[0] : arr[0] - arr[1]);
 
-                            //console.log('Position ', position, 'Half ', half, 'Array ', arr);
-
                             //Far right LR case
                             if (position && (arr[2] > arr[1])) {
                                 return [arr[1], '1'];
@@ -105,7 +103,6 @@ angular.module('yearSelector')
 
                             if ((position && ((arr[2] < arr[1])&&(arr[2] > arr[0]))) ||
                                 (!position && ((arr[2] > arr[0])&&(arr[2] < arr[1])))) {
-                                //console.log('Should drop in the middle case');
                                 if ( (arr[1] - half) > (arr[0] - half)) {
                                     return [arr[0], '0'];
                                 } else {
@@ -191,13 +188,8 @@ angular.module('yearSelector')
                     /** Sizing logic */
 
                     var buttonSizing = function(element){
-
                         blockWidth = element.prop('offsetWidth');
-
-                        console.log(blockWidth);
-
                         scope.buttonSize = (blockWidth / scope.yearsSelDRP.length) - 4;
-
                     };
 
                     /** Dragging Logic */
@@ -249,15 +241,10 @@ angular.module('yearSelector')
                         buttonSizing(attachEl);
 
                         $http.get(defaults.templateUrl, {cache: $templateCache}).success(function(template){
-
                             attachEl.append(template);
-                            console.log(attachEl);
                             $compile(attachEl)(scope);
                             enableDragging(attachEl);
-
                         });
-
-
                     };
 
 
