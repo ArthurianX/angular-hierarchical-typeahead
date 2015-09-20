@@ -307,6 +307,8 @@ angular.module('yearSelector')
                             element.remove();
 
                             if (options.attachNow) {
+                                activeMap = [];
+                                scope[options.model] = '';
                                 startAttaching(options.attachTo);
                             }
 
