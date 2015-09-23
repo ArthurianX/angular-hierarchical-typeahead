@@ -1,4 +1,13 @@
 "use strict";
+
+
+if (typeof moment == 'undefined') {
+    var moment;
+    throw "Exception: moment.js is undefined. Please add the library as a dependency to your project";
+} else {
+
+}
+
 angular.module('yearSelector',[]);
 
 angular.module('yearSelector')
