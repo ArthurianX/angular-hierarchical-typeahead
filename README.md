@@ -36,15 +36,6 @@ There's also a full set of options:
 
 <table class="table table-bordered">
 
-                            <td>Values accepted are colors, when present the container will have a border with the specified color, the controls will have the same colors.</td>
-                            <td>resizr-parent-class</td>
-                            <td>string</td>
-                            <td>Name of class to be replaced</td>
-                            <td>resizr-parent-level</td>
-                            <td>integer</td>
-                            <td># of parents to go up for the `resizr-parent-class` property, default is `0`</td>
-
-
 * `art-resizr` - Main directive declaration
 * `resizr-type` - Optional.  Accepted values are 'zoom' and 'css'. 'zoom' uses the zoom css property while 'css' just resizes the container
 * `resizr-collapsed` - Optional.  When 'true', the container is collapsed to begin with.
