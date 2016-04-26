@@ -1,7 +1,7 @@
-angular.module('yearSelector').run(['$templateCache', function($templateCache) {
+angular.module('artResizr').run(['$templateCache', function($templateCache) {
   'use strict';
 
-  $templateCache.put('angular-yearselector.html',
+  $templateCache.put('angular-resizr.html',
     "<div class=\"ar-year-selector\">\n" +
     "    <div class=\"cursor\" ng-style=\"{'width': (buttonSize + 4) + 'px'}\">\n" +
     "\n" +

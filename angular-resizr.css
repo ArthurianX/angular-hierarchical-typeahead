@@ -1,0 +1,56 @@
+.art-resizr-container {
+    position: relative;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/*Hover*/
+.art-resizr-container.art-resizr-hover {
+    -webkit-transition: opacity 0.3s ease-out;
+    transition: opacity 0.3s ease-out;
+}
+.art-resizr-container.art-resizr-hover.art-resizr-border {
+    /*border-width: 0px;*/
+}
+.art-resizr-container.art-resizr-hover.art-resizr-border:hover {
+    /*border-width: 2px;*/
+}
+.art-resizr-container.art-resizr-hover .art-resizr-button {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.art-resizr-container.art-resizr-hover:hover .art-resizr-button {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/*Border*/
+.art-resizr-container.art-resizr-border {
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 3px;
+}
+
+/*Positions*/
+.art-resizr-container.art-resizr-right {}
+.art-resizr-container.art-resizr-left {}
+.art-resizr-container.art-resizr-bottom-left {}
+.art-resizr-container.art-resizr-bottom-right {}
+.art-resizr-container.art-resizr-top-left {}
+.art-resizr-container.art-resizr-top-right {}
+
+/*Button*/
+.art-resizr-button {
+    background-color: #6781a1;
+    border: 0px solid #fff;
+    padding: 4px 10px;
+    outline: none;
+    position: absolute;
+}
+
+.art-resizr-button i {
+    font-size: 24px;
+    color: #fff;
+}
+

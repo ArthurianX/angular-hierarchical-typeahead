@@ -1,4 +1,4 @@
-describe('yearSelector', function() {
+describe('artResizr', function() {
 
 	beforeEach(module('app'));
 

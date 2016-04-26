@@ -1,27 +1,27 @@
-# agular-yearselector [![Build Status](https://travis-ci.org/arthurianx/angular-yearselector.png?branch=master)](https://travis-ci.org/arthurianx/angular-yearselector)
+# agular-artResizr [![Build Status](https://travis-ci.org/arthurianx/angular-resizr.png?branch=master)](https://travis-ci.org/arthurianx/angular-resizr)
 
 > Inline year selector with callbacks, drag and drop and range selection. WIP.
 
 ## Demo
 
-[Live Demo](http://arthurianx.github.io/angular-yearselector/demo)
+[Live Demo](http://arthurianx.github.io/angular-resizr/demo)
 
 ## Getting Started
 
 Install with Bower or download the files directly from the dist folder in the repo.
 
 ```bash
-bower install agular-yearselector --save
+bower install agular-artResizr --save
 ```
 
-Add `dist/angular-yearselector.js` and `dist/angular-yearselector.css` to your index.html.
+Add `dist/angular-resizr.js` and `dist/angular-resizr.css` to your index.html.
 
 *IMPORTANT*: At this point, `year-selector` depends on `moment.js`. Please add it as a dependency.
 
-Add `yearSelector` as a module dependency for your module.
+Add `artResizr` as a module dependency for your module.
 
 ```js
-angular.module('your_app', ['yearSelector']);
+angular.module('your_app', ['artResizr']);
 ```
 
 ## Options
@@ -39,8 +39,8 @@ There's also a full set of options:
 
 * `years` - Optional.  Defaults to `10` years. You can input a number of years from which you can select or a scope variable with the length you need. Mind you, if you put 40 years in a really small container it won't look good. This is a TODO.
 * `model` - Required.  The scope variable or what have you to pass the selected date / range.
-* `attachTo` - Optional.  Defaults to `false`. Accepts selectors with their respective punctuation (`.class`, `#someId`, `someTag`). In case you want to display the selector at a later point, and on another element that did not exist previously, you need to set here a selector on which the yearSelector will attach itself on.
-* `attachNow` - Optional (but required when `attachTo` is defined). Defaults to `false`, only `bool`. This is a listener object that when changed from your scope it will attach the yearSelector on the previously set selector.
+* `attachTo` - Optional.  Defaults to `false`. Accepts selectors with their respective punctuation (`.class`, `#someId`, `someTag`). In case you want to display the selector at a later point, and on another element that did not exist previously, you need to set here a selector on which the artResizr will attach itself on.
+* `attachNow` - Optional (but required when `attachTo` is defined). Defaults to `false`, only `bool`. This is a listener object that when changed from your scope it will attach the artResizr on the previously set selector.
 * `externalCallback` - Optional. Defaults to `false`. On each selection of a year this callback will fire a callback with the selected year, and the whole range if it exists.
 * `range` - Optional. Defaults to `true`. There is the option to select a range of years.
 * `drag` - Optional. Defaults to `true`. There is the option to enable dragging of the `active` years with the mouse for a easier selection.

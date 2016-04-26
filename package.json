@@ -1,11 +1,11 @@
 {
-  "name": "angular-yearselector",
-  "main": "year-selector.js",
+  "name": "angular-resizr",
+  "main": "angular-resizr.js",
   "version": "0.1.0",
   "description": "",
   "repository": {
     "type": "git",
-    "url": "git://github.com/ArthurianX/angular-yearselector.git"
+    "url": "git://github.com/ArthurianX/angular-resizr.git"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
