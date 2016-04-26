@@ -68,6 +68,9 @@ angular.module('artResizr')
                             case 'top-right':
                                 element.addClass(classes.topR);
                                 break;
+                            case false:
+                                element.addClass(classes.bottomR);
+                                break;
                         }
                     };
 
