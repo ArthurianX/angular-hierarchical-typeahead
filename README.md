@@ -1,4 +1,4 @@
-# agular-artResizr [![Build Status](https://travis-ci.org/arthurianx/angular-resizr.png?branch=master)](https://travis-ci.org/arthurianx/angular-resizr)
+# agular-resizr [![Build Status](https://travis-ci.org/arthurianx/angular-resizr.png?branch=master)](https://travis-ci.org/arthurianx/angular-resizr)
 
 > Multi purpose container resizer.
 
