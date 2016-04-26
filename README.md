@@ -62,4 +62,5 @@ A full usage would look like this: ```html
 
 
 ## Release History
+ * v0.1.1 - Launch gh-pages.
  * v0.1.0 - Initial release.
