@@ -1,8 +1,8 @@
 angular.module('artResizr',[]);
 
 angular.module('artResizr')
-    .directive('artResizr',['$parse', '$document', '$http', '$timeout', '$compile','$templateCache',
-        function($parse, $document, $http, $timeout, $compile, $templateCache){
+    .directive('artResizr',['$parse', '$document', '$http', '$timeout', '$compile',
+        function($parse, $document, $http, $timeout, $compile){
             return {
                 restrict: 'A',
                 scope: {
@@ -30,14 +30,14 @@ angular.module('artResizr')
                         element.append(template);
                         $compile(element)(scope);
 
-                        if (settings.resizrBorder == 'true') {
+                        if (settings.resizrBorder === 'true') {
                             angular.element(element).children('.art-resizr-button').css({'background-color': settings.resizrBorder});
-                        } else if (settings.resizrBorder == 'false') {
-
+                        } else if (settings.resizrBorder === 'false') {
+                            angular.noop();
                         } else if (settings.resizrBorder) {
                             angular.element(element).children('.art-resizr-button').css({'background-color': settings.resizrBorder});
                         } else {
-
+                            angular.noop();
                         }
                     };
 
@@ -45,13 +45,13 @@ angular.module('artResizr')
 
                         if (state) {
                             //Means it's collapsed
-                            if (settings.resizrType == 'zoom') {
+                            if (settings.resizrType === 'zoom') {
                                 element.addClass(classes.zoom);
                             }
                             element.addClass(classes.collapsed);
                         } else {
                             //Means it's open
-                            if (settings.resizrType == 'zoom') {
+                            if (settings.resizrType === 'zoom') {
                                 element.removeClass(classes.zoom);
                             }
                             element.removeClass(classes.collapsed);
@@ -93,25 +93,23 @@ angular.module('artResizr')
                         // Only if ratio is present
                         var ratio = [];
 
-                        rawRatio.split('/').forEach(function(value, index){
+                        rawRatio.split('/').forEach(function(value){
                             ratio.push(parseInt(value));
                         });
 
-                        console.log(ratio);
-
-                        if (type == 'zoom') {
+                        if (type === 'zoom') {
                             // If nothing reset to 1
                             if (!state) {
-                                element.css({"zoom": 1})
+                                element.css({"zoom": 1});
                             } else {
-                                element.css({"zoom": JSON.stringify(ratio[0] / 100)})
+                                element.css({"zoom": JSON.stringify(ratio[0] / 100)});
                             }
-                        } else if (type == 'css') {
+                        } else if (type === 'css') {
 
                             if (!state) {
                                 element.css({"width": originalSize[0] + 'px', "height": originalSize[1] + 'px'});
                             } else {
-                                element.css({"width": element.width() * (ratio[0] / 100) + 'px', "height": element.height() * (ratio[1] / 100) + 'px'})
+                                element.css({"width": element.width() * (ratio[0] / 100) + 'px', "height": element.height() * (ratio[1] / 100) + 'px'});
                             }
                         }
                     };
@@ -131,7 +129,7 @@ angular.module('artResizr')
                     };
 
                     var defaults = {
-                        resizrType: "zoom", // the other one is "css",
+                        resizrType: "css", // the other one is "css",
                         resizrCallback: false, //It can be set to true so it will be collapsed on first load
                         resizrCollapsed: false, //It can be set to true so it will be collapsed on first load
                         resizrAppearHover: false, //It can be set to true so it will be collapsed on first load
@@ -150,9 +148,9 @@ angular.module('artResizr')
                     attrs = angular.extend(angular.copy(defaults), attrs);
 
                     // Cover string and bool
-                    if(attrs.resizrCollapsed == 'true') {
+                    if(attrs.resizrCollapsed === 'true') {
                         scope.artResizrCollapsed = true;
-                    } else if(attrs.resizrCollapsed == 'false'){
+                    } else if(attrs.resizrCollapsed === 'false'){
                         scope.artResizrCollapsed = false;
                     } else if (attrs.resizrCollapsed) {
                         scope.artResizrCollapsed = true;
@@ -182,25 +180,25 @@ angular.module('artResizr')
 
                         //Means it appears only on hover
 
-                        if (settings.resizrAppearHover == 'true') {
+                        if (settings.resizrAppearHover === 'true') {
                             element.addClass(classes.hover);
-                        } else if (settings.resizrAppearHover == 'false') {
-
+                        } else if (settings.resizrAppearHover === 'false') {
+                            angular.noop();
                         } else if (settings.resizrAppearHover) {
                             element.addClass(classes.hover);
                         }
 
                         //Means we'll have a border
-                        if (settings.resizrBorder == 'true') {
+                        if (settings.resizrBorder === 'true') {
                             element.addClass(classes.border);
                             element.css({'border-color': settings.resizrBorder});
-                        } else if (settings.resizrBorder == 'false') {
-
+                        } else if (settings.resizrBorder === 'false') {
+                            angular.noop();
                         } else if (settings.resizrBorder) {
                             element.addClass(classes.border);
                             element.css({'border-color': settings.resizrBorder});
                         } else {
-
+                            angular.noop();
                         }
 
                         // Add the position class

@@ -674,7 +674,7 @@
             <div class="col-md-12">
                 <form class="form-horizontal" role="form">
                     <legend>Table</legend>
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" art-resizr resizr-position="top-right">
                         <thead>
                         <tr>
                             <th>Option</th>
@@ -769,7 +769,7 @@
                  resizr-type="css"
                  resizr-callback="resizeCallback"
                  resizr-collapsed="false"
-                 resizr-appear-hover="false"
+                 resizr-appear-hover="true"
                  resizr-ratio="50/105"
                  resizr-position="left"
                  resizr-border="#222">
@@ -780,28 +780,34 @@
         <div class="row">
             <legend>Parent Class Manipulation</legend>
             <div class="col-md-8" >
-                <div id="container3"
-                     art-resizr
+                <div class="resizer-container" art-resizr
                      resizr-type="css"
                      resizr-callback="resizeCallback3"
                      resizr-collapsed="false"
-                     resizr-appear-hover="true"
+                     resizr-appear-hover="false"
                      resizr-ratio="50/40"
                      resizr-position="left"
-                     resizr-border="#222"
-                     style="height: 400px; margin: 0 auto"></div>
+                     resizr-border="#222">
+
+                    <div id="container3" style="height: 400px; margin: 0 auto"></div>
+
+                </div>
+
             </div>
             <div class="col-md-8" >
-                <div id="container4"
-                     art-resizr
+                <div class="resizer-container" art-resizr
                      resizr-type="css"
                      resizr-callback="resizeCallback4"
                      resizr-collapsed="false"
-                     resizr-appear-hover="true"
+                     resizr-appear-hover="false"
                      resizr-ratio="50/40"
                      resizr-position="right"
-                     resizr-border="#222"
-                     style="height: 400px; margin: 0 auto"></div>
+                     resizr-border="#222">
+
+                    <div id="container4" style="height: 400px; margin: 0 auto"></div>
+
+                </div>
+
             </div>
         </div>
 

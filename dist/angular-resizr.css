@@ -37,12 +37,36 @@
 .art-resizr-container.art-resizr-zoom {
 }
 /*Positions*/
-.art-resizr-container.art-resizr-right {}
-.art-resizr-container.art-resizr-left {}
-.art-resizr-container.art-resizr-bottom-left {}
-.art-resizr-container.art-resizr-bottom-right {}
-.art-resizr-container.art-resizr-top-left {}
-.art-resizr-container.art-resizr-top-right {}
+.art-resizr-container.art-resizr-right .art-resizr-button {
+    right: -41px;
+    bottom: 40px;
+    border-radius: 0 3px 3px 0;
+}
+.art-resizr-container.art-resizr-left .art-resizr-button {
+    left: -41px;
+    top: 40px;
+    border-radius: 3px 0 0 3px;
+}
+.art-resizr-container.art-resizr-bottom-left .art-resizr-button {
+    bottom: -34px;
+    left: 40px;
+    border-radius: 0 0 3px 3px;
+}
+.art-resizr-container.art-resizr-bottom-right .art-resizr-button {
+    bottom: -34px;
+    right: 40px;
+    border-radius: 0 0 3px 3px;
+}
+.art-resizr-container.art-resizr-top-left .art-resizr-button {
+    top: -34px;
+    left: 40px;
+    border-radius: 3px 3px 0 0;
+}
+.art-resizr-container.art-resizr-top-right .art-resizr-button {
+    top: -34px;
+    right: 40px;
+    border-radius: 3px 3px 0 0;
+}
 
 /*Button*/
 .art-resizr-button {
