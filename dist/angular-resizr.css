@@ -32,6 +32,10 @@
     border-radius: 3px;
 }
 
+
+/*Sized*/
+.art-resizr-container.art-resizr-zoom {
+}
 /*Positions*/
 .art-resizr-container.art-resizr-right {}
 .art-resizr-container.art-resizr-left {}
