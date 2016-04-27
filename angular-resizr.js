@@ -5,13 +5,24 @@ angular.module('artResizr')
         function($parse, $document, $http, $timeout, $compile, $templateCache){
             return {
                 restrict: 'A',
+                scope: {
+                    resizrType: "@", // the other one is "css",
+                    resizrCallback: "&", //It can be set to true so it will be collapsed on first load
+                    resizrCollapsed: "=", //It can be set to true so it will be collapsed on first load
+                    resizrAppearHover: "=", //It can be set to true so it will be collapsed on first load
+                    resizrRatio: "@", // [width] / [height] in %
+                    resizrPosition: "@", // "bottom-right", "right", "left", "top-left", "top-right"
+                    resizrBorder: "@", // The other option is a color
+                    resizrParentClass: "=", // 'col-md-4'
+                    resizrParentLevel: "=" // '2' will mean the component will go 2 parents up and change that class
+                },
                 link: function(scope, element, attrs) {
 
                     // template
                     var template =
                     "<button class='art-resizr-button' ng-click='artResizrToggle()'>" +
-                        "<i ng-if='artResizrCollapsed' class='fa fa-compress' aria-hidden='true'></i>" +
-                        "<i ng-if='!artResizrCollapsed' class='fa fa-expand' aria-hidden='true'></i>" +
+                        "<i ng-if='!artResizrCollapsed' class='fa fa-compress' aria-hidden='true'></i>" +
+                        "<i ng-if='artResizrCollapsed' class='fa fa-expand' aria-hidden='true'></i>" +
                     "</button>";
 
                     // functions
@@ -74,6 +85,37 @@ angular.module('artResizr')
                         }
                     };
 
+                    var originalSize = [];
+                    originalSize[0] = element.width();
+                    originalSize[1] = element.height();
+
+                    var handleSizes = function(rawRatio, type, state){
+                        // Only if ratio is present
+                        var ratio = [];
+
+                        rawRatio.split('/').forEach(function(value, index){
+                            ratio.push(parseInt(value));
+                        });
+
+                        console.log(ratio);
+
+                        if (type == 'zoom') {
+                            // If nothing reset to 1
+                            if (!state) {
+                                element.css({"zoom": 1})
+                            } else {
+                                element.css({"zoom": JSON.stringify(ratio[0] / 100)})
+                            }
+                        } else if (type == 'css') {
+
+                            if (!state) {
+                                element.css({"width": originalSize[0] + 'px', "height": originalSize[1] + 'px'});
+                            } else {
+                                element.css({"width": element.width() * (ratio[0] / 100) + 'px', "height": element.height() * (ratio[1] / 100) + 'px'})
+                            }
+                        }
+                    };
+
                     var classes = {
                         container: 'art-resizr-container',
                         hover: 'art-resizr-hover',
@@ -128,9 +170,9 @@ angular.module('artResizr')
 
                         // Handle collapse type
                         handleToggle(settings, scope.artResizrCollapsed);
-
+                        handleSizes(settings.resizrRatio, settings.resizrType, scope.artResizrCollapsed);
                         if (settings.resizrCallback) {
-                            scope[settings.resizrCallback](scope.artResizrCollapsed);
+                            scope.resizrCallback()(scope.artResizrCollapsed);
                         }
                     };
 
@@ -172,11 +214,11 @@ angular.module('artResizr')
                         if (scope.artResizrCollapsed) {
                             //Run once handleToogle to have all the classes in place
                             handleToggle(settings, scope.artResizrCollapsed);
-
+                            handleSizes(settings.resizrRatio, settings.resizrType, scope.artResizrCollapsed);
                             // If it should be collapsed at the beginning
                             if (settings.resizrCallback) {
                                 //Run the callback function if any
-                                scope[settings.resizrCallback](scope.artResizrCollapsed);
+                                scope.resizrCallback()(scope.artResizrCollapsed);
                             }
                         }
 

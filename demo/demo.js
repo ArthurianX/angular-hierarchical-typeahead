@@ -4,18 +4,28 @@ angular.module('app').controller('DemoCtrl',function($scope,$http){
 
     $scope.resizeCallback = function(state){
         console.log('Callback fired with state ', state);
+
+        var title = {
+            text: 'Height Versus Weight of 507 Individuals by Gender'
+        };
+
+        var subtitle = {
+            text: 'Source: Heinz  2003'
+        };
+
+        if (state) {
+            title = '';
+            subtitle = '';
+        }
+
         $(function () {
             $('#container2').highcharts({
                 chart: {
                     type: 'scatter',
                     zoomType: 'xy'
                 },
-                title: {
-                    text: 'Height Versus Weight of 507 Individuals by Gender'
-                },
-                subtitle: {
-                    text: 'Source: Heinz  2003'
-                },
+                title: title,
+                subtitle: subtitle,
                 xAxis: {
                     title: {
                         enabled: true,
