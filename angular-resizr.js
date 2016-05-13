@@ -105,8 +105,6 @@ angular.module('artResizr')
                         actionElement = actionElement.parent().children();
                       }
 
-                      console.log('Actionable element is', actionElement);
-
                       if (elClass) {
                         // If the class element is present and the class
                         if (!state) {
