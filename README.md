@@ -46,6 +46,7 @@ There's also a full set of options:
 * `resizr-border` - Optional.  Values accepted are colors, when present the container will have a border with the specified color, the controls will have the same colors.
 * `resizr-parent-class` - Optional. Name of class to be replaced.
 * `resizr-parent-level` - Optional.  # of parents to go up for the `resizr-parent-class` property, default is `0`.
+* `resizr-adjacent` - Optional.  Boolean. If enabled all the sibling at the requested parent level will be resized, with a class if present or with css.
 
 A full usage would look like this: ```html
                                     <div id="container4"

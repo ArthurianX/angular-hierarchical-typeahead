@@ -14,7 +14,8 @@ angular.module('artResizr')
                     resizrPosition: "@", // "bottom-right", "right", "left", "top-left", "top-right"
                     resizrBorder: "@", // The other option is a color
                     resizrParentClass: "=", // 'col-md-4'
-                    resizrParentLevel: "=" // '2' will mean the component will go 2 parents up and change that class
+                    resizrParentLevel: "=", // '2' will mean the component will go 2 parents up and change that class
+                    resizrAdjacent: '@'
                 },
                 link: function(scope, element, attrs) {
 
@@ -89,6 +90,45 @@ angular.module('artResizr')
                     originalSize[0] = element.width();
                     originalSize[1] = element.height();
 
+                    var handleParentsAdjacents = function(level, elClass, adjacent, state) {
+
+                      var elLevel = parseInt(level);
+                      var actionElement = element;
+
+
+                      for(var i = 0; i <= elLevel; i++) {
+                        actionElement = element.parent();
+                      }
+
+                      if (adjacent) {
+                        //actionElement becomes an array of elements that need resized
+                        actionElement = actionElement.parent().children();
+                      }
+
+                      console.log('Actionable element is', actionElement);
+
+                      if (elClass) {
+                        // If the class element is present and the class
+                        if (!state) {
+                            actionElement.removeClass(elClass);
+                        } else {
+                            actionElement.addClass(elClass);
+                        }
+
+                      } else {
+                        // If the class element is not present resize elements with css
+                        if (!state) {
+                          actionElement.css({width: '', display: ''});
+                          actionElement.removeAttr('width');
+                          actionElement.removeAttr('display');
+                        } else {
+                          actionElement.css({width: actionElement.parent().width() / actionElement.length + 'px', display: 'inline-block'});
+                        }
+                      }
+
+
+                    };
+
                     var handleSizes = function(rawRatio, type, state){
                         // Only if ratio is present
                         var ratio = [];
@@ -137,7 +177,8 @@ angular.module('artResizr')
                         resizrPosition: "bottom-left", // "bottom-right", "right", "left", "top-left", "top-right"
                         resizrBorder: false, // The other option is a color
                         resizrParentClass: false, // 'col-md-4'
-                        resizrParentLevel: false // '2' will mean the component will go 2 parents up and change that class
+                        resizrParentLevel: false, // '2' will mean the component will go 2 parents up and change that class
+                        resizrAdjacent: false // true will mean that we go up to the desired parent and make the two blocks fit on the same row
                     };
 
                     /*console.log('scope', scope);
@@ -168,7 +209,16 @@ angular.module('artResizr')
 
                         // Handle collapse type
                         handleToggle(settings, scope.artResizrCollapsed);
-                        handleSizes(settings.resizrRatio, settings.resizrType, scope.artResizrCollapsed);
+
+                        if (settings.resizrParentLevel) {
+                          //Handle the special cases with parents and adjacent resizing
+                          handleParentsAdjacents(settings.resizrParentLevel, settings.resizrParentClass, settings.resizrAdjacent, scope.artResizrCollapsed);
+                        } else {
+                          //Normally handle the sizes
+                          handleSizes(settings.resizrRatio, settings.resizrType, scope.artResizrCollapsed);
+                        }
+
+
                         if (settings.resizrCallback) {
                             scope.resizrCallback()(scope.artResizrCollapsed);
                         }

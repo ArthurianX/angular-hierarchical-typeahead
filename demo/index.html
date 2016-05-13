@@ -733,6 +733,11 @@
                             <td>integer</td>
                             <td># of parents to go up for the `resizr-parent-class` property, default is `0`</td>
                         </tr>
+                        <tr>
+                            <td>resizr-adjacent</td>
+                            <td>boolean</td>
+                            <td>If enabled all the sibling at the requested parent level will be resized, with a class if present or with css</td>
+                        </tr>
                         </tbody>
                     </table>
 
@@ -741,21 +746,12 @@
         </div>
 
         <div class="row">
-        <!--resizrType: "zoom", // the other one is "css",
-            resizrCallback: false, //It can be set to true so it will be collapsed on first load
-            resizrCollapsed: false, //It can be set to true so it will be collapsed on first load
-            resizrAppearHover: false, //It can be set to true so it will be collapsed on first load
-            resizrRatio: "50/50", // [width] / [height] in %
-            resizrPosition: "bottom-left", // "bottom-right", "right", "left", "top-left", "top-right"
-            resizrBorder: false, // The other option is a color
-            resizrParentClass: "", // 'col-md-4'
-            resizrParentLevel: "", // '2' will mean the component will go 2 parents up and change that class-->
             <div class="col-md-8" art-resizr
                  resizr-type="zoom"
                  resizr-collapsed="false"
                  resizr-appear-hover="false"
                  resizr-ratio="50/40"
-                 resizr-position="left"
+                 resizr-position="right"
                  >
 
                 <legend>Zoom Resizing of Chart</legend>
@@ -776,34 +772,32 @@
                 <div id="container2" style="margin: 0 auto"></div>
             </div>
         </div>
-
+        <legend>Parent Class Manipulation</legend>
         <div class="row">
-            <legend>Parent Class Manipulation</legend>
             <div class="col-md-8" >
                 <div class="resizer-container" art-resizr
                      resizr-type="css"
                      resizr-callback="resizeCallback3"
-                     resizr-collapsed="false"
-                     resizr-appear-hover="false"
-                     resizr-ratio="50/40"
                      resizr-position="left"
-                     resizr-border="#222">
+                     resizr-adjacent="true"
+                     resizr-parent-level="1"
+                     >
 
                     <div id="container3" style="height: 400px; margin: 0 auto"></div>
 
                 </div>
+                <!--resizrParentClass: false, // 'col-md-4'
+                resizrParentLevel: false // '2' will mean the component will go 2 parents up and change that class
+                resizrAdjacent: false // true will mean that we go up to the desired parent and make the two blocks fit on the same row-->
 
             </div>
             <div class="col-md-8" >
                 <div class="resizer-container" art-resizr
                      resizr-type="css"
                      resizr-callback="resizeCallback4"
-                     resizr-collapsed="false"
-                     resizr-appear-hover="false"
-                     resizr-ratio="50/40"
                      resizr-position="right"
-                     resizr-border="#222">
-
+                     resizr-parent-level="1"
+                     resizr-parent-class="col-md-6">
                     <div id="container4" style="height: 400px; margin: 0 auto"></div>
 
                 </div>
