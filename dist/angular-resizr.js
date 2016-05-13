@@ -21,7 +21,7 @@ angular.module('artResizr')
 
                     // template
                     var template =
-                    "<button class='art-resizr-button' ng-click='artResizrToggle()'>" +
+                    "<button class='art-resizr-button' ng-class='{artResizrCollapsed: 'collapsed'}' ng-click='artResizrToggle()'>" +
                         "<i ng-if='!artResizrCollapsed' class='fa fa-compress' aria-hidden='true'></i>" +
                         "<i ng-if='artResizrCollapsed' class='fa fa-expand' aria-hidden='true'></i>" +
                     "</button>";
