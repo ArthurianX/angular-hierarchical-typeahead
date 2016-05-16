@@ -260,7 +260,15 @@ angular.module('artResizr')
                         if (scope.artResizrCollapsed) {
                             //Run once handleToogle to have all the classes in place
                             handleToggle(settings, scope.artResizrCollapsed);
-                            handleSizes(settings.resizrRatio, settings.resizrType, scope.artResizrCollapsed);
+
+                            if (settings.resizrParentLevel) {
+                              //Handle the special cases with parents and adjacent resizing
+                              handleParentsAdjacents(settings.resizrParentLevel, settings.resizrParentClass, settings.resizrAdjacent, scope.artResizrCollapsed);
+                            } else {
+                              //Normally handle the sizes
+                              handleSizes(settings.resizrRatio, settings.resizrType, scope.artResizrCollapsed);
+                            }
+
                             // If it should be collapsed at the beginning
                             if (settings.resizrCallback) {
                                 //Run the callback function if any
