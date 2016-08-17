@@ -15,13 +15,14 @@ angular.module('artResizr')
                     resizrBorder: "@", // The other option is a color
                     resizrParentClass: "=", // 'col-md-4'
                     resizrParentLevel: "=", // '2' will mean the component will go 2 parents up and change that class
-                    resizrAdjacent: '@'
+                    resizrAdjacent: '@',
+                    resizrTimeout: '@'
                 },
                 link: function(scope, element, attrs) {
 
                     // template
                     var template =
-                    "<button class='art-resizr-button' ng-class='{collapsed: artResizrCollapsed}' ng-click='artResizrToggle()'>" +
+                    "<button class='art-typeahead-button' ng-class='{collapsed: artResizrCollapsed}' ng-click='artResizrToggle()'>" +
                         "<i ng-if='!artResizrCollapsed' class='fa fa-compress' aria-hidden='true'></i>" +
                         "<i ng-if='artResizrCollapsed' class='fa fa-expand' aria-hidden='true'></i>" +
                     "</button>";
@@ -32,11 +33,11 @@ angular.module('artResizr')
                         $compile(element)(scope);
 
                         if (settings.resizrBorder === 'true') {
-                            angular.element(element).children('.art-resizr-button').css({'background-color': settings.resizrBorder});
+                            angular.element(element).children('.art-typeahead-button').css({'background-color': settings.resizrBorder});
                         } else if (settings.resizrBorder === 'false') {
                             angular.noop();
                         } else if (settings.resizrBorder) {
-                            angular.element(element).children('.art-resizr-button').css({'background-color': settings.resizrBorder});
+                            angular.element(element).children('.art-typeahead-button').css({'background-color': settings.resizrBorder});
                         } else {
                             angular.noop();
                         }
@@ -89,6 +90,15 @@ angular.module('artResizr')
                     var originalSize = [];
                     originalSize[0] = element.width();
                     originalSize[1] = element.height();
+
+                    //Get the width / height of element after a certain event fires
+                    if (scope.resizrTimeout) {
+                      $timeout(function(){
+                        console.log('Fire ', scope.resizrRecalcEvent);
+                        originalSize[0] = element.width();
+                        originalSize[1] = element.height();
+                      }, parseInt(scope.resizrTimeout));
+                    }
 
                     var handleParentsAdjacents = function(level, elClass, adjacent, state) {
 
@@ -153,17 +163,17 @@ angular.module('artResizr')
                     };
 
                     var classes = {
-                        container: 'art-resizr-container',
-                        hover: 'art-resizr-hover',
-                        zoom: 'art-resizr-zoom',
-                        border: 'art-resizr-border',
-                        collapsed: 'art-resizr-collapsed',
-                        left: 'art-resizr-left',
-                        right: 'art-resizr-right',
-                        bottomL: 'art-resizr-bottom-left',
-                        bottomR: 'art-resizr-bottom-right',
-                        topL: 'art-resizr-top-left',
-                        topR: 'art-resizr-top-right'
+                        container: 'art-typeahead-container',
+                        hover: 'art-typeahead-hover',
+                        zoom: 'art-typeahead-zoom',
+                        border: 'art-typeahead-border',
+                        collapsed: 'art-typeahead-collapsed',
+                        left: 'art-typeahead-left',
+                        right: 'art-typeahead-right',
+                        bottomL: 'art-typeahead-bottom-left',
+                        bottomR: 'art-typeahead-bottom-right',
+                        topL: 'art-typeahead-top-left',
+                        topR: 'art-typeahead-top-right'
                     };
 
                     var defaults = {
@@ -218,6 +228,7 @@ angular.module('artResizr')
 
 
                         if (settings.resizrCallback) {
+                            console.log( typeof scope.resizrCallback() === 'function' );
                             scope.resizrCallback()(scope.artResizrCollapsed);
                         }
                     };

@@ -1,11 +1,11 @@
 {
-  "name": "angular-resizr",
-  "main": "angular-resizr.js",
+  "name": "angular-hierarchical-typeahead",
+  "main": "angular-hierarchical-typeahead.js",
   "version": "0.1.0",
   "description": "",
   "repository": {
     "type": "git",
-    "url": "git://github.com/ArthurianX/angular-resizr.git"
+    "url": "git://github.com/ArthurianX/angular-hierarchical-typeahead.git"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

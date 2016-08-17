@@ -19,7 +19,7 @@ module.exports = function (grunt) {
           livereloadOnError: false,
           spawn: false
         },
-        files: ['angular-resizr.js','angular-resizr.css','dist/**/*','demo/**/*'],
+        files: ['angular-hierarchical-typeahead.js','angular-hierarchical-typeahead.css','dist/**/*','demo/**/*'],
         tasks: ['jshint','build']
       }
     },
@@ -28,12 +28,12 @@ module.exports = function (grunt) {
         options: {
           jshintrc: '.jshintrc'
         },
-        src: 'angular-resizr.js'
+        src: 'angular-hierarchical-typeahead.js'
       }
     },
     jasmine: {
       unit: {
-        src: ['./bower_components/jquery/dist/jquery.js','./bower_components/angular/angular.js','./bower_components/angular-animate/angular-animate.js','./bower_components/angular-mocks/angular-mocks.js','./dist/angular-resizr.js','./demo/demo.js'],
+        src: ['./bower_components/jquery/dist/jquery.js','./bower_components/angular/angular.js','./bower_components/angular-animate/angular-animate.js','./bower_components/angular-mocks/angular-mocks.js','./dist/angular-hierarchical-typeahead.js','./demo/demo.js'],
         options: {
           specs: 'test/*.js'
         }
@@ -41,28 +41,28 @@ module.exports = function (grunt) {
     },
     concat: {
       main: {
-        src: ['angular-resizr.js'],
-        dest: 'dist/angular-resizr.js'
+        src: ['angular-hierarchical-typeahead.js'],
+        dest: 'dist/angular-hierarchical-typeahead.js'
       }
     },
     copy: {
       main: {
         files: [
-          {src:'angular-resizr.css',dest:'dist/'}
+          {src:'angular-hierarchical-typeahead.css',dest:'dist/'}
         ]
       }
     },
     uglify: {
       main: {
         files: [
-        {src:'dist/angular-resizr.js',dest:'dist/angular-resizr.min.js'}
+        {src:'dist/angular-hierarchical-typeahead.js',dest:'dist/angular-hierarchical-typeahead.min.js'}
         ]
       }
     },
     cssmin: {
       main: {
         files: {
-          'dist/angular-resizr.min.css': 'dist/angular-resizr.css'
+          'dist/angular-hierarchical-typeahead.min.css': 'dist/angular-hierarchical-typeahead.css'
         }
       }
     }
