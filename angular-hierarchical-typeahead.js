@@ -128,6 +128,7 @@ angular.module('artTypeahead')
                         $scope.lastLevel = false;
                         $scope.currentPlaceholder = level.name;
                         getOutsideData(false);
+                        $scope.focusOnSearch();
                     };
 
                     var getOutsideData = function getOutsideData(query, oldQuery){

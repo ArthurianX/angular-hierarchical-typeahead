@@ -30,9 +30,9 @@ angular.module('app').controller('DemoCtrl',function($scope,$http, $q){
     };
 
     $scope.tiers = [
-        {name: "Organisation", icon: "fa fa-users", color: "#6781a1", bColor: "#D3D3D3"},
-        {name: "Building", icon: "fa fa-building-o", color: "#6781a1", bColor: "#E5E5E5"},
-        {name: "Meter", icon: "fa fa-tachometer", color: "#6781a1", bColor: "#F5F5F5"}
+        {name: "Organisation", icon: "fa fa-users", color: "#2980b9", bColor: "#E6E6E6"},
+        {name: "Building", icon: "fa fa-building-o", color: "#2980b9", bColor: "#ECECEC"},
+        {name: "Meter", icon: "fa fa-tachometer", color: "#2980b9", bColor: "#F5F5F5"}
     ];
 
     $scope.callbackID = function(id, type) {
@@ -71,7 +71,7 @@ angular.module('app').controller('DemoCtrl',function($scope,$http, $q){
                     break;
             }
 
-        }, 500);
+        }, 1500);
 
         return deferred.promise;
 

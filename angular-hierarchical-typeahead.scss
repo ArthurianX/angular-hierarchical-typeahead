@@ -107,7 +107,10 @@
         font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
         color: #222;
         display: flex;
-        margin-bottom: 10px;
+        position: relative;
+        z-index: 1;
+        //overflow: hidden;
+        //margin-bottom: 4px;
 
         .levels:not(:first-child) {
             &.ng-enter {
@@ -136,13 +139,14 @@
             padding: 10px 20px;
             margin-right: 0px;
             position: relative;
-            -webkit-box-shadow: 4px 0px 3px rgba(0,0,0,0.3);
-            -moz-box-shadow: 4px 0px 3px rgba(0,0,0,0.3);
+            color: #595959;
+            -webkit-box-shadow: 4px 3px 3px rgba(0,0,0,0.3);
+            -moz-box-shadow: 4px 3px 3px rgba(0,0,0,0.3);
             box-shadow: 4px 0px 3px rgba(0,0,0,0.3);
             /*-webkit-transition: all 500ms ease-in-out;
             -moz-transition: all 500ms ease-in-out;*/
             //transition: all 0.5s cubic-bezier(0.65, 0.05, 0.36, 1), opacity 1s cubic-bezier(0.65, 0.05, 0.36, 1);
-            transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in;
 
             @include angle(before);
             &:nth-child(1) { z-index: 10}
@@ -154,7 +158,7 @@
             &:nth-child(7) { z-index: 5}
 
             i {
-                margin-right: 15px;
+                margin-right: 10px;
                 text-shadow: 0px 4px 10px #ffffff;
                 filter: dropshadow(color=#ffffff, offx=0, offy=0)
             }
@@ -165,17 +169,26 @@
             font-weight: 100;
             flex: 1;
             border: 1px solid #f1f1f1;
+            border-bottom: 0px solid #f1f1f1;
+            border-radius: 0 3px 0 0;
             outline: none;
             box-shadow: 0 0 0 rgba(0,0,0,0);
+            transition: all 0.5s ease-in-out, opacity 1s ease-in-out;
         }
     }
     .art-results {
         height: 250px;
         overflow: auto;
+        border: 1px solid #ededed;
+        border-radius: 0 0 3px 3px;
+        padding: 4px;
+        position: relative;
+        z-index: 2;
+        background-color: #fff;
         [kb-item] {
             cursor: pointer;
             &.kb-active {
-                background: lightblue;
+                background: rgba(41,128,185, 0.5);
             }
         }
         ul {
@@ -189,7 +202,95 @@
                 outline: none;
                 padding: 10px 20px;
                 height: 40px;
+                border-bottom: 1px solid #f1f1f1;
+                &:nth-child(odd) {}
+                &:nth-child(even) {
+                    background-color: #fcfcfc;
+                }
             }
+        }
+    }
+    .art-tooltip-helper {
+        cursor: pointer;
+        > i {
+            color: rgba(41,128,185, 1);
+        }
+    }
+
+    $green: #008744;
+    $blue: #0057e7;
+    $red: #d62d20;
+    $yellow: #ffa700;
+    $white: #eee;
+
+    // scaling... any units
+    $width: 100px;
+    .art-loader {
+        position: relative;
+        margin: 75px auto 0 auto;
+        width: $width;
+        &:before {
+            content: '';
+            display: block;
+            padding-top: 100%;
+        }
+    }
+
+    .art-circular {
+        animation: rotate 2s linear infinite;
+        height: 100%;
+        transform-origin: center center;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
+
+    .path {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+        animation: dash 1.5s ease-in-out infinite, color 3s ease-in-out infinite;
+        stroke-linecap: round;
+    }
+
+    @keyframes rotate {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes dash {
+        0% {
+            stroke-dasharray: 1, 200;
+            stroke-dashoffset: 0;
+        }
+        50% {
+            stroke-dasharray: 89, 200;
+            stroke-dashoffset: -35px;
+        }
+        100% {
+            stroke-dasharray: 89, 200;
+            stroke-dashoffset: -124px;
+        }
+    }
+
+    @keyframes color {
+        100%,
+        0% {
+            stroke: $red;
+        }
+        40% {
+            stroke: $blue;
+        }
+        66% {
+            stroke: $green;
+        }
+        80%,
+        90% {
+            stroke: $yellow;
         }
     }
 }
