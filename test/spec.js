@@ -1,4 +1,4 @@
-describe('artResizr', function() {
+describe('artTypeahead', function() {
 
 	beforeEach(module('app'));
 

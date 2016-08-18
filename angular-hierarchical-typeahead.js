@@ -1,299 +1,260 @@
-angular.module('artResizr',[]);
+/* jshint ignore:start */
+"use strict";angular.module("keyboard.focus",[]),angular.module("keyboard",["keyboard.focus"]),angular.module("keyboard").constant("undefined"),angular.module("keyboard").factory("KbContainerController",["undefined","$log",function(e,t){function n(t){this.identifier="[kb-container]",this.ngModel=e,this.selected=[],this.multiple=!1,this.cyclic=!1,this.active=e,this._element=t[0]}return n.$inject=["$element"],angular.extend(n.prototype,{initialize:function(e){this.multiple=angular.isDefined(e.attrs.multiple),this.cyclic=angular.isDefined(e.attrs.kbCyclic),angular.extend(this,e),this.ngModel&&(this.ngModel.$render=function(){this.multiple?(this.selected=this.ngModel.$viewValue,angular.isArray(this.selected)===!1&&(angular.isDefined(this.selected)&&t.error(this.identifier,"ng-model(multiple) must be an array, got:",this.selected),this.selected=[])):this.selected[0]=this.ngModel.$viewValue;for(var e in this.selected){var n=this._locate(this.selected[e]);if(n){this.active=n;break}}}.bind(this))},select:function(e){this.ngModel&&(this.multiple?this.isSelected(e)===!1&&(this.selected.push(e),this.ngModel.$setViewValue(this.selected)):(this.selected[0]=e,this.ngModel.$setViewValue(e)))},deselect:function(t){if(this.ngModel){var n=this.selected.indexOf(t);n!==-1&&(this.selected.splice(n,1),this.multiple?this.ngModel.$setViewValue(this.selected):this.ngModel.$setViewValue(e))}},toggle:function(e){this.isSelected(e)?this.deselect(e):this.select(e)},isSelected:function(e){return this.selected.indexOf(e)!==-1},previous:function(){var e=this._getSiblingItems(this.active).previous;return!!e&&(this.active=e,!0)},next:function i(){var i=this._getSiblingItems(this.active).next;return!!i&&(this.active=i,!0)},activate:function(e,n){return t.$error(this.identifier,"activate() is not implemented"),!1},invoke:function(e){return t.$error(this.identifier,"invoke() is not implemented"),!1},_locate:function(e){for(var t=this._element.querySelectorAll("[kb-item]"),n=0;n<t.length;n++){var i=angular.element(t.item(n)).controller("kbItem");if(i.model===e)return i}},_getSiblingItems:function(e){for(var t=e.element[0],n=this._element.querySelectorAll("[kb-item]"),i=0;i<n.length;i++){var o=n.item(i);if(o===t){var l={};return 0!==i&&(l.previous=angular.element(n.item(i-1)).controller("kbItem")),i<n.length-1&&(l.next=angular.element(n.item(i+1)).controller("kbItem")),l}}return{}},_first:function(){var e=this._element.querySelector("[kb-item]");if(e)return angular.element(e).controller("kbItem")},_last:function(){var e=this._element.querySelectorAll("[kb-item]");if(e.length)return angular.element(e[e.length-1]).controller("kbItem")}}),n}]),angular.module("keyboard").factory("KbItemController",["kbScroll","undefined",function(e,t){function n(e){this.model=t,this.element=e}return n.$inject=["$element"],n}]),angular.module("keyboard.focus").directive("kbFocus",["kbFocus","$log",function(e,t){return function(e,t,n){e.$watch(n.kbAutofocus,function(e){t.prop("autofocus",!!e)})}}]),angular.module("keyboard.focus").directive("kbFocus",["kbFocus","$log",function(e,t){return function(n,i,o){n.$watch(e.get,function(e){e===o.kbFocus&&(""===e?t.error("[kb-focus] Invalid label in",i[0]):(i[0].focus(),document.activeElement!==i[0]&&setTimeout(function(){i[0].focus()})))}),i.on("focus",function(){e(o.kbFocus),n.$root.$$phase||n.$apply()}),i.on("blur",function(){e.get()===o.kbFocus&&(e.reset(),n.$root.$$phase||n.$apply())})}}]),angular.module("keyboard").directive("kbItem",["KbItemController","$animate","$log",function(e,t,n){return{controller:e,require:["kbItem","?^kbList","?^kbSelect"],link:function(e,i,o,l){function r(e,t,n){return"left"===e&&n.left<t.left?t.left-n.left:"up"===e&&n.top<t.top?t.top-n.top:"right"===e&&n.left>t.left?n.left-t.left:"down"===e&&n.top>t.top?n.top-t.top:0}for(var a=l[0],c=l[1],s="A"===i[0].tagName||"BUTTON"===i[0].tagName||"AREA"===i[0].tagName,u=1;u<l.length;u++)l[u]&&(c=l[u]);if(!c)return void n.error("Controller 'kbList' or 'kbSelect', required by directive 'kbItem', can't be found!");var f=o.kbSelectedClass||"kb-selected",d=o.kbActiveClass||"kb-active";a.model=e.$eval(o.kbItem),e.$watch(o.kbItem,function(e){a.model=e}),"undefined"==typeof c.active?c.active=a:c.isSelected(a.model)&&c.isSelected(c.active.model)===!1&&(c.active=a),e.$watch(function(){return c.isSelected(a.model)},function(e){e?t.addClass(i,f):t.removeClass(i,f)}),e.$watch(function(){return c.active===a},function(e){e?(i.attr("tabindex",0),t.addClass(i,d)):(t.removeClass(i,d),s?i.attr("tabindex",-1):i.removeAttr("tabindex"))});var h={37:"left",38:"up",39:"right",40:"down"};i.on("keydown",function(t){var n=!1,l=!1;if(t.which>=37&&t.which<=40){var s=c._getSiblingItems(a),u=i[0].getBoundingClientRect();if(s.previous&&r(h[t.which],u,s.previous.element[0].getBoundingClientRect())&&(c.activate(s.previous),n=!0),s.next&&r(h[t.which],u,s.next.element[0].getBoundingClientRect())&&(c.activate(s.next),n=!0),!(n!==!1||s.next&&s.previous)){var f=t.which,d=!1;t.which<=38?f+=2:f-=2,s.next&&r(h[f],u,s.next.element[0].getBoundingClientRect())&&(c.cyclic?(c.activate(c._last()),n=!0):d="kbReachedBegin"),s.previous&&r(h[f],u,s.previous.element[0].getBoundingClientRect())&&(c.cyclic?(c.activate(c._first()),n=!0):d="kbReachedEnd"),d&&c.attrs[d]&&angular.element(c._element).scope().$eval(c.attrs[d],{$event:t})}n&&t.preventDefault()}else 32===t.which?(t.preventDefault(),l=!0):13===t.which&&(l=!0);(n||l)&&(l&&(c.invoke(a),o.kbInvoke&&e.$eval(o.kbInvoke,{$event:t})),e.$apply())}),i.on("click",function(t){c.activate(a),c.invoke(a),o.kbInvoke&&e.$eval(o.kbInvoke,{$event:t}),e.$apply()}),e.$on("$destroy",function(){c.active=c._first()})}}}]),angular.module("keyboard").directive("kbList",["KbContainerController","kbScroll",function(e,t){return{controller:e,require:["kbList","?ngModel"],link:function(e,n,i,o){var l=o[0];l.initialize({identifier:"[kb-list]",ngModel:o[1],attrs:i,activate:function(e){this.active=e,this.select(e.model),t.focus(e.element[0])},invoke:function(){return!1}})}}}]),angular.module("keyboard").directive("kbSelect",["KbContainerController","kbScroll",function(e,t){return{controller:e,require:["kbSelect","ngModel"],link:function(e,n,i,o){var l=o[0];l.initialize({identifier:"[kb-select]",ngModel:o[1],attrs:i,activate:function(e){this.active=e,t.focus(e.element[0])},invoke:function(e){return this.toggle(e.model),!0}})}}}]),angular.module("keyboard.focus").factory("kbFocus",["$log",function(e){var t="",n=function i(e){return 0===arguments.length?t:void i.set(e)};return n.get=function(){return t},n.set=function(n){"string"==typeof n?t=n:e.error("[kbFocus] label must be a string, got",n)},n.reset=function(){t=""},n}]),angular.module("keyboard").service("kbScroll",["$window",function(e){var t="BODY";navigator.userAgent.toLowerCase().indexOf("firefox")>-1&&(t="HTML");var n=this;this.change=function(e,t,n,i){if(i&&angular.element.prototype.animate){var o=angular.element(e),l={};return l[t]=n,o.animate(l,i),function(){o.stop(!0,!0)}}return e[t]=n,angular.noop},this.getScrollParent=function(e){for(var n=e.parentElement;n.nodeName!==t;){var i=getComputedStyle(n),o=i.overflow+i.overflowX+i.overflowY;if(o.match(/scroll|hidden/))break;n=n.parentElement}return n},this.to=function(i,o,l){var r=angular.noop,a=n.getScrollParent(i),c=i.getBoundingClientRect(),s={top:Math.ceil(c.top),right:Math.ceil(c.right),bottom:Math.ceil(c.bottom),left:Math.ceil(c.left)};if(a.nodeName===t)var u={top:0,right:e.innerWidth,bottom:e.innerHeight,left:0};else var f=a.getBoundingClientRect(),u={top:Math.ceil(f.top),right:Math.ceil(f.right),bottom:Math.ceil(f.bottom),left:Math.ceil(f.left)};var d=s.top-u.top,h=u.right-s.right,g=u.bottom-s.bottom,m=s.left-u.left;if(d+o.top<0?(r=n.change(a,"scrollTop",a.scrollTop+d+o.top,l),g+=d,d=0):g+o.bottom<0&&(r=n.change(a,"scrollTop",a.scrollTop-g+o.bottom,l),d+=g,g=0),m+o.left<0?(r=n.change(a,"scrollLeft",a.scrollLeft+m+o.left,l),h+=m,m=0):h+o.right<0&&(r=n.change(a,"scrollLeft",a.scrollLeft-h+o.right,l),m+=h,h=0),a.nodeName===t)return r;var v=n.to(a,{top:d,right:d,bottom:g,left:m},l);return function(){r(),v()}};var i=angular.noop;this.focus=function(e){i();var t=this.getScrollParent(e),n={top:t.scrollTop,left:t.scrollLeft};e.hasAttribute("tabindex")||e.setAttribute("tabindex",0),e.focus(),t.scrollTop===n.top&&t.scrollLeft===n.left||(t.scrollTop=n.top,t.scrollLeft=n.left,i=this.to(e,{top:0,right:0,bottom:0,left:0},200))}}]);
+/* jshint ignore:end */
+angular.module('artTypeahead',['keyboard']);
 
-angular.module('artResizr')
-    .directive('artResizr',['$parse', '$document', '$http', '$timeout', '$compile',
-        function($parse, $document, $http, $timeout, $compile){
+
+
+angular.module('artTypeahead')
+    .directive('artTypeahead',['$parse', '$document', '$http', '$timeout', '$compile',
+        function(){
             return {
-                restrict: 'A',
+                restrict: 'E',
                 scope: {
-                    resizrType: "@", // the other one is "css",
-                    resizrCallback: "&", //It can be set to true so it will be collapsed on first load
-                    resizrCollapsed: "=", //It can be set to true so it will be collapsed on first load
-                    resizrAppearHover: "=", //It can be set to true so it will be collapsed on first load
-                    resizrRatio: "@", // [width] / [height] in %
-                    resizrPosition: "@", // "bottom-right", "right", "left", "top-left", "top-right"
-                    resizrBorder: "@", // The other option is a color
-                    resizrParentClass: "=", // 'col-md-4'
-                    resizrParentLevel: "=", // '2' will mean the component will go 2 parents up and change that class
-                    resizrAdjacent: '@',
-                    resizrTimeout: '@'
+                    levels: "=levels", // the levels the component can go too, array of e.g.: {name: "Organisation", icon: "fa fa-users", color: "#fff", bColor: "#222"}
+                    callOutside: "&trigger", //It will do an outside callback with the selected element id and level, e.g.: {level: 'Building', id: 123}
+                    source: "=", //Service that will be called to fetch data depending on the level
+                    pagination: "@"
+                },
+                transclude: false,
+                templateUrl: 'angular-hierarchical-typeahead.html',
+                controller: function($scope) {
+                    // Initialization
+                    $scope.loading = false;
+                    $scope.currentPlaceholder = $scope.levels[0].name;
+
+                    $scope.query = null;
+                    $scope.lastLevel = false;
+
+                    // Utilities
+
+                    var whichLevel = function whichLevel(){
+                        //Always set by default to last level, so when we're at the end the last level will be returned.
+                        var rightIndex = $scope.levelsActive.length -1;
+
+                        $scope.levelsActive.forEach(function(item, index){
+                            if (item.isVisible && !item.activeName) {
+                                rightIndex = index;
+                            }
+                        });
+
+                        return rightIndex;
+                    };
+
+
+                    // Select an item, send it outside with callOutside
+                    var timeStamp = 0;
+                    $scope.selectItem = function selectItem(item, index, event){
+                        //console.log('Selected item', item, index, event);
+
+                        var detectDoubleClick = function detectDoubleClick(lastStamp, currentStamp){
+                            // People instinctively double-click when single click does not work, calculate here.
+                            if ( (currentStamp - lastStamp) < 400  ) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        };
+
+                        // Get the current active level
+                        var rightIndex = whichLevel();
+
+                        //Move to next level only on space, enter or double click
+                        if (event.keyCode === 13 || detectDoubleClick(timeStamp, event.timeStamp)) {
+
+                            // Do the whole loading of a new level
+                            $scope.levelsActive[rightIndex].activeName = item.name;
+                            $scope.levelsActive[rightIndex].isActive = true;
+                            $scope.query = null;
+
+                            // Show the next level
+                            if (rightIndex < $scope.levelsActive.length - 1) {
+                                //console.log('Calling level', rightIndex);
+                                //Call outside the choice made
+                                //$scope.callOutside({id: item.id, type: $scope.levels[rightIndex+1].name});
+
+                                $scope.levelsActive[rightIndex+1].isVisible = true;
+                                //Animate the display of the next level
+
+                                // Change the placeholder
+                                $scope.currentPlaceholder = $scope.levels[rightIndex+1].name;
+                                //Get Data for that level
+                                getOutsideData(false);
+                                $scope.focusOnSearch();
+                            } else if (parseInt(rightIndex) === $scope.levelsActive.length - 1) {
+                                //Call outside the choice made
+                                //console.log('End of levels', rightIndex, {id: item.id, type: $scope.levels[rightIndex].name});
+                                $scope.lastLevel = true;
+                                $scope.callOutside({id: item.id, type: $scope.levels[rightIndex].name});
+                            }
+
+                        } else if (event.keyCode === 32 || !detectDoubleClick(timeStamp, event.timeStamp)) {
+
+                            // Just call outside the current selection
+                            if (rightIndex < $scope.levelsActive.length - 1) {
+                                $scope.callOutside({id: item.id, type: $scope.levels[rightIndex+1].name});
+                            } else if (parseInt(rightIndex) === $scope.levelsActive.length - 1) {
+                                //Call outside the choice made
+                                $scope.callOutside({id: item.id, type: $scope.levels[rightIndex].name});
+                                $scope.lastLevel = true;
+                                $scope.query = null;
+                                $scope.levelsActive[rightIndex].activeName = item.name;
+                                $scope.levelsActive[rightIndex].isActive = true;
+                            }
+
+                        }
+
+                        timeStamp = event.timeStamp;
+
+                        //$scope.transitElement(rightIndex); TODO: This does not work well yet, fix.
+                    };
+
+                    $scope.actionLevel = function actionLevel(level, index){
+                        // Get the current active level
+                        var rightIndex = whichLevel();
+
+                        if (index < rightIndex) {
+                            // Means we have more stuff to reset, e.g. we have all levels selected, I click the first, all need to reset
+                            for (var i = index ; i < $scope.levelsActive.length; i++) {
+                                $scope.levelsActive[i].activeName = false;
+                                $scope.levelsActive[i].isActive = false;
+                                $scope.levelsActive[i].isVisible = false;
+                            }
+                        }
+
+                        level.activeName = false;
+                        level.isActive = true;
+                        level.isVisible = true;
+                        $scope.lastLevel = false;
+                        $scope.currentPlaceholder = level.name;
+                        getOutsideData(false);
+                    };
+
+                    var getOutsideData = function getOutsideData(query, oldQuery){
+
+                        $scope.loading = true;
+                        $scope.results = false;
+
+                        var rightIndex = whichLevel();
+
+                        $scope.source($scope.levels[rightIndex].name, query).then(function(results){
+                            console.error($scope.levels[rightIndex].name);
+                            //console.log(results);
+                            if (results.length > 0) {
+                                $scope.results = results;
+                                $scope.callOutside({id: results[0].id, type: $scope.levels[rightIndex].name});
+                            } else {
+                                $scope.results = false;
+                            }
+                            $scope.loading = false;
+                        }, function(reject){
+                            //console.log('rejected', reject);
+                            $scope.results = false;
+                            $scope.loading = false;
+                        });
+                        
+                    };
+
+
+                    $scope.$watch('query', function(newVal, oldVal){
+                        if (newVal && newVal.length > 2) {
+                            getOutsideData(newVal, oldVal);
+
+                            //When you search for something, deselect the current item
+                            var rightIndex = whichLevel();
+                            $scope.levelsActive[rightIndex].activeName = false;
+                        }
+                    });
+
+                    /* Animation Layer */
+
+                    // Hide search input when last level is reached / item selected.
+                    $scope.hideInput = function hideInput(lastLevel){
+                        if (lastLevel && !$scope.query) {
+                            return {
+                                flex: 0,
+                                width: '0px',
+                                opacity: 0
+                            };
+                        } else {
+                            return {
+                                flex: 1,
+                                width: 'initial',
+                                opacity: 1
+                            };
+                        }
+
+                    };
+
+
+
+                    //TODO: When Last level is active the input should disappear.
+                    //TODO: Clicking on a level will reset the search to that level
+
+
+                    // Process levels
+                    $scope.levelsActive = angular.copy($scope.levels);
+                    $scope.levelsActive = $scope.levelsActive.map(function(item){
+                        //{name: "Organisation", icon: "fa fa-users", color: "#fff", bColor: "#222"}
+                        return {
+                            name: item.name,
+                            icon: item.icon,
+                            color: item.color,
+                            bColor: item.bColor,
+                            isActive: false,
+                            isVisible: false,
+                            activeName: false
+                        };
+                    });
+
+
+                    /* Init Actions
+                     * - Make first level visible, with no name
+                     * - Get first batch of items in the list
+                     * */
+                    $scope.levelsActive[0].isVisible = true;
+                    getOutsideData(false);
+
                 },
                 link: function(scope, element, attrs) {
 
-                    // template
-                    var template =
-                    "<button class='art-typeahead-button' ng-class='{collapsed: artResizrCollapsed}' ng-click='artResizrToggle()'>" +
-                        "<i ng-if='!artResizrCollapsed' class='fa fa-compress' aria-hidden='true'></i>" +
-                        "<i ng-if='artResizrCollapsed' class='fa fa-expand' aria-hidden='true'></i>" +
-                    "</button>";
-
-                    // functions
-                    var compileButton = function(){
-                        element.append(template);
-                        $compile(element)(scope);
-
-                        if (settings.resizrBorder === 'true') {
-                            angular.element(element).children('.art-typeahead-button').css({'background-color': settings.resizrBorder});
-                        } else if (settings.resizrBorder === 'false') {
-                            angular.noop();
-                        } else if (settings.resizrBorder) {
-                            angular.element(element).children('.art-typeahead-button').css({'background-color': settings.resizrBorder});
-                        } else {
-                            angular.noop();
-                        }
-                    };
-
-                    var handleToggle = function(settings, state) {
-
-                        if (state) {
-                            //Means it's collapsed
-                            if (settings.resizrType === 'zoom') {
-                                element.addClass(classes.zoom);
+                    var transitionElementWidth = function(element) {
+                        /* jshint ignore:start */
+                        console.log('transitioning element', element);
+                        var prevWidth = element.style.width;
+                        element.style.width = 'auto';
+                        var endWidth = getComputedStyle(element).width;
+                        element.style.width = prevWidth;
+                        element.offsetWidth;// force repaint
+                        element.style.transition = 'width .5s ease-in-out';
+                        element.style.width = endWidth;
+                        element.addEventListener('transitionend', function transitionEnd(event) {
+                            if (event.propertyName === 'width') {
+                                element.style.transition = '';
+                                element.style.width = 'auto';
+                                element.removeEventListener('transitionend', transitionEnd, false)
                             }
-                            element.addClass(classes.collapsed);
-                        } else {
-                            //Means it's open
-                            if (settings.resizrType === 'zoom') {
-                                element.removeClass(classes.zoom);
-                            }
-                            element.removeClass(classes.collapsed);
-                        }
-
+                        }, false);
+                        /* jshint ignore:end */
                     };
 
-                    var addPositionClass = function(settings) {
-                        switch (settings.resizrPosition) {
-                            case 'left':
-                                element.addClass(classes.left);
-                                break;
-                            case 'right':
-                                element.addClass(classes.right);
-                                break;
-                            case 'bottom-left':
-                                element.addClass(classes.bottomL);
-                                break;
-                            case 'bottom-right':
-                                element.addClass(classes.bottomR);
-                                break;
-                            case 'top-left':
-                                element.addClass(classes.topL);
-                                break;
-                            case 'top-right':
-                                element.addClass(classes.topR);
-                                break;
-                            case false:
-                                element.addClass(classes.bottomR);
-                                break;
-                        }
+                    scope.transitElement = function(rightIndex) {
+                        var transitionElement = angular.element(element[0].querySelector('.levels'))[rightIndex];
+                        transitionElementWidth(transitionElement);
                     };
 
-                    var originalSize = [];
-                    originalSize[0] = element.width();
-                    originalSize[1] = element.height();
 
-                    //Get the width / height of element after a certain event fires
-                    if (scope.resizrTimeout) {
-                      $timeout(function(){
-                        console.log('Fire ', scope.resizrRecalcEvent);
-                        originalSize[0] = element.width();
-                        originalSize[1] = element.height();
-                      }, parseInt(scope.resizrTimeout));
-                    }
-
-                    var handleParentsAdjacents = function(level, elClass, adjacent, state) {
-
-                      var elLevel = parseInt(level);
-                      var actionElement = element;
-
-
-                      for(var i = 0; i <= elLevel; i++) {
-                        actionElement = element.parent();
-                      }
-
-                      if (adjacent) {
-                        //actionElement becomes an array of elements that need resized
-                        actionElement = actionElement.parent().children();
-                      }
-
-                      if (elClass) {
-                        // If the class element is present and the class
-                        if (!state) {
-                            actionElement.removeClass(elClass);
-                        } else {
-                            actionElement.addClass(elClass);
+                    element[0].querySelector('.levels.search-bar').addEventListener('keydown', function searchDown(event) {
+                        if (event.keyCode === 40 && scope.results) {
+                            event.stopPropagation();
+                            event.preventDefault();
+                            element[0].querySelectorAll('.art-results li')[1].click();
                         }
+                    }, false);
 
-                      } else {
-                        // If the class element is not present resize elements with css
-                        if (!state) {
-                          actionElement.css({width: '', display: ''});
-                          actionElement.removeAttr('width');
-                          actionElement.removeAttr('display');
-                        } else {
-                          actionElement.css({width: actionElement.parent().width() / actionElement.length + 'px', display: 'inline-block'});
-                        }
-                      }
-
-
+                    scope.focusOnSearch = function focusOnSearch(){
+                        element[0].querySelector('.search-bar').focus();
                     };
-
-                    var handleSizes = function(rawRatio, type, state){
-                        // Only if ratio is present
-                        var ratio = [];
-
-                        rawRatio.split('/').forEach(function(value){
-                            ratio.push(parseInt(value));
-                        });
-
-                        if (type === 'zoom') {
-                            // If nothing reset to 1
-                            if (!state) {
-                                element.css({"zoom": 1});
-                            } else {
-                                element.css({"zoom": JSON.stringify(ratio[0] / 100)});
-                            }
-                        } else if (type === 'css') {
-
-                            if (!state) {
-                                element.css({"width": originalSize[0] + 'px', "height": originalSize[1] + 'px'});
-                            } else {
-                                element.css({"width": element.width() * (ratio[0] / 100) + 'px', "height": element.height() * (ratio[1] / 100) + 'px'});
-                            }
-                        }
-                    };
-
-                    var classes = {
-                        container: 'art-typeahead-container',
-                        hover: 'art-typeahead-hover',
-                        zoom: 'art-typeahead-zoom',
-                        border: 'art-typeahead-border',
-                        collapsed: 'art-typeahead-collapsed',
-                        left: 'art-typeahead-left',
-                        right: 'art-typeahead-right',
-                        bottomL: 'art-typeahead-bottom-left',
-                        bottomR: 'art-typeahead-bottom-right',
-                        topL: 'art-typeahead-top-left',
-                        topR: 'art-typeahead-top-right'
-                    };
-
-                    var defaults = {
-                        resizrType: "css", // the other one is "css",
-                        resizrCallback: false, //It can be set to true so it will be collapsed on first load
-                        resizrCollapsed: false, //It can be set to true so it will be collapsed on first load
-                        resizrAppearHover: false, //It can be set to true so it will be collapsed on first load
-                        resizrRatio: "50/50", // [width] / [height] in %
-                        resizrPosition: "bottom-left", // "bottom-right", "right", "left", "top-left", "top-right"
-                        resizrBorder: false, // The other option is a color
-                        resizrParentClass: false, // 'col-md-4'
-                        resizrParentLevel: false, // '2' will mean the component will go 2 parents up and change that class
-                        resizrAdjacent: false // true will mean that we go up to the desired parent and make the two blocks fit on the same row
-                    };
-
-                    /*console.log('scope', scope);
-                    console.log('element', element);
-                    console.log('attrs', attrs);*/
-
-
-                    attrs = angular.extend(angular.copy(defaults), attrs);
-
-                    // Cover string and bool
-                    if(attrs.resizrCollapsed === 'true') {
-                        scope.artResizrCollapsed = true;
-                    } else if(attrs.resizrCollapsed === 'false'){
-                        scope.artResizrCollapsed = false;
-                    } else if (attrs.resizrCollapsed) {
-                        scope.artResizrCollapsed = true;
-                    } else {
-                        scope.artResizrCollapsed = false;
-                    }
-
-                    var settings = attrs;
-
-
-                    scope.artResizrToggle = function () {
-
-                        // Toggle Collapse
-                        scope.artResizrCollapsed = !scope.artResizrCollapsed;
-
-                        // Handle collapse type
-                        handleToggle(settings, scope.artResizrCollapsed);
-
-                        if (settings.resizrParentLevel) {
-                          //Handle the special cases with parents and adjacent resizing
-                          handleParentsAdjacents(settings.resizrParentLevel, settings.resizrParentClass, settings.resizrAdjacent, scope.artResizrCollapsed);
-                        } else {
-                          //Normally handle the sizes
-                          handleSizes(settings.resizrRatio, settings.resizrType, scope.artResizrCollapsed);
-                        }
-
-
-                        if (settings.resizrCallback) {
-                            console.log( typeof scope.resizrCallback() === 'function' );
-                            scope.resizrCallback()(scope.artResizrCollapsed);
-                        }
-                    };
-
-                    var hookDirective = function(){
-                        // Add the main class to the container
-                        element.addClass(classes.container);
-
-                        //Means it appears only on hover
-
-                        if (settings.resizrAppearHover === 'true') {
-                            element.addClass(classes.hover);
-                        } else if (settings.resizrAppearHover === 'false') {
-                            angular.noop();
-                        } else if (settings.resizrAppearHover) {
-                            element.addClass(classes.hover);
-                        }
-
-                        //Means we'll have a border
-                        if (settings.resizrBorder === 'true') {
-                            element.addClass(classes.border);
-                            element.css({'border-color': settings.resizrBorder});
-                        } else if (settings.resizrBorder === 'false') {
-                            angular.noop();
-                        } else if (settings.resizrBorder) {
-                            element.addClass(classes.border);
-                            element.css({'border-color': settings.resizrBorder});
-                        } else {
-                            angular.noop();
-                        }
-
-                        // Add the position class
-                        addPositionClass(settings);
-
-                        // Compile the button in the element
-                        compileButton();
-
-
-
-                        if (scope.artResizrCollapsed) {
-                            //Run once handleToogle to have all the classes in place
-                            handleToggle(settings, scope.artResizrCollapsed);
-
-                            if (settings.resizrParentLevel) {
-                              //Handle the special cases with parents and adjacent resizing
-                              handleParentsAdjacents(settings.resizrParentLevel, settings.resizrParentClass, settings.resizrAdjacent, scope.artResizrCollapsed);
-                            } else {
-                              //Normally handle the sizes
-                              handleSizes(settings.resizrRatio, settings.resizrType, scope.artResizrCollapsed);
-                            }
-
-                            // If it should be collapsed at the beginning
-                            if (settings.resizrCallback) {
-                                //Run the callback function if any
-                                scope.resizrCallback()(scope.artResizrCollapsed);
-                            }
-                        }
-
-
-                    };
-
-                    // Start the whole deal
-                    if (!angular.element(element).hasClass(classes.container)){
-                        hookDirective();
-                    }
 
                 }
             };

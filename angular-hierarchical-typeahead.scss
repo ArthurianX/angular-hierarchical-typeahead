@@ -1,0 +1,195 @@
+@mixin angle($pseudo, $flip: false, $angle: 5deg) {
+    // Possible values for $pseudo are: before, after, both
+    @if $pseudo == 'before' or $pseudo == 'after' or $pseudo == 'both' {
+        position: relative;
+        z-index: 1;
+        $selector: if($pseudo == 'both', '&:before,&:after', '&:#{$pseudo}');
+
+        #{$selector} {
+            background: inherit;
+            content: '';
+            display: block;
+            height: 50%;
+            left: 0;
+            position: absolute;
+            right: 0;
+            z-index: -1;
+            -webkit-backface-visibility: hidden; // for Chrome Windows
+        }
+
+        @if $pseudo == 'before' {
+            #{$selector} {
+                top: 0;
+
+                @if $flip {
+                    transform: skewY($angle * -1);
+                    transform-origin: 0 0;
+                } @else {
+                    transform: skewY($angle);
+                    transform-origin: 100% 0;
+                }
+            }
+        }
+
+        @if $pseudo == 'after' {
+            #{$selector} {
+                bottom: 0;
+
+                @if $flip {
+                    transform: skewY($angle);
+                    transform-origin: 0 100%;
+                } @else {
+                    transform: skewY($angle * -1);
+                    transform-origin: 100%;
+                }
+            }
+        }
+
+        @if $pseudo == 'both' {
+            &:before {
+                top: 0;
+
+                @if $flip {
+                    transform: skewY($angle * -1);
+                    transform-origin: 0 0;
+                } @else {
+                    transform: skewY($angle);
+                    transform-origin: 100% 0;
+                }
+            }
+
+            &:after {
+                bottom: 0;
+
+                @if $flip {
+                    transform: skewY($angle);
+                    transform-origin: 0 0;
+                } @else {
+                    transform: skewY($angle * -1);
+                    transform-origin: 100%;
+                }
+            }
+        }
+    }
+}
+
+// slanted edges here
+.edge--bottom {
+    @include angle(after);
+}
+
+.edge--bottom--reverse {
+    @include angle(after, true);
+}
+
+.edge--top {
+    @include angle(before);
+}
+
+.edge--top--reverse {
+    @include angle(before, true);
+}
+
+.edge--both {
+    @include angle(both);
+}
+
+.edge--both--reverse {
+    @include angle(both, true);
+}
+
+.art-typeahead-container {
+    position: relative;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    .art-search {
+        font-size: 16px;
+        font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
+        color: #222;
+        display: flex;
+        margin-bottom: 10px;
+
+        .levels:not(:first-child) {
+            &.ng-enter {
+                opacity:0;
+                margin-left: -200px;
+
+            }
+            &.ng-enter.ng-enter-active {
+                opacity:1;
+                margin-left: 0px;
+            }
+
+            &.ng-leave {
+                opacity:0;
+                margin-left: 0px;
+            }
+            &.ng-leave.ng-leave-active {
+                opacity:1;
+                margin-left: -100px;
+            }
+        }
+
+        .levels {
+            display: inline-block;
+            font-weight: bold;
+            padding: 10px 20px;
+            margin-right: 0px;
+            position: relative;
+            -webkit-box-shadow: 4px 0px 3px rgba(0,0,0,0.3);
+            -moz-box-shadow: 4px 0px 3px rgba(0,0,0,0.3);
+            box-shadow: 4px 0px 3px rgba(0,0,0,0.3);
+            /*-webkit-transition: all 500ms ease-in-out;
+            -moz-transition: all 500ms ease-in-out;*/
+            //transition: all 0.5s cubic-bezier(0.65, 0.05, 0.36, 1), opacity 1s cubic-bezier(0.65, 0.05, 0.36, 1);
+            transition: all 0.3s ease-in-out;
+
+            @include angle(before);
+            &:nth-child(1) { z-index: 10}
+            &:nth-child(2) { z-index: 9}
+            &:nth-child(3) { z-index: 8}
+            &:nth-child(4) { z-index: 7}
+            &:nth-child(5) { z-index: 6}
+            &:nth-child(6) { z-index: 5}
+            &:nth-child(7) { z-index: 5}
+
+            i {
+                margin-right: 15px;
+                text-shadow: 0px 4px 10px #ffffff;
+                filter: dropshadow(color=#ffffff, offx=0, offy=0)
+            }
+            cursor: pointer;
+        }
+        .search-bar {
+            display: inline-block;
+            font-weight: 100;
+            flex: 1;
+            border: 1px solid #f1f1f1;
+            outline: none;
+            box-shadow: 0 0 0 rgba(0,0,0,0);
+        }
+    }
+    .art-results {
+        height: 250px;
+        overflow: auto;
+        [kb-item] {
+            cursor: pointer;
+            &.kb-active {
+                background: lightblue;
+            }
+        }
+        ul {
+            list-style: none;
+            margin: 0px;
+            padding: 0px;
+            &:focus {
+                background-color: red;
+            }
+            li {
+                outline: none;
+                padding: 10px 20px;
+                height: 40px;
+            }
+        }
+    }
+}

@@ -1,0 +1,79 @@
+<div class="art-typeahead-container">
+    <div class="art-search">
+        <div class="levels"
+             ng-repeat="level in levelsActive track by $index"
+             ng-if="level.isVisible"
+             ng-class="{active: level.isActive}"
+             ng-click="actionLevel(level, $index)"
+             style="background-color: {{level.bColor}}; border-color: {{level.bColor}}"
+        >
+            <i style="color: {{level.color}}" class="{{level.icon}}" aria-hidden="true"></i> {{level.activeName || level.name}}
+        </div>
+        <span class="text-clone"></span>
+        <input ng-style="hideInput(lastLevel)" type="text" ng-model="query" ng-model-options="{ debounce: 500 }" class="levels search-bar" placeholder="Search for {{currentPlaceholder}}">
+    </div>
+
+    <div class="art-results" ng-if="results">
+        <ul kb-list>
+            <li ng-repeat="item in results" kb-item kb-invoke="selectItem(item, $index, $event)">
+                {{item.name}}
+            </li>
+            <li ng-if="pagination" class="load-more">
+                <i class="fa fa-plus" aria-hidden="true"></i> Load More
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="art-results no-results" ng-if="!results && !loading">
+        <ul>
+            <li>
+                <i class="fa fa-ban" aria-hidden="true"></i> No Results
+            </li>
+        </ul>
+    </div>
+
+    <div class="art-results no-results" ng-if="!results && loading">
+        <ul>
+            <li>
+                Nifty Loading animation
+            </li>
+        </ul>
+    </div>
+
+    <small ng-if="results" class="art-tooltip">
+
+
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><i class="fa fa-arrow-down" aria-hidden="true"></i> & <i class="fa fa-arrow-up" aria-hidden="true"></i></td>
+                <td valign="middle">Move up and down on the list</td>
+            </tr>
+            <tr>
+                <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> CLICK</td>
+                <td rowspan="2" valign="middle">Load the {{currentPlaceholder}} into view</td>
+            </tr>
+            <tr>
+                <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> SPACE</td>
+            </tr>
+            <tr>
+                <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> + <i class="fa fa-mouse-pointer" aria-hidden="true"></i></td>
+                <td rowspan="2" valign="middle">Open the {{currentPlaceholder}}</td>
+            </tr>
+            <tr>
+                <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> ENTER</td>
+            </tr>
+        </tbody>
+    </table>
+    </small>
+
+
+</div>

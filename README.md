@@ -17,10 +17,10 @@ bower install angular-hierarchical-typeahead --save
 Add `dist/angular-hierarchical-typeahead.js` and `dist/angular-hierarchical-typeahead.css` to your index.html.
 
 
-Add `artResizr` as a module dependency for your module.
+Add `artTypeahead` as a module dependency for your module.
 
 ```js
-angular.module('your_app', ['artResizr']);
+angular.module('your_app', ['artTypeahead']);
 ```
 
 ## Options

@@ -1,544 +1,80 @@
-angular.module('app', ['ngAnimate','artResizr']);
+angular.module('app', ['ngAnimate','artTypeahead']);
 
-angular.module('app').controller('DemoCtrl',function($scope,$http){
+angular.module('app').controller('DemoCtrl',function($scope,$http, $q){
 
-    $scope.resizeCallback = function(state){
-        console.log('Callback fired with state ', state);
+    var organisations = [{"id":1,"name":"Topicshots"}, {"id":2,"name":"Jabberstorm"}, {"id":3,"name":"Riffwire"}, {"id":4,"name":"Zoonoodle"}, {"id":5,"name":"Buzzshare"}, {"id":6,"name":"Feednation"}, {"id":7,"name":"Leenti"}, {"id":8,"name":"Thoughtworks"}, {"id":9,"name":"Avavee"}, {"id":10,"name":"Bubblemix"}, {"id":11,"name":"Minyx"}, {"id":12,"name":"Oba"}, {"id":13,"name":"Ooba"}, {"id":14,"name":"Pixoboo"}, {"id":15,"name":"Photobug"}, {"id":16,"name":"Divape"}, {"id":17,"name":"Voolith"}, {"id":18,"name":"Shuffletag"}, {"id":19,"name":"Photospace"}, {"id":20,"name":"Oyondu"}, {"id":21,"name":"Divavu"}, {"id":22,"name":"Kaymbo"}, {"id":23,"name":"Skynoodle"}, {"id":24,"name":"Photobug"}, {"id":25,"name":"Kamba"}, {"id":26,"name":"Oodoo"}, {"id":27,"name":"Teklist"}, {"id":28,"name":"Edgetag"}, {"id":29,"name":"Tagpad"}, {"id":30,"name":"Trilith"}, {"id":31,"name":"Skidoo"}, {"id":32,"name":"Fivebridge"}, {"id":33,"name":"Twimm"}, {"id":34,"name":"Plambee"}, {"id":35,"name":"Topicblab"}, {"id":36,"name":"Livetube"}, {"id":37,"name":"Brightbean"}, {"id":38,"name":"Bluezoom"}, {"id":39,"name":"Gabtype"}, {"id":40,"name":"Wordify"}, {"id":41,"name":"Innotype"}, {"id":42,"name":"Trudoo"}, {"id":43,"name":"Jabbercube"}, {"id":44,"name":"Shuffletag"}, {"id":45,"name":"Jetwire"}, {"id":46,"name":"Dabtype"}, {"id":47,"name":"Rhynyx"}, {"id":48,"name":"Wordify"}, {"id":49,"name":"Dynabox"}, {"id":50,"name":"Gigashots"}, {"id":51,"name":"Skyba"}, {"id":52,"name":"Thoughtsphere"}, {"id":53,"name":"Brainsphere"}, {"id":54,"name":"Lazzy"}, {"id":55,"name":"Roomm"}, {"id":56,"name":"Twitterworks"}, {"id":57,"name":"Jamia"}, {"id":58,"name":"Twimbo"}, {"id":59,"name":"Yombu"}, {"id":60,"name":"Mynte"}, {"id":61,"name":"Aibox"}, {"id":62,"name":"Fiveclub"}, {"id":63,"name":"Meemm"}, {"id":64,"name":"Eidel"}, {"id":65,"name":"Dabjam"}, {"id":66,"name":"Skippad"}, {"id":67,"name":"Cogidoo"}, {"id":68,"name":"Zoovu"}, {"id":69,"name":"Realfire"}, {"id":70,"name":"Meevee"}, {"id":71,"name":"Jaxspan"}, {"id":72,"name":"Avamba"}, {"id":73,"name":"Blogspan"}, {"id":74,"name":"Skaboo"}, {"id":75,"name":"Dabjam"}, {"id":76,"name":"Tazz"}, {"id":77,"name":"Camimbo"}, {"id":78,"name":"Skynoodle"}, {"id":79,"name":"Thoughtblab"}, {"id":80,"name":"Chatterbridge"}, {"id":81,"name":"Mydo"}, {"id":82,"name":"Vinte"}, {"id":83,"name":"Tanoodle"}, {"id":84,"name":"Twitterbeat"}, {"id":85,"name":"Quatz"}, {"id":86,"name":"Quamba"}, {"id":87,"name":"Snaptags"}, {"id":88,"name":"Devshare"}, {"id":89,"name":"Thoughtworks"}, {"id":90,"name":"Meetz"}, {"id":91,"name":"Fanoodle"}, {"id":92,"name":"Devpulse"}, {"id":93,"name":"Linklinks"}, {"id":94,"name":"Talane"}, {"id":95,"name":"Livetube"}, {"id":96,"name":"Roodel"}, {"id":97,"name":"Devify"}, {"id":98,"name":"Realfire"}, {"id":99,"name":"Mydeo"}, {"id":100,"name":"Youspan"}, {"id":101,"name":"Lazzy"}, {"id":102,"name":"Devpulse"}, {"id":103,"name":"Jatri"}, {"id":104,"name":"Mita"}, {"id":105,"name":"Kare"}, {"id":106,"name":"Tazz"}, {"id":107,"name":"Babblestorm"}, {"id":108,"name":"Kwimbee"}, {"id":109,"name":"Omba"}, {"id":110,"name":"Trilia"}, {"id":111,"name":"Skidoo"}, {"id":112,"name":"Brightdog"}, {"id":113,"name":"Brightdog"}, {"id":114,"name":"Fadeo"}, {"id":115,"name":"Podcat"}, {"id":116,"name":"Ooba"}, {"id":117,"name":"Miboo"}, {"id":118,"name":"Twitterworks"}, {"id":119,"name":"Gigazoom"}, {"id":120,"name":"Photobean"}, {"id":121,"name":"Babblestorm"}, {"id":122,"name":"Podcat"}, {"id":123,"name":"Flashpoint"}, {"id":124,"name":"Gigaclub"}, {"id":125,"name":"Voolith"}, {"id":126,"name":"Photofeed"}, {"id":127,"name":"Fivespan"}, {"id":128,"name":"Topicware"}, {"id":129,"name":"Oyoloo"}, {"id":130,"name":"Gevee"}, {"id":131,"name":"Wordware"}, {"id":132,"name":"Photobug"}, {"id":133,"name":"Realcube"}, {"id":134,"name":"Buzzbean"}, {"id":135,"name":"Wikibox"}, {"id":136,"name":"Jabbersphere"}, {"id":137,"name":"Centizu"}, {"id":138,"name":"Mudo"}, {"id":139,"name":"Centidel"}, {"id":140,"name":"Kwimbee"}, {"id":141,"name":"Zava"}, {"id":142,"name":"Wordpedia"}, {"id":143,"name":"Bubblebox"}, {"id":144,"name":"Voonyx"}, {"id":145,"name":"Buzzster"}, {"id":146,"name":"Babbleblab"}, {"id":147,"name":"Mydeo"}, {"id":148,"name":"Dabvine"}, {"id":149,"name":"Kamba"}, {"id":150,"name":"Gabvine"}, {"id":151,"name":"Photobug"}, {"id":152,"name":"Pixope"}, {"id":153,"name":"Twitterbeat"}, {"id":154,"name":"Edgeclub"}, {"id":155,"name":"Pixonyx"}, {"id":156,"name":"Oozz"}, {"id":157,"name":"Photojam"}, {"id":158,"name":"Realpoint"}, {"id":159,"name":"Feedbug"}, {"id":160,"name":"Podcat"}, {"id":161,"name":"Buzzshare"}, {"id":162,"name":"Rhycero"}, {"id":163,"name":"Yambee"}, {"id":164,"name":"Zooveo"}, {"id":165,"name":"Feedbug"}, {"id":166,"name":"Vipe"}, {"id":167,"name":"Edgetag"}, {"id":168,"name":"JumpXS"}, {"id":169,"name":"BlogXS"}, {"id":170,"name":"Vinte"}, {"id":171,"name":"Edgeclub"}, {"id":172,"name":"Youopia"}, {"id":173,"name":"Fiveclub"}, {"id":174,"name":"Innotype"}, {"id":175,"name":"Yozio"}, {"id":176,"name":"Buzzdog"}, {"id":177,"name":"Quimm"}, {"id":178,"name":"Topicware"}, {"id":179,"name":"Wikivu"}, {"id":180,"name":"Brainlounge"}, {"id":181,"name":"Dabvine"}, {"id":182,"name":"Topicstorm"}, {"id":183,"name":"Youbridge"}, {"id":184,"name":"Demimbu"}, {"id":185,"name":"Oba"}, {"id":186,"name":"Topicware"}, {"id":187,"name":"Quimba"}, {"id":188,"name":"Reallinks"}, {"id":189,"name":"Kazio"}, {"id":190,"name":"Mymm"}, {"id":191,"name":"Rhyloo"}, {"id":192,"name":"Viva"}, {"id":193,"name":"Wikivu"}, {"id":194,"name":"Browseblab"}, {"id":195,"name":"Quinu"}, {"id":196,"name":"Realblab"}, {"id":197,"name":"Topdrive"}, {"id":198,"name":"Edgeblab"}, {"id":199,"name":"Wikido"}, {"id":200,"name":"Voonix"}, {"id":201,"name":"Dynabox"}, {"id":202,"name":"Twitterwire"}, {"id":203,"name":"Jetpulse"}, {"id":204,"name":"Jabberstorm"}, {"id":205,"name":"Browsecat"}, {"id":206,"name":"Aimbo"}, {"id":207,"name":"Skalith"}, {"id":208,"name":"Plambee"}, {"id":209,"name":"Flashspan"}, {"id":210,"name":"Oyoloo"}, {"id":211,"name":"Thoughtbeat"}, {"id":212,"name":"Flashdog"}, {"id":213,"name":"Skiptube"}, {"id":214,"name":"Jaxspan"}, {"id":215,"name":"Fiveclub"}, {"id":216,"name":"Devcast"}, {"id":217,"name":"Skilith"}, {"id":218,"name":"Dynabox"}, {"id":219,"name":"Livepath"}, {"id":220,"name":"Kwinu"}, {"id":221,"name":"Kanoodle"}, {"id":222,"name":"Viva"}, {"id":223,"name":"Oba"}, {"id":224,"name":"Voolith"}, {"id":225,"name":"Cogibox"}, {"id":226,"name":"Twitterbeat"}, {"id":227,"name":"Mydeo"}, {"id":228,"name":"Zava"}, {"id":229,"name":"Tagopia"}, {"id":230,"name":"Browsetype"}, {"id":231,"name":"Aimbo"}, {"id":232,"name":"Jabberstorm"}, {"id":233,"name":"Livetube"}, {"id":234,"name":"Trupe"}, {"id":235,"name":"Meedoo"}, {"id":236,"name":"Yozio"}, {"id":237,"name":"Fivebridge"}, {"id":238,"name":"Gevee"}, {"id":239,"name":"Thoughtstorm"}, {"id":240,"name":"Flashset"}, {"id":241,"name":"Bluezoom"}, {"id":242,"name":"Blognation"}, {"id":243,"name":"Janyx"}, {"id":244,"name":"Buzzbean"}, {"id":245,"name":"Voolith"}, {"id":246,"name":"Quimba"}, {"id":247,"name":"Mynte"}, {"id":248,"name":"Eare"}, {"id":249,"name":"Skinder"}, {"id":250,"name":"Tavu"}, {"id":251,"name":"Realfire"}, {"id":252,"name":"Rhybox"}, {"id":253,"name":"Yadel"}, {"id":254,"name":"Mycat"}, {"id":255,"name":"Feedmix"}, {"id":256,"name":"Brainlounge"}, {"id":257,"name":"Zoombox"}, {"id":258,"name":"Eazzy"}, {"id":259,"name":"Wordtune"}, {"id":260,"name":"Tagtune"}, {"id":261,"name":"Wordify"}, {"id":262,"name":"Babbleopia"}, {"id":263,"name":"Twiyo"}, {"id":264,"name":"Devbug"}, {"id":265,"name":"Jamia"}, {"id":266,"name":"Eayo"}, {"id":267,"name":"Thoughtmix"}, {"id":268,"name":"Plajo"}, {"id":269,"name":"Trunyx"}, {"id":270,"name":"Zoomlounge"}, {"id":271,"name":"Babbleblab"}, {"id":272,"name":"Twinte"}, {"id":273,"name":"Brightdog"}, {"id":274,"name":"Skajo"}, {"id":275,"name":"Dabfeed"}, {"id":276,"name":"Reallinks"}, {"id":277,"name":"Feedmix"}, {"id":278,"name":"Fivespan"}, {"id":279,"name":"Geba"}, {"id":280,"name":"Dabfeed"}, {"id":281,"name":"Oozz"}, {"id":282,"name":"Skibox"}, {"id":283,"name":"Buzzshare"}, {"id":284,"name":"Yadel"}, {"id":285,"name":"Viva"}, {"id":286,"name":"Mita"}, {"id":287,"name":"Skyndu"}, {"id":288,"name":"Twitterworks"}, {"id":289,"name":"Kazio"}, {"id":290,"name":"Mydo"}, {"id":291,"name":"Vitz"}, {"id":292,"name":"Eabox"}, {"id":293,"name":"Innojam"}, {"id":294,"name":"Meevee"}, {"id":295,"name":"Skipfire"}, {"id":296,"name":"Leenti"}, {"id":297,"name":"Twitterbeat"}, {"id":298,"name":"Leenti"}, {"id":299,"name":"Skilith"}, {"id":300,"name":"Miboo"}, {"id":301,"name":"Jabberbean"}, {"id":302,"name":"Meevee"}, {"id":303,"name":"Mita"}, {"id":304,"name":"Edgepulse"}, {"id":305,"name":"Thoughtsphere"}, {"id":306,"name":"Mita"}, {"id":307,"name":"Rhybox"}, {"id":308,"name":"Dazzlesphere"}, {"id":309,"name":"Tagpad"}, {"id":310,"name":"Tavu"}, {"id":311,"name":"Buzzshare"}, {"id":312,"name":"Riffwire"}, {"id":313,"name":"Ozu"}, {"id":314,"name":"Livefish"}, {"id":315,"name":"InnoZ"}, {"id":316,"name":"Zoomzone"}, {"id":317,"name":"Voonte"}, {"id":318,"name":"Wordpedia"}, {"id":319,"name":"Aivee"}, {"id":320,"name":"Topdrive"}, {"id":321,"name":"Meembee"}, {"id":322,"name":"Youspan"}, {"id":323,"name":"Trudeo"}, {"id":324,"name":"Oozz"}, {"id":325,"name":"Feedmix"}, {"id":326,"name":"Browsezoom"}, {"id":327,"name":"Centimia"}, {"id":328,"name":"Wikivu"}, {"id":329,"name":"Dablist"}, {"id":330,"name":"Zoombox"}, {"id":331,"name":"Fiveclub"}, {"id":332,"name":"Twitternation"}, {"id":333,"name":"Youfeed"}, {"id":334,"name":"Yabox"}, {"id":335,"name":"Myworks"}, {"id":336,"name":"Trilith"}, {"id":337,"name":"Quimm"}, {"id":338,"name":"Kamba"}, {"id":339,"name":"DabZ"}, {"id":340,"name":"Mycat"}, {"id":341,"name":"Skivee"}, {"id":342,"name":"Katz"}, {"id":343,"name":"Zazio"}, {"id":344,"name":"Fivebridge"}, {"id":345,"name":"Zoombeat"}, {"id":346,"name":"Chatterbridge"}, {"id":347,"name":"Reallinks"}, {"id":348,"name":"Avamba"}, {"id":349,"name":"Vidoo"}, {"id":350,"name":"Dynazzy"}, {"id":351,"name":"Jatri"}, {"id":352,"name":"Topiczoom"}, {"id":353,"name":"Jazzy"}, {"id":354,"name":"Edgewire"}, {"id":355,"name":"Katz"}, {"id":356,"name":"Twimm"}, {"id":357,"name":"Youspan"}, {"id":358,"name":"Pixonyx"}, {"id":359,"name":"Ainyx"}, {"id":360,"name":"Mycat"}, {"id":361,"name":"Tagtune"}, {"id":362,"name":"Browsecat"}, {"id":363,"name":"Aivee"}, {"id":364,"name":"Jazzy"}, {"id":365,"name":"Eidel"}, {"id":366,"name":"Vinder"}, {"id":367,"name":"Yodoo"}, {"id":368,"name":"Topicshots"}, {"id":369,"name":"Abata"}, {"id":370,"name":"Fadeo"}, {"id":371,"name":"Dynava"}, {"id":372,"name":"Oloo"}, {"id":373,"name":"Meevee"}, {"id":374,"name":"Dynabox"}, {"id":375,"name":"Yacero"}, {"id":376,"name":"Plambee"}, {"id":377,"name":"Yozio"}, {"id":378,"name":"Devpulse"}, {"id":379,"name":"Eadel"}, {"id":380,"name":"Skinte"}, {"id":381,"name":"Tagfeed"}, {"id":382,"name":"Eabox"}, {"id":383,"name":"Feedfire"}, {"id":384,"name":"Voomm"}, {"id":385,"name":"Tekfly"}, {"id":386,"name":"Jabbertype"}, {"id":387,"name":"Viva"}, {"id":388,"name":"Digitube"}, {"id":389,"name":"Blogtag"}, {"id":390,"name":"Kwinu"}, {"id":391,"name":"Skinder"}, {"id":392,"name":"Jetwire"}, {"id":393,"name":"Kazu"}, {"id":394,"name":"Realpoint"}, {"id":395,"name":"Cogidoo"}, {"id":396,"name":"Kimia"}, {"id":397,"name":"Eare"}, {"id":398,"name":"Kayveo"}, {"id":399,"name":"Twitterlist"}, {"id":400,"name":"Katz"}, {"id":401,"name":"Meeveo"}, {"id":402,"name":"Centidel"}, {"id":403,"name":"Quatz"}, {"id":404,"name":"Twiyo"}, {"id":405,"name":"Flashdog"}, {"id":406,"name":"Trilith"}, {"id":407,"name":"Fatz"}, {"id":408,"name":"Minyx"}, {"id":409,"name":"Blogtags"}, {"id":410,"name":"Quinu"}, {"id":411,"name":"Jaxspan"}, {"id":412,"name":"Buzzshare"}, {"id":413,"name":"Fadeo"}, {"id":414,"name":"Tavu"}, {"id":415,"name":"Voomm"}, {"id":416,"name":"Avavee"}, {"id":417,"name":"Abatz"}, {"id":418,"name":"Rhynyx"}, {"id":419,"name":"Oba"}, {"id":420,"name":"Oyoyo"}, {"id":421,"name":"Tazz"}, {"id":422,"name":"Feedfish"}, {"id":423,"name":"Flipbug"}, {"id":424,"name":"Jaxbean"}, {"id":425,"name":"Ailane"}, {"id":426,"name":"Plambee"}, {"id":427,"name":"Izio"}, {"id":428,"name":"Yombu"}, {"id":429,"name":"Babbleset"}, {"id":430,"name":"Jetpulse"}, {"id":431,"name":"Katz"}, {"id":432,"name":"LiveZ"}, {"id":433,"name":"Camido"}, {"id":434,"name":"Babbleblab"}, {"id":435,"name":"Mybuzz"}, {"id":436,"name":"Twinder"}, {"id":437,"name":"Dablist"}, {"id":438,"name":"Camimbo"}, {"id":439,"name":"Kwimbee"}, {"id":440,"name":"Yata"}, {"id":441,"name":"Skinix"}, {"id":442,"name":"Skiba"}, {"id":443,"name":"Myworks"}, {"id":444,"name":"Oozz"}, {"id":445,"name":"Skajo"}, {"id":446,"name":"Voolith"}, {"id":447,"name":"Zoomcast"}, {"id":448,"name":"Rhycero"}, {"id":449,"name":"Thoughtstorm"}, {"id":450,"name":"Brainlounge"}, {"id":451,"name":"Snaptags"}, {"id":452,"name":"Gabtype"}, {"id":453,"name":"Oyoba"}, {"id":454,"name":"Zoomlounge"}, {"id":455,"name":"Photojam"}, {"id":456,"name":"Jetwire"}, {"id":457,"name":"Wikido"}, {"id":458,"name":"Topiczoom"}, {"id":459,"name":"Skinder"}, {"id":460,"name":"Voomm"}, {"id":461,"name":"Voonix"}, {"id":462,"name":"Thoughtbridge"}, {"id":463,"name":"Jatri"}, {"id":464,"name":"Skimia"}, {"id":465,"name":"Trilith"}, {"id":466,"name":"Babbleblab"}, {"id":467,"name":"Edgeblab"}, {"id":468,"name":"Skimia"}, {"id":469,"name":"Jatri"}, {"id":470,"name":"Linkbridge"}, {"id":471,"name":"Brainlounge"}, {"id":472,"name":"Oyonder"}, {"id":473,"name":"Dabvine"}, {"id":474,"name":"Kanoodle"}, {"id":475,"name":"Demivee"}, {"id":476,"name":"Mynte"}, {"id":477,"name":"Skyble"}, {"id":478,"name":"Topdrive"}, {"id":479,"name":"Jabbersphere"}, {"id":480,"name":"Voonte"}, {"id":481,"name":"Oyope"}, {"id":482,"name":"Edgeify"}, {"id":483,"name":"Meemm"}, {"id":484,"name":"Browsezoom"}, {"id":485,"name":"Gabcube"}, {"id":486,"name":"Linktype"}, {"id":487,"name":"Meedoo"}, {"id":488,"name":"Camimbo"}, {"id":489,"name":"Youopia"}, {"id":490,"name":"Meeveo"}, {"id":491,"name":"Buzzster"}, {"id":492,"name":"Tagcat"}, {"id":493,"name":"Jamia"}, {"id":494,"name":"Eimbee"}, {"id":495,"name":"Mynte"}, {"id":496,"name":"Pixope"}, {"id":497,"name":"Avavee"}, {"id":498,"name":"Jetpulse"}, {"id":499,"name":"Skyndu"}, {"id":500,"name":"Photospace"}];
+    var buildings = [{"id":1,"name":"Lokwabe"}, {"id":2,"name":"Zhongxin"}, {"id":3,"name":"Nezamyslice"}, {"id":4,"name":"Yanahuanca"}, {"id":5,"name":"Labuhanjambu"}, {"id":6,"name":"Al Jamīmah"}, {"id":7,"name":"Johanneshov"}, {"id":8,"name":"Rongmei"}, {"id":9,"name":"Phonphisai"}, {"id":10,"name":"Kloangrotat"}, {"id":11,"name":"Haninge"}, {"id":12,"name":"Nanao"}, {"id":13,"name":"Khānaqāh"}, {"id":14,"name":"Tegalbuleud"}, {"id":15,"name":"Gedongmulyo"}, {"id":16,"name":"San Martín"}, {"id":17,"name":"Kota Kinabalu"}, {"id":18,"name":"Xintian"}, {"id":19,"name":"Betim"}, {"id":20,"name":"Spartanburg"}, {"id":21,"name":"Itapetinga"}, {"id":22,"name":"Espanola"}, {"id":23,"name":"Mengdong"}, {"id":24,"name":"Içara"}, {"id":25,"name":"Umm Şalāl ‘Alī"}, {"id":26,"name":"Ubon Ratchathani"}, {"id":27,"name":"Laḩij"}, {"id":28,"name":"Longaví"}, {"id":29,"name":"Amuñgan"}, {"id":30,"name":"Toride"}, {"id":31,"name":"Springfield"}, {"id":32,"name":"Brest"}, {"id":33,"name":"Masvingo"}, {"id":34,"name":"Oklahoma City"}, {"id":35,"name":"Huilong"}, {"id":36,"name":"Mosteiros"}, {"id":37,"name":"Severka"}, {"id":38,"name":"Marietta"}, {"id":39,"name":"Maji"}, {"id":40,"name":"Maonon"}, {"id":41,"name":"Antwerpen"}, {"id":42,"name":"Vénissieux"}, {"id":43,"name":"Shanshi"}, {"id":44,"name":"Oruro"}, {"id":45,"name":"Kuala Terengganu"}, {"id":46,"name":"Xianghe"}, {"id":47,"name":"Jiapeng"}, {"id":48,"name":"Patos Fshat"}, {"id":49,"name":"Tekes"}, {"id":50,"name":"Lianglin"}, {"id":51,"name":"Baiqi"}, {"id":52,"name":"Pamanukan"}, {"id":53,"name":"Linjiang"}, {"id":54,"name":"Luchenza"}, {"id":55,"name":"Lazaro Cardenas"}, {"id":56,"name":"Baja Mar"}, {"id":57,"name":"Nagrak"}, {"id":58,"name":"Tamansari"}, {"id":59,"name":"Loum"}, {"id":60,"name":"Palhoça"}, {"id":61,"name":"Derviçian"}, {"id":62,"name":"Taupo"}, {"id":63,"name":"Gamawa"}, {"id":64,"name":"Brodarica"}, {"id":65,"name":"Suchań"}, {"id":66,"name":"Ngluweng Dua"}, {"id":67,"name":"Silver Spring"}, {"id":68,"name":"Katabu"}, {"id":69,"name":"Dazhigu"}, {"id":70,"name":"Sandakan"}, {"id":71,"name":"Changjiangbu"}, {"id":72,"name":"Yuekou"}, {"id":73,"name":"Catbalogan"}, {"id":74,"name":"Los Nogales"}, {"id":75,"name":"Kónitsa"}, {"id":76,"name":"Bianba"}, {"id":77,"name":"Qijing"}, {"id":78,"name":"Sławatycze"}, {"id":79,"name":"Pak Phanang"}, {"id":80,"name":"Järfälla"}, {"id":81,"name":"Watrous"}, {"id":82,"name":"Tomas"}, {"id":83,"name":"Nzeto"}, {"id":84,"name":"Knyaze-Volkonskoye"}, {"id":85,"name":"Klakeh"}, {"id":86,"name":"Morong"}, {"id":87,"name":"San Pablo"}, {"id":88,"name":"Gedangan"}, {"id":89,"name":"Bāglung"}, {"id":90,"name":"Hantai"}, {"id":91,"name":"Dijon"}, {"id":92,"name":"Vroutek"}, {"id":93,"name":"Quiruvilca"}, {"id":94,"name":"La Paz de Oriente"}, {"id":95,"name":"Khong Chai"}, {"id":96,"name":"L'Île-Perrot"}, {"id":97,"name":"Qohord-e Bālā"}, {"id":98,"name":"Dijon"}, {"id":99,"name":"Gwio Kura"}, {"id":100,"name":"Sakchu-ŭp"}, {"id":101,"name":"Mombaça"}, {"id":102,"name":"Luzhou"}, {"id":103,"name":"Omigawa"}, {"id":104,"name":"Santa Maria Oliveira"}, {"id":105,"name":"Tembilahan"}, {"id":106,"name":"Az Zintān"}, {"id":107,"name":"Monkey Hill"}, {"id":108,"name":"Schiedam postbusnummers"}, {"id":109,"name":"Shtip"}, {"id":110,"name":"Serra da Silveira"}, {"id":111,"name":"Tierp"}, {"id":112,"name":"Tallkalakh"}, {"id":113,"name":"Voždovac"}, {"id":114,"name":"Kebonan"}, {"id":115,"name":"São Bento"}, {"id":116,"name":"Orlovka"}, {"id":117,"name":"Jacksonville"}, {"id":118,"name":"Frederico Westphalen"}, {"id":119,"name":"Amparafaravola"}, {"id":120,"name":"Borås"}, {"id":121,"name":"Notre Dame"}, {"id":122,"name":"Shangganshan"}, {"id":123,"name":"Essen"}, {"id":124,"name":"Grosuplje"}, {"id":125,"name":"Jām Sāhib"}, {"id":126,"name":"Nakanojōmachi"}, {"id":127,"name":"Caicun"}, {"id":128,"name":"Gorzów Wielkopolski"}, {"id":129,"name":"Sande Vila Nova"}, {"id":130,"name":"Babakantonggoh"}, {"id":131,"name":"Kastélli"}, {"id":132,"name":"Yerba Buena"}, {"id":133,"name":"Lanjaghbyur"}, {"id":134,"name":"Kyzyl-Oktyabr’skiy"}, {"id":135,"name":"South River"}, {"id":136,"name":"Banqiao"}, {"id":137,"name":"Ol Kalou"}, {"id":138,"name":"Pyatigorskiy"}, {"id":139,"name":"Suya"}, {"id":140,"name":"Tomohon"}, {"id":141,"name":"Haoshui"}, {"id":142,"name":"Winong"}, {"id":143,"name":"Huanghua"}, {"id":144,"name":"Grindavík"}, {"id":145,"name":"Iida"}, {"id":146,"name":"Chornukhyne"}, {"id":147,"name":"Ciorescu"}, {"id":148,"name":"Khomutovo"}, {"id":149,"name":"Düsseldorf"}, {"id":150,"name":"Banān"}, {"id":151,"name":"Juan Santiago"}, {"id":152,"name":"Gnojnik"}, {"id":153,"name":"Qijia"}, {"id":154,"name":"New York City"}, {"id":155,"name":"Lingcheng"}, {"id":156,"name":"Tala"}, {"id":157,"name":"Daja"}, {"id":158,"name":"Simpangpasir"}, {"id":159,"name":"Zainsk"}, {"id":160,"name":"Tuoshi"}, {"id":161,"name":"Sīlat al Ḩārithīyah"}, {"id":162,"name":"Samparna"}, {"id":163,"name":"Jarānwāla"}, {"id":164,"name":"Stopnica"}, {"id":165,"name":"Kotes"}, {"id":166,"name":"La Paz"}, {"id":167,"name":"Pélla"}, {"id":168,"name":"Xishaping"}, {"id":169,"name":"Victoria"}, {"id":170,"name":"Toyooka"}, {"id":171,"name":"Bayuin"}, {"id":172,"name":"Ditsaan"}, {"id":173,"name":"Batuidu"}, {"id":174,"name":"Villa Ángela"}, {"id":175,"name":"Arauca"}, {"id":176,"name":"Pontang Tengah"}, {"id":177,"name":"Flers"}, {"id":178,"name":"Gualmatán"}, {"id":179,"name":"Le Mans"}, {"id":180,"name":"Užice"}, {"id":181,"name":"Sibiti"}, {"id":182,"name":"Christchurch"}, {"id":183,"name":"Jinhua"}, {"id":184,"name":"Gengqing"}, {"id":185,"name":"Unquillo"}, {"id":186,"name":"Kaduheuleut"}, {"id":187,"name":"Kose"}, {"id":188,"name":"Dongsheng"}, {"id":189,"name":"Foumbouni"}, {"id":190,"name":"Emplak"}, {"id":191,"name":"Lazaro Cardenas"}, {"id":192,"name":"Besteiros"}, {"id":193,"name":"Zaytā Jammā‘īn"}, {"id":194,"name":"Gandzak"}, {"id":195,"name":"Zaoshi"}, {"id":196,"name":"Longhe"}, {"id":197,"name":"Amuru"}, {"id":198,"name":"Nazyvayevsk"}, {"id":199,"name":"Ḩarastā"}, {"id":200,"name":"Kubachi"}, {"id":201,"name":"Getengan"}, {"id":202,"name":"Wuxue Shi"}, {"id":203,"name":"Ambar"}, {"id":204,"name":"Chenggang"}, {"id":205,"name":"Dārāb"}, {"id":206,"name":"San Bartolomé Milpas Altas"}, {"id":207,"name":"Slovenj Gradec"}, {"id":208,"name":"Sydney"}, {"id":209,"name":"Goianira"}, {"id":210,"name":"Emiliano Zapata"}, {"id":211,"name":"Kuusjoki"}, {"id":212,"name":"Ishikawa"}, {"id":213,"name":"Jincheng"}, {"id":214,"name":"Roma"}, {"id":215,"name":"Natitingou"}, {"id":216,"name":"Muzi"}, {"id":217,"name":"Huangjinbu"}, {"id":218,"name":"Campo Belo"}, {"id":219,"name":"Mito-shi"}, {"id":220,"name":"Monkey Hill"}, {"id":221,"name":"Huacheng"}, {"id":222,"name":"Hondo"}, {"id":223,"name":"Miedzichowo"}, {"id":224,"name":"Mont-Laurier"}, {"id":225,"name":"Yangambi"}, {"id":226,"name":"Socorro"}, {"id":227,"name":"Qingkou"}, {"id":228,"name":"Ramada"}, {"id":229,"name":"Svetlanovskiy"}, {"id":230,"name":"Hanyū"}, {"id":231,"name":"Chengxi"}, {"id":232,"name":"Ungca"}, {"id":233,"name":"Chipoka"}, {"id":234,"name":"Lian"}, {"id":235,"name":"Xiaohe"}, {"id":236,"name":"Rendeng"}, {"id":237,"name":"Weiyanggong"}, {"id":238,"name":"Conchucos"}, {"id":239,"name":"Amsterdam-Oost"}, {"id":240,"name":"Xitan"}, {"id":241,"name":"Ngou"}, {"id":242,"name":"La Punta"}, {"id":243,"name":"Övertorneå"}, {"id":244,"name":"Vavozh"}, {"id":245,"name":"Rizal"}, {"id":246,"name":"Ngroto"}, {"id":247,"name":"Rouyuan"}, {"id":248,"name":"Huaicheng"}, {"id":249,"name":"Randu"}, {"id":250,"name":"Mŭglizh"}, {"id":251,"name":"Zhenqiao"}, {"id":252,"name":"Gaojingzhuang"}, {"id":253,"name":"Wolofeo"}, {"id":254,"name":"Njurunda"}, {"id":255,"name":"Sar-e Pul"}, {"id":256,"name":"Khānewāl"}, {"id":257,"name":"Baizhang"}, {"id":258,"name":"Brotas"}, {"id":259,"name":"Morfovoúni"}, {"id":260,"name":"Bicas"}, {"id":261,"name":"Palagao Norte"}, {"id":262,"name":"Лабуништа"}, {"id":263,"name":"Qingfenglin"}, {"id":264,"name":"Cibungur"}, {"id":265,"name":"Los Angeles"}, {"id":266,"name":"Jiangjing"}, {"id":267,"name":"Stříbro"}, {"id":268,"name":"Singosari"}, {"id":269,"name":"Huacaschuque"}, {"id":270,"name":"Largo"}, {"id":271,"name":"Phatthalung"}, {"id":272,"name":"Tiout"}, {"id":273,"name":"Araras"}, {"id":274,"name":"Luxi"}, {"id":275,"name":"Żabnica"}, {"id":276,"name":"Shidong"}, {"id":277,"name":"Géfyra"}, {"id":278,"name":"Tabatinga"}, {"id":279,"name":"Zhili"}, {"id":280,"name":"Chuanxi"}, {"id":281,"name":"Amiens"}, {"id":282,"name":"Yuwang"}, {"id":283,"name":"Al Quwaysimah"}, {"id":284,"name":"Khong Chai"}, {"id":285,"name":"Talcahuano"}, {"id":286,"name":"Vairão"}, {"id":287,"name":"Labé"}, {"id":288,"name":"Nantes"}, {"id":289,"name":"Mollas"}, {"id":290,"name":"Ad Dawādimī"}, {"id":291,"name":"Dongchong"}, {"id":292,"name":"Apurawan"}, {"id":293,"name":"Zhexiao"}, {"id":294,"name":"Yelets"}, {"id":295,"name":"Nglengkong"}, {"id":296,"name":"Farkaždin"}, {"id":297,"name":"San Andres"}, {"id":298,"name":"Yuen Long Kau Hui"}, {"id":299,"name":"Ocoruro"}, {"id":300,"name":"Barra Velha"}, {"id":301,"name":"San Andrés"}, {"id":302,"name":"Palanit"}, {"id":303,"name":"Debre Tabor"}, {"id":304,"name":"Rybnoye"}, {"id":305,"name":"Jiyang"}, {"id":306,"name":"Guanfang"}, {"id":307,"name":"Fanrong"}, {"id":308,"name":"Salam"}, {"id":309,"name":"Qizili"}, {"id":310,"name":"Washington"}, {"id":311,"name":"Peza e Madhe"}, {"id":312,"name":"Qiuchuan"}, {"id":313,"name":"Jiangjiazui"}, {"id":314,"name":"Burūm"}, {"id":315,"name":"Calheta de Nesquim"}, {"id":316,"name":"Velas"}, {"id":317,"name":"Świętochłowice"}, {"id":318,"name":"Mehtar Lām"}, {"id":319,"name":"Kinsale"}, {"id":320,"name":"Krasnosilka"}, {"id":321,"name":"La Sarre"}, {"id":322,"name":"Shuigou"}, {"id":323,"name":"Baniachang"}, {"id":324,"name":"Kemisē"}, {"id":325,"name":"Pecatu"}, {"id":326,"name":"Mar del Plata"}, {"id":327,"name":"Uarini"}, {"id":328,"name":"Vân Tùng"}, {"id":329,"name":"Lajkovac"}, {"id":330,"name":"Boshan"}, {"id":331,"name":"Chinoz"}, {"id":332,"name":"Kolbuszowa"}, {"id":333,"name":"Rayevskiy"}, {"id":334,"name":"Kaynardzha"}, {"id":335,"name":"Beloye"}, {"id":336,"name":"Río Pico"}, {"id":337,"name":"Sarulla"}, {"id":338,"name":"Chashan"}, {"id":339,"name":"Cookshire-Eaton"}, {"id":340,"name":"Tochio-honchō"}, {"id":341,"name":"Nefta"}, {"id":342,"name":"Longping"}, {"id":343,"name":"Santa Marcela"}, {"id":344,"name":"Baltasar Brum"}, {"id":345,"name":"Herrljunga"}, {"id":346,"name":"Mudon"}, {"id":347,"name":"Rodez"}, {"id":348,"name":"Daliang"}, {"id":349,"name":"Limulan"}, {"id":350,"name":"Aelande"}, {"id":351,"name":"Ţubarjal"}, {"id":352,"name":"Panchagarh"}, {"id":353,"name":"Dāngām"}, {"id":354,"name":"Sokarame"}, {"id":355,"name":"Bungalaleng"}, {"id":356,"name":"Nuku‘alofa"}, {"id":357,"name":"Yanmenguan"}, {"id":358,"name":"Belén Gualcho"}, {"id":359,"name":"Vreshtas"}, {"id":360,"name":"Farsta"}, {"id":361,"name":"San Juan"}, {"id":362,"name":"Jhingergācha"}, {"id":363,"name":"Gyangqai"}, {"id":364,"name":"RMI Capitol"}, {"id":365,"name":"Nariño"}, {"id":366,"name":"Lentisqueira"}, {"id":367,"name":"Blyznyuky"}, {"id":368,"name":"Cotaparaco"}, {"id":369,"name":"Muli"}, {"id":370,"name":"Duvergé"}, {"id":371,"name":"Oranzherei"}, {"id":372,"name":"Veranópolis"}, {"id":373,"name":"Freiburg im Breisgau"}, {"id":374,"name":"Sanjie"}, {"id":375,"name":"Plovdiv"}, {"id":376,"name":"Krasnyy Oktyabr’"}, {"id":377,"name":"Calauag"}, {"id":378,"name":"Moissy-Cramayel"}, {"id":379,"name":"Adare"}, {"id":380,"name":"Xingong"}, {"id":381,"name":"Tomakivka"}, {"id":382,"name":"Kamiiso"}, {"id":383,"name":"Uyuni"}, {"id":384,"name":"Strasbourg"}, {"id":385,"name":"Arnhem"}, {"id":386,"name":"Kŭrdzhali"}, {"id":387,"name":"Haixing"}, {"id":388,"name":"Acherítou"}, {"id":389,"name":"Panitian"}, {"id":390,"name":"Kuczbork-Osada"}, {"id":391,"name":"Neochóri"}, {"id":392,"name":"Basqal"}, {"id":393,"name":"Itum-Kali"}, {"id":394,"name":"Makato"}, {"id":395,"name":"Forestville"}, {"id":396,"name":"Kŭlob"}, {"id":397,"name":"Kihurio"}, {"id":398,"name":"Bandeirantes"}, {"id":399,"name":"Terawas"}, {"id":400,"name":"Łapczyca"}, {"id":401,"name":"Calape"}, {"id":402,"name":"Zbytków"}, {"id":403,"name":"Pinamalayan"}, {"id":404,"name":"San Nicolas"}, {"id":405,"name":"Bangil"}, {"id":406,"name":"Alebtong"}, {"id":407,"name":"Gongqiao"}, {"id":408,"name":"Lindome"}, {"id":409,"name":"Tambura"}, {"id":410,"name":"Yangqiao"}, {"id":411,"name":"Los Rastrojos"}, {"id":412,"name":"Usukhchay"}, {"id":413,"name":"Tân Sơn"}, {"id":414,"name":"Paojan"}, {"id":415,"name":"Bairan"}, {"id":416,"name":"Acli"}, {"id":417,"name":"Västerås"}, {"id":418,"name":"Yaojiagou"}, {"id":419,"name":"Kotabesi"}, {"id":420,"name":"Tembeling"}, {"id":421,"name":"Tofa"}, {"id":422,"name":"Cachadinha"}, {"id":423,"name":"Achoma"}, {"id":424,"name":"Keroka"}, {"id":425,"name":"Chandmanĭ"}, {"id":426,"name":"Capanema"}, {"id":427,"name":"Tianyuan"}, {"id":428,"name":"Chaves"}, {"id":429,"name":"Foluo"}, {"id":430,"name":"Banjar Banyuning Barat"}, {"id":431,"name":"Hanlin"}, {"id":432,"name":"Ronggui"}, {"id":433,"name":"Tingzhou"}, {"id":434,"name":"Bislig"}, {"id":435,"name":"Nangka"}, {"id":436,"name":"Sinarbakti"}, {"id":437,"name":"Shangjiangxu"}, {"id":438,"name":"Sabang"}, {"id":439,"name":"Donnacona"}, {"id":440,"name":"Doāba"}, {"id":441,"name":"Casal Velho"}, {"id":442,"name":"Grugul"}, {"id":443,"name":"Vyshniy Volochëk"}, {"id":444,"name":"Rokiciny"}, {"id":445,"name":"Gravelbourg"}, {"id":446,"name":"Longtang"}, {"id":447,"name":"Nanyuki"}, {"id":448,"name":"Sangojar"}, {"id":449,"name":"Abū Mūsā"}, {"id":450,"name":"Tiemen"}, {"id":451,"name":"Osieck"}, {"id":452,"name":"Liangguang"}, {"id":453,"name":"San Francisco"}, {"id":454,"name":"Faro"}, {"id":455,"name":"Nabari"}, {"id":456,"name":"Canomoy"}, {"id":457,"name":"København"}, {"id":458,"name":"Lons-le-Saunier"}, {"id":459,"name":"Isfahan"}, {"id":460,"name":"San Sebastian"}, {"id":461,"name":"Port-de-Paix"}, {"id":462,"name":"Margahayu"}, {"id":463,"name":"Dzerzhinsk"}, {"id":464,"name":"Laúndos"}, {"id":465,"name":"Hagi"}, {"id":466,"name":"Pakokku"}, {"id":467,"name":"Arapiraca"}, {"id":468,"name":"Morshansk"}, {"id":469,"name":"Kristinestad"}, {"id":470,"name":"Quinta de Valadares"}, {"id":471,"name":"Jieshipu"}, {"id":472,"name":"Shiban"}, {"id":473,"name":"Águia Branca"}, {"id":474,"name":"Taloqan"}, {"id":475,"name":"Chabařovice"}, {"id":476,"name":"Gatak"}, {"id":477,"name":"Yujing"}, {"id":478,"name":"La Jagua de Ibirico"}, {"id":479,"name":"Cisiih"}, {"id":480,"name":"Zijin"}, {"id":481,"name":"Jinotepe"}, {"id":482,"name":"Albuquerque"}, {"id":483,"name":"Beloostrov"}, {"id":484,"name":"Wangbuzhuang"}, {"id":485,"name":"Koh Tao"}, {"id":486,"name":"Helong"}, {"id":487,"name":"Škofljica"}, {"id":488,"name":"Bintulu"}, {"id":489,"name":"Rio"}, {"id":490,"name":"Sumurwaru"}, {"id":491,"name":"Maopingchang"}, {"id":492,"name":"St. Thomas"}, {"id":493,"name":"New York City"}, {"id":494,"name":"Santa Fe"}, {"id":495,"name":"Qiting"}, {"id":496,"name":"Shanghu"}, {"id":497,"name":"Ketanggungan"}, {"id":498,"name":"Papatowai"}, {"id":499,"name":"Dong Charoen"}, {"id":500,"name":"Keti Bandar"}];
+    var meters = [{"id":1,"name":"Bashford"}, {"id":2,"name":"Fieldstone"}, {"id":3,"name":"Oak Valley"}, {"id":4,"name":"Scoville"}, {"id":5,"name":"Delaware"}, {"id":6,"name":"Walton"}, {"id":7,"name":"Kenwood"}, {"id":8,"name":"Barby"}, {"id":9,"name":"Westend"}, {"id":10,"name":"Weeping Birch"}, {"id":11,"name":"American"}, {"id":12,"name":"Becker"}, {"id":13,"name":"Macpherson"}, {"id":14,"name":"Marquette"}, {"id":15,"name":"Pennsylvania"}, {"id":16,"name":"Boyd"}, {"id":17,"name":"Porter"}, {"id":18,"name":"Northwestern"}, {"id":19,"name":"Mariners Cove"}, {"id":20,"name":"Merry"}, {"id":21,"name":"Mockingbird"}, {"id":22,"name":"Hoepker"}, {"id":23,"name":"Nancy"}, {"id":24,"name":"Montana"}, {"id":25,"name":"Dennis"}, {"id":26,"name":"Ohio"}, {"id":27,"name":"Ridgeview"}, {"id":28,"name":"Birchwood"}, {"id":29,"name":"Duke"}, {"id":30,"name":"Knutson"}, {"id":31,"name":"Jenna"}, {"id":32,"name":"Transport"}, {"id":33,"name":"Mariners Cove"}, {"id":34,"name":"Kim"}, {"id":35,"name":"Lake View"}, {"id":36,"name":"Dottie"}, {"id":37,"name":"Lakewood Gardens"}, {"id":38,"name":"Carberry"}, {"id":39,"name":"Hallows"}, {"id":40,"name":"Division"}, {"id":41,"name":"Monterey"}, {"id":42,"name":"Leroy"}, {"id":43,"name":"Hanover"}, {"id":44,"name":"Sutherland"}, {"id":45,"name":"Bowman"}, {"id":46,"name":"Fordem"}, {"id":47,"name":"Brown"}, {"id":48,"name":"Village"}, {"id":49,"name":"Jackson"}, {"id":50,"name":"Dexter"}, {"id":51,"name":"Melody"}, {"id":52,"name":"Sachs"}, {"id":53,"name":"Tennessee"}, {"id":54,"name":"Pleasure"}, {"id":55,"name":"Melody"}, {"id":56,"name":"Bay"}, {"id":57,"name":"Fairfield"}, {"id":58,"name":"Ridge Oak"}, {"id":59,"name":"Morrow"}, {"id":60,"name":"Southridge"}, {"id":61,"name":"Marquette"}, {"id":62,"name":"Reinke"}, {"id":63,"name":"Harbort"}, {"id":64,"name":"Northwestern"}, {"id":65,"name":"Sachs"}, {"id":66,"name":"Golf View"}, {"id":67,"name":"Mallory"}, {"id":68,"name":"Mcguire"}, {"id":69,"name":"Commercial"}, {"id":70,"name":"Bayside"}, {"id":71,"name":"Tennyson"}, {"id":72,"name":"Birchwood"}, {"id":73,"name":"Talisman"}, {"id":74,"name":"Armistice"}, {"id":75,"name":"Onsgard"}, {"id":76,"name":"Jackson"}, {"id":77,"name":"Dennis"}, {"id":78,"name":"Donald"}, {"id":79,"name":"Carpenter"}, {"id":80,"name":"Hoard"}, {"id":81,"name":"Crescent Oaks"}, {"id":82,"name":"Loomis"}, {"id":83,"name":"Ilene"}, {"id":84,"name":"Express"}, {"id":85,"name":"Westend"}, {"id":86,"name":"Sundown"}, {"id":87,"name":"Emmet"}, {"id":88,"name":"Memorial"}, {"id":89,"name":"Sundown"}, {"id":90,"name":"Gulseth"}, {"id":91,"name":"8th"}, {"id":92,"name":"Lake View"}, {"id":93,"name":"Cambridge"}, {"id":94,"name":"Waywood"}, {"id":95,"name":"Almo"}, {"id":96,"name":"Boyd"}, {"id":97,"name":"Weeping Birch"}, {"id":98,"name":"Elka"}, {"id":99,"name":"Summer Ridge"}, {"id":100,"name":"Sutteridge"}, {"id":101,"name":"Valley Edge"}, {"id":102,"name":"Vera"}, {"id":103,"name":"Thierer"}, {"id":104,"name":"Ridgeway"}, {"id":105,"name":"International"}, {"id":106,"name":"Bartelt"}, {"id":107,"name":"Heath"}, {"id":108,"name":"Hauk"}, {"id":109,"name":"Bayside"}, {"id":110,"name":"Thierer"}, {"id":111,"name":"Cottonwood"}, {"id":112,"name":"Goodland"}, {"id":113,"name":"Vidon"}, {"id":114,"name":"Kim"}, {"id":115,"name":"Grayhawk"}, {"id":116,"name":"Transport"}, {"id":117,"name":"Schmedeman"}, {"id":118,"name":"Golf View"}, {"id":119,"name":"Di Loreto"}, {"id":120,"name":"Northwestern"}, {"id":121,"name":"Hovde"}, {"id":122,"name":"Shoshone"}, {"id":123,"name":"Shasta"}, {"id":124,"name":"Thompson"}, {"id":125,"name":"Waxwing"}, {"id":126,"name":"Ilene"}, {"id":127,"name":"Hermina"}, {"id":128,"name":"Green Ridge"}, {"id":129,"name":"Hoepker"}, {"id":130,"name":"5th"}, {"id":131,"name":"Katie"}, {"id":132,"name":"Starling"}, {"id":133,"name":"Sundown"}, {"id":134,"name":"Rusk"}, {"id":135,"name":"Loomis"}, {"id":136,"name":"Logan"}, {"id":137,"name":"Darwin"}, {"id":138,"name":"Comanche"}, {"id":139,"name":"Morning"}, {"id":140,"name":"6th"}, {"id":141,"name":"Hudson"}, {"id":142,"name":"Delladonna"}, {"id":143,"name":"Carioca"}, {"id":144,"name":"Nova"}, {"id":145,"name":"Green"}, {"id":146,"name":"Jenna"}, {"id":147,"name":"Boyd"}, {"id":148,"name":"Sutherland"}, {"id":149,"name":"Vermont"}, {"id":150,"name":"Emmet"}, {"id":151,"name":"Atwood"}, {"id":152,"name":"Ramsey"}, {"id":153,"name":"Harper"}, {"id":154,"name":"Bunting"}, {"id":155,"name":"Carberry"}, {"id":156,"name":"Haas"}, {"id":157,"name":"Di Loreto"}, {"id":158,"name":"Lawn"}, {"id":159,"name":"Schmedeman"}, {"id":160,"name":"Logan"}, {"id":161,"name":"Farmco"}, {"id":162,"name":"Clarendon"}, {"id":163,"name":"Fair Oaks"}, {"id":164,"name":"Acker"}, {"id":165,"name":"Center"}, {"id":166,"name":"Butterfield"}, {"id":167,"name":"Muir"}, {"id":168,"name":"Scofield"}, {"id":169,"name":"Twin Pines"}, {"id":170,"name":"Stang"}, {"id":171,"name":"Banding"}, {"id":172,"name":"Sycamore"}, {"id":173,"name":"Vera"}, {"id":174,"name":"Montana"}, {"id":175,"name":"Prentice"}, {"id":176,"name":"Fallview"}, {"id":177,"name":"Lakeland"}, {"id":178,"name":"Maple Wood"}, {"id":179,"name":"Portage"}, {"id":180,"name":"Drewry"}, {"id":181,"name":"Merry"}, {"id":182,"name":"Delaware"}, {"id":183,"name":"Northfield"}, {"id":184,"name":"Anzinger"}, {"id":185,"name":"Arizona"}, {"id":186,"name":"Towne"}, {"id":187,"name":"Messerschmidt"}, {"id":188,"name":"Acker"}, {"id":189,"name":"Oxford"}, {"id":190,"name":"Milwaukee"}, {"id":191,"name":"Farwell"}, {"id":192,"name":"Alpine"}, {"id":193,"name":"Loomis"}, {"id":194,"name":"Texas"}, {"id":195,"name":"Eagan"}, {"id":196,"name":"4th"}, {"id":197,"name":"New Castle"}, {"id":198,"name":"Annamark"}, {"id":199,"name":"Lotheville"}, {"id":200,"name":"Chinook"}, {"id":201,"name":"Mifflin"}, {"id":202,"name":"Hooker"}, {"id":203,"name":"Grayhawk"}, {"id":204,"name":"Sullivan"}, {"id":205,"name":"Aberg"}, {"id":206,"name":"Myrtle"}, {"id":207,"name":"Colorado"}, {"id":208,"name":"Shoshone"}, {"id":209,"name":"Surrey"}, {"id":210,"name":"Becker"}, {"id":211,"name":"Kenwood"}, {"id":212,"name":"Springs"}, {"id":213,"name":"Starling"}, {"id":214,"name":"Lake View"}, {"id":215,"name":"Pine View"}, {"id":216,"name":"Twin Pines"}, {"id":217,"name":"Green Ridge"}, {"id":218,"name":"Fuller"}, {"id":219,"name":"Daystar"}, {"id":220,"name":"Packers"}, {"id":221,"name":"Cottonwood"}, {"id":222,"name":"Dryden"}, {"id":223,"name":"Lotheville"}, {"id":224,"name":"Gateway"}, {"id":225,"name":"Arkansas"}, {"id":226,"name":"Vermont"}, {"id":227,"name":"Prairieview"}, {"id":228,"name":"Vahlen"}, {"id":229,"name":"Goodland"}, {"id":230,"name":"Kingsford"}, {"id":231,"name":"Dennis"}, {"id":232,"name":"Mariners Cove"}, {"id":233,"name":"Riverside"}, {"id":234,"name":"Rowland"}, {"id":235,"name":"Roth"}, {"id":236,"name":"Bartillon"}, {"id":237,"name":"Stang"}, {"id":238,"name":"Dahle"}, {"id":239,"name":"Forest Run"}, {"id":240,"name":"American Ash"}, {"id":241,"name":"Nelson"}, {"id":242,"name":"Old Gate"}, {"id":243,"name":"Corben"}, {"id":244,"name":"Lillian"}, {"id":245,"name":"Karstens"}, {"id":246,"name":"5th"}, {"id":247,"name":"Lakewood"}, {"id":248,"name":"Bowman"}, {"id":249,"name":"Roxbury"}, {"id":250,"name":"Amoth"}, {"id":251,"name":"Shoshone"}, {"id":252,"name":"Twin Pines"}, {"id":253,"name":"Manufacturers"}, {"id":254,"name":"Holy Cross"}, {"id":255,"name":"Crownhardt"}, {"id":256,"name":"Pennsylvania"}, {"id":257,"name":"New Castle"}, {"id":258,"name":"Larry"}, {"id":259,"name":"Karstens"}, {"id":260,"name":"Oakridge"}, {"id":261,"name":"Corry"}, {"id":262,"name":"Cody"}, {"id":263,"name":"Shopko"}, {"id":264,"name":"Corscot"}, {"id":265,"name":"Starling"}, {"id":266,"name":"Lillian"}, {"id":267,"name":"Burning Wood"}, {"id":268,"name":"Lindbergh"}, {"id":269,"name":"Anthes"}, {"id":270,"name":"Caliangt"}, {"id":271,"name":"Fremont"}, {"id":272,"name":"Shasta"}, {"id":273,"name":"Trailsway"}, {"id":274,"name":"Sunbrook"}, {"id":275,"name":"North"}, {"id":276,"name":"Kipling"}, {"id":277,"name":"Butterfield"}, {"id":278,"name":"Jana"}, {"id":279,"name":"Melody"}, {"id":280,"name":"Moose"}, {"id":281,"name":"Nelson"}, {"id":282,"name":"Mesta"}, {"id":283,"name":"Butterfield"}, {"id":284,"name":"Prairieview"}, {"id":285,"name":"Dennis"}, {"id":286,"name":"Northport"}, {"id":287,"name":"Center"}, {"id":288,"name":"Eastwood"}, {"id":289,"name":"Raven"}, {"id":290,"name":"Westport"}, {"id":291,"name":"Towne"}, {"id":292,"name":"Sheridan"}, {"id":293,"name":"Meadow Valley"}, {"id":294,"name":"North"}, {"id":295,"name":"3rd"}, {"id":296,"name":"Melrose"}, {"id":297,"name":"Mallory"}, {"id":298,"name":"Westport"}, {"id":299,"name":"Emmet"}, {"id":300,"name":"Caliangt"}, {"id":301,"name":"Sauthoff"}, {"id":302,"name":"Dahle"}, {"id":303,"name":"Mcguire"}, {"id":304,"name":"Dawn"}, {"id":305,"name":"Holy Cross"}, {"id":306,"name":"Tennyson"}, {"id":307,"name":"Bashford"}, {"id":308,"name":"Valley Edge"}, {"id":309,"name":"Pankratz"}, {"id":310,"name":"Eastwood"}, {"id":311,"name":"Warbler"}, {"id":312,"name":"Blaine"}, {"id":313,"name":"Sugar"}, {"id":314,"name":"Dennis"}, {"id":315,"name":"Eliot"}, {"id":316,"name":"Independence"}, {"id":317,"name":"Sundown"}, {"id":318,"name":"Melrose"}, {"id":319,"name":"Nevada"}, {"id":320,"name":"Fuller"}, {"id":321,"name":"Quincy"}, {"id":322,"name":"Saint Paul"}, {"id":323,"name":"Melby"}, {"id":324,"name":"Evergreen"}, {"id":325,"name":"Riverside"}, {"id":326,"name":"Dakota"}, {"id":327,"name":"Gale"}, {"id":328,"name":"Burning Wood"}, {"id":329,"name":"Vahlen"}, {"id":330,"name":"Hintze"}, {"id":331,"name":"Muir"}, {"id":332,"name":"Clemons"}, {"id":333,"name":"Melby"}, {"id":334,"name":"Moland"}, {"id":335,"name":"Mallard"}, {"id":336,"name":"Monica"}, {"id":337,"name":"Sommers"}, {"id":338,"name":"Pierstorff"}, {"id":339,"name":"Meadow Vale"}, {"id":340,"name":"Trailsway"}, {"id":341,"name":"Almo"}, {"id":342,"name":"Pennsylvania"}, {"id":343,"name":"Bowman"}, {"id":344,"name":"Nevada"}, {"id":345,"name":"Harbort"}, {"id":346,"name":"Shopko"}, {"id":347,"name":"Village"}, {"id":348,"name":"Nova"}, {"id":349,"name":"Amoth"}, {"id":350,"name":"1st"}, {"id":351,"name":"Saint Paul"}, {"id":352,"name":"Golf Course"}, {"id":353,"name":"Artisan"}, {"id":354,"name":"Grayhawk"}, {"id":355,"name":"Mockingbird"}, {"id":356,"name":"Spohn"}, {"id":357,"name":"Dexter"}, {"id":358,"name":"Cordelia"}, {"id":359,"name":"Merrick"}, {"id":360,"name":"Carberry"}, {"id":361,"name":"Sheridan"}, {"id":362,"name":"Anderson"}, {"id":363,"name":"High Crossing"}, {"id":364,"name":"Buena Vista"}, {"id":365,"name":"Shelley"}, {"id":366,"name":"Waxwing"}, {"id":367,"name":"Miller"}, {"id":368,"name":"Bellgrove"}, {"id":369,"name":"Arrowood"}, {"id":370,"name":"Caliangt"}, {"id":371,"name":"Havey"}, {"id":372,"name":"Northridge"}, {"id":373,"name":"International"}, {"id":374,"name":"Northland"}, {"id":375,"name":"Morningstar"}, {"id":376,"name":"Del Mar"}, {"id":377,"name":"Village Green"}, {"id":378,"name":"Parkside"}, {"id":379,"name":"Stang"}, {"id":380,"name":"Armistice"}, {"id":381,"name":"Spohn"}, {"id":382,"name":"Almo"}, {"id":383,"name":"Clyde Gallagher"}, {"id":384,"name":"Sheridan"}, {"id":385,"name":"Debra"}, {"id":386,"name":"Jay"}, {"id":387,"name":"Bonner"}, {"id":388,"name":"Acker"}, {"id":389,"name":"Bunting"}, {"id":390,"name":"Dayton"}, {"id":391,"name":"Fuller"}, {"id":392,"name":"Eastlawn"}, {"id":393,"name":"Southridge"}, {"id":394,"name":"Anniversary"}, {"id":395,"name":"Lien"}, {"id":396,"name":"Kropf"}, {"id":397,"name":"Summerview"}, {"id":398,"name":"La Follette"}, {"id":399,"name":"Debs"}, {"id":400,"name":"Scofield"}, {"id":401,"name":"Montana"}, {"id":402,"name":"Bluejay"}, {"id":403,"name":"Meadow Valley"}, {"id":404,"name":"Green Ridge"}, {"id":405,"name":"Paget"}, {"id":406,"name":"Prentice"}, {"id":407,"name":"Village"}, {"id":408,"name":"Sommers"}, {"id":409,"name":"Memorial"}, {"id":410,"name":"Lerdahl"}, {"id":411,"name":"Independence"}, {"id":412,"name":"Steensland"}, {"id":413,"name":"Helena"}, {"id":414,"name":"Weeping Birch"}, {"id":415,"name":"Oriole"}, {"id":416,"name":"Kropf"}, {"id":417,"name":"Marcy"}, {"id":418,"name":"Sycamore"}, {"id":419,"name":"Washington"}, {"id":420,"name":"South"}, {"id":421,"name":"Steensland"}, {"id":422,"name":"Scoville"}, {"id":423,"name":"Duke"}, {"id":424,"name":"Michigan"}, {"id":425,"name":"Thackeray"}, {"id":426,"name":"Spohn"}, {"id":427,"name":"Riverside"}, {"id":428,"name":"Cottonwood"}, {"id":429,"name":"Anhalt"}, {"id":430,"name":"6th"}, {"id":431,"name":"Waxwing"}, {"id":432,"name":"Summer Ridge"}, {"id":433,"name":"Holmberg"}, {"id":434,"name":"Steensland"}, {"id":435,"name":"Lakeland"}, {"id":436,"name":"Sauthoff"}, {"id":437,"name":"Ronald Regan"}, {"id":438,"name":"Saint Paul"}, {"id":439,"name":"Anderson"}, {"id":440,"name":"Emmet"}, {"id":441,"name":"Golf"}, {"id":442,"name":"Kedzie"}, {"id":443,"name":"Brown"}, {"id":444,"name":"Leroy"}, {"id":445,"name":"Esker"}, {"id":446,"name":"Gina"}, {"id":447,"name":"Anthes"}, {"id":448,"name":"Waxwing"}, {"id":449,"name":"Spenser"}, {"id":450,"name":"Old Shore"}, {"id":451,"name":"Hollow Ridge"}, {"id":452,"name":"Cottonwood"}, {"id":453,"name":"Westridge"}, {"id":454,"name":"Jay"}, {"id":455,"name":"Havey"}, {"id":456,"name":"Sachtjen"}, {"id":457,"name":"Sutherland"}, {"id":458,"name":"Bellgrove"}, {"id":459,"name":"Lukken"}, {"id":460,"name":"Lerdahl"}, {"id":461,"name":"School"}, {"id":462,"name":"Lyons"}, {"id":463,"name":"Rutledge"}, {"id":464,"name":"Kedzie"}, {"id":465,"name":"Pierstorff"}, {"id":466,"name":"High Crossing"}, {"id":467,"name":"Upham"}, {"id":468,"name":"Badeau"}, {"id":469,"name":"Hauk"}, {"id":470,"name":"Dovetail"}, {"id":471,"name":"Pearson"}, {"id":472,"name":"Westridge"}, {"id":473,"name":"Grasskamp"}, {"id":474,"name":"Corscot"}, {"id":475,"name":"Erie"}, {"id":476,"name":"Welch"}, {"id":477,"name":"Erie"}, {"id":478,"name":"Village"}, {"id":479,"name":"Nevada"}, {"id":480,"name":"Ridge Oak"}, {"id":481,"name":"Esker"}, {"id":482,"name":"Spohn"}, {"id":483,"name":"Commercial"}, {"id":484,"name":"Anniversary"}, {"id":485,"name":"Oneill"}, {"id":486,"name":"Aberg"}, {"id":487,"name":"Farmco"}, {"id":488,"name":"Luster"}, {"id":489,"name":"Kingsford"}, {"id":490,"name":"Mandrake"}, {"id":491,"name":"Oneill"}, {"id":492,"name":"Graedel"}, {"id":493,"name":"Oneill"}, {"id":494,"name":"Novick"}, {"id":495,"name":"Northland"}, {"id":496,"name":"Homewood"}, {"id":497,"name":"Sage"}, {"id":498,"name":"Schmedeman"}, {"id":499,"name":"Grim"}, {"id":500,"name":"Maple Wood"}];
 
-        var title = {
-            text: 'Height Versus Weight of 507 Individuals by Gender'
-        };
 
-        var subtitle = {
-            text: 'Source: Heinz  2003'
-        };
 
-        if (state) {
-            title = '';
-            subtitle = '';
+
+    var getMeRandomItems = function(type, number) {
+
+        function randOrd(){
+            return (Math.round(Math.random())-0.5);
         }
 
-        $(function () {
-            $('#container2').highcharts({
-                chart: {
-                    type: 'scatter',
-                    zoomType: 'xy'
-                },
-                title: title,
-                subtitle: subtitle,
-                xAxis: {
-                    title: {
-                        enabled: true,
-                        text: 'Height (cm)'
-                    },
-                    startOnTick: true,
-                    endOnTick: true,
-                    showLastLabel: true
-                },
-                yAxis: {
-                    title: {
-                        text: 'Weight (kg)'
-                    }
-                },
-                legend: {
-                    layout: 'vertical',
-                    align: 'left',
-                    verticalAlign: 'top',
-                    x: 100,
-                    y: 70,
-                    floating: true,
-                    backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
-                    borderWidth: 1
-                },
-                plotOptions: {
-                    scatter: {
-                        marker: {
-                            radius: 5,
-                            states: {
-                                hover: {
-                                    enabled: true,
-                                    lineColor: 'rgb(100,100,100)'
-                                }
-                            }
-                        },
-                        states: {
-                            hover: {
-                                marker: {
-                                    enabled: false
-                                }
-                            }
-                        },
-                        tooltip: {
-                            headerFormat: '<b>{series.name}</b><br>',
-                            pointFormat: '{point.x} cm, {point.y} kg'
-                        }
-                    }
-                },
-                series: [{
-                    name: 'Female',
-                    color: 'rgba(223, 83, 83, .5)',
-                    data: [[161.2, 51.6], [167.5, 59.0], [159.5, 49.2], [157.0, 63.0], [155.8, 53.6],
-                        [170.0, 59.0], [159.1, 47.6], [166.0, 69.8], [176.2, 66.8], [160.2, 75.2],
-                        [172.5, 55.2], [170.9, 54.2], [172.9, 62.5], [153.4, 42.0], [160.0, 50.0],
-                        [147.2, 49.8], [168.2, 49.2], [175.0, 73.2], [157.0, 47.8], [167.6, 68.8],
-                        [159.5, 50.6], [175.0, 82.5], [166.8, 57.2], [176.5, 87.8], [170.2, 72.8],
-                        [174.0, 54.5], [173.0, 59.8], [179.9, 67.3], [170.5, 67.8], [160.0, 47.0],
-                        [154.4, 46.2], [162.0, 55.0], [176.5, 83.0], [160.0, 54.4], [152.0, 45.8],
-                        [162.1, 53.6], [170.0, 73.2], [160.2, 52.1], [161.3, 67.9], [166.4, 56.6],
-                        [168.9, 62.3], [163.8, 58.5], [167.6, 54.5], [160.0, 50.2], [161.3, 60.3],
-                        [167.6, 58.3], [165.1, 56.2], [160.0, 50.2], [170.0, 72.9], [157.5, 59.8],
-                        [167.6, 61.0], [160.7, 69.1], [163.2, 55.9], [152.4, 46.5], [157.5, 54.3],
-                        [168.3, 54.8], [180.3, 60.7], [165.5, 60.0], [165.0, 62.0], [164.5, 60.3],
-                        [156.0, 52.7], [160.0, 74.3], [163.0, 62.0], [165.7, 73.1], [161.0, 80.0],
-                        [162.0, 54.7], [166.0, 53.2], [174.0, 75.7], [172.7, 61.1], [167.6, 55.7],
-                        [151.1, 48.7], [164.5, 52.3], [163.5, 50.0], [152.0, 59.3], [169.0, 62.5],
-                        [164.0, 55.7], [161.2, 54.8], [155.0, 45.9], [170.0, 70.6], [176.2, 67.2],
-                        [170.0, 69.4], [162.5, 58.2], [170.3, 64.8], [164.1, 71.6], [169.5, 52.8],
-                        [163.2, 59.8], [154.5, 49.0], [159.8, 50.0], [173.2, 69.2], [170.0, 55.9],
-                        [161.4, 63.4], [169.0, 58.2], [166.2, 58.6], [159.4, 45.7], [162.5, 52.2],
-                        [159.0, 48.6], [162.8, 57.8], [159.0, 55.6], [179.8, 66.8], [162.9, 59.4],
-                        [161.0, 53.6], [151.1, 73.2], [168.2, 53.4], [168.9, 69.0], [173.2, 58.4],
-                        [171.8, 56.2], [178.0, 70.6], [164.3, 59.8], [163.0, 72.0], [168.5, 65.2],
-                        [166.8, 56.6], [172.7, 105.2], [163.5, 51.8], [169.4, 63.4], [167.8, 59.0],
-                        [159.5, 47.6], [167.6, 63.0], [161.2, 55.2], [160.0, 45.0], [163.2, 54.0],
-                        [162.2, 50.2], [161.3, 60.2], [149.5, 44.8], [157.5, 58.8], [163.2, 56.4],
-                        [172.7, 62.0], [155.0, 49.2], [156.5, 67.2], [164.0, 53.8], [160.9, 54.4],
-                        [162.8, 58.0], [167.0, 59.8], [160.0, 54.8], [160.0, 43.2], [168.9, 60.5],
-                        [158.2, 46.4], [156.0, 64.4], [160.0, 48.8], [167.1, 62.2], [158.0, 55.5],
-                        [167.6, 57.8], [156.0, 54.6], [162.1, 59.2], [173.4, 52.7], [159.8, 53.2],
-                        [170.5, 64.5], [159.2, 51.8], [157.5, 56.0], [161.3, 63.6], [162.6, 63.2],
-                        [160.0, 59.5], [168.9, 56.8], [165.1, 64.1], [162.6, 50.0], [165.1, 72.3],
-                        [166.4, 55.0], [160.0, 55.9], [152.4, 60.4], [170.2, 69.1], [162.6, 84.5],
-                        [170.2, 55.9], [158.8, 55.5], [172.7, 69.5], [167.6, 76.4], [162.6, 61.4],
-                        [167.6, 65.9], [156.2, 58.6], [175.2, 66.8], [172.1, 56.6], [162.6, 58.6],
-                        [160.0, 55.9], [165.1, 59.1], [182.9, 81.8], [166.4, 70.7], [165.1, 56.8],
-                        [177.8, 60.0], [165.1, 58.2], [175.3, 72.7], [154.9, 54.1], [158.8, 49.1],
-                        [172.7, 75.9], [168.9, 55.0], [161.3, 57.3], [167.6, 55.0], [165.1, 65.5],
-                        [175.3, 65.5], [157.5, 48.6], [163.8, 58.6], [167.6, 63.6], [165.1, 55.2],
-                        [165.1, 62.7], [168.9, 56.6], [162.6, 53.9], [164.5, 63.2], [176.5, 73.6],
-                        [168.9, 62.0], [175.3, 63.6], [159.4, 53.2], [160.0, 53.4], [170.2, 55.0],
-                        [162.6, 70.5], [167.6, 54.5], [162.6, 54.5], [160.7, 55.9], [160.0, 59.0],
-                        [157.5, 63.6], [162.6, 54.5], [152.4, 47.3], [170.2, 67.7], [165.1, 80.9],
-                        [172.7, 70.5], [165.1, 60.9], [170.2, 63.6], [170.2, 54.5], [170.2, 59.1],
-                        [161.3, 70.5], [167.6, 52.7], [167.6, 62.7], [165.1, 86.3], [162.6, 66.4],
-                        [152.4, 67.3], [168.9, 63.0], [170.2, 73.6], [175.2, 62.3], [175.2, 57.7],
-                        [160.0, 55.4], [165.1, 104.1], [174.0, 55.5], [170.2, 77.3], [160.0, 80.5],
-                        [167.6, 64.5], [167.6, 72.3], [167.6, 61.4], [154.9, 58.2], [162.6, 81.8],
-                        [175.3, 63.6], [171.4, 53.4], [157.5, 54.5], [165.1, 53.6], [160.0, 60.0],
-                        [174.0, 73.6], [162.6, 61.4], [174.0, 55.5], [162.6, 63.6], [161.3, 60.9],
-                        [156.2, 60.0], [149.9, 46.8], [169.5, 57.3], [160.0, 64.1], [175.3, 63.6],
-                        [169.5, 67.3], [160.0, 75.5], [172.7, 68.2], [162.6, 61.4], [157.5, 76.8],
-                        [176.5, 71.8], [164.4, 55.5], [160.7, 48.6], [174.0, 66.4], [163.8, 67.3]]
+        if(type == 'org') {
+            return organisations.sort(randOrd).splice(1, 50);
+        }
 
-                }, {
-                    name: 'Male',
-                    color: 'rgba(119, 152, 191, .5)',
-                    data: [[174.0, 65.6], [175.3, 71.8], [193.5, 80.7], [186.5, 72.6], [187.2, 78.8],
-                        [181.5, 74.8], [184.0, 86.4], [184.5, 78.4], [175.0, 62.0], [184.0, 81.6],
-                        [180.0, 76.6], [177.8, 83.6], [192.0, 90.0], [176.0, 74.6], [174.0, 71.0],
-                        [184.0, 79.6], [192.7, 93.8], [171.5, 70.0], [173.0, 72.4], [176.0, 85.9],
-                        [176.0, 78.8], [180.5, 77.8], [172.7, 66.2], [176.0, 86.4], [173.5, 81.8],
-                        [178.0, 89.6], [180.3, 82.8], [180.3, 76.4], [164.5, 63.2], [173.0, 60.9],
-                        [183.5, 74.8], [175.5, 70.0], [188.0, 72.4], [189.2, 84.1], [172.8, 69.1],
-                        [170.0, 59.5], [182.0, 67.2], [170.0, 61.3], [177.8, 68.6], [184.2, 80.1],
-                        [186.7, 87.8], [171.4, 84.7], [172.7, 73.4], [175.3, 72.1], [180.3, 82.6],
-                        [182.9, 88.7], [188.0, 84.1], [177.2, 94.1], [172.1, 74.9], [167.0, 59.1],
-                        [169.5, 75.6], [174.0, 86.2], [172.7, 75.3], [182.2, 87.1], [164.1, 55.2],
-                        [163.0, 57.0], [171.5, 61.4], [184.2, 76.8], [174.0, 86.8], [174.0, 72.2],
-                        [177.0, 71.6], [186.0, 84.8], [167.0, 68.2], [171.8, 66.1], [182.0, 72.0],
-                        [167.0, 64.6], [177.8, 74.8], [164.5, 70.0], [192.0, 101.6], [175.5, 63.2],
-                        [171.2, 79.1], [181.6, 78.9], [167.4, 67.7], [181.1, 66.0], [177.0, 68.2],
-                        [174.5, 63.9], [177.5, 72.0], [170.5, 56.8], [182.4, 74.5], [197.1, 90.9],
-                        [180.1, 93.0], [175.5, 80.9], [180.6, 72.7], [184.4, 68.0], [175.5, 70.9],
-                        [180.6, 72.5], [177.0, 72.5], [177.1, 83.4], [181.6, 75.5], [176.5, 73.0],
-                        [175.0, 70.2], [174.0, 73.4], [165.1, 70.5], [177.0, 68.9], [192.0, 102.3],
-                        [176.5, 68.4], [169.4, 65.9], [182.1, 75.7], [179.8, 84.5], [175.3, 87.7],
-                        [184.9, 86.4], [177.3, 73.2], [167.4, 53.9], [178.1, 72.0], [168.9, 55.5],
-                        [157.2, 58.4], [180.3, 83.2], [170.2, 72.7], [177.8, 64.1], [172.7, 72.3],
-                        [165.1, 65.0], [186.7, 86.4], [165.1, 65.0], [174.0, 88.6], [175.3, 84.1],
-                        [185.4, 66.8], [177.8, 75.5], [180.3, 93.2], [180.3, 82.7], [177.8, 58.0],
-                        [177.8, 79.5], [177.8, 78.6], [177.8, 71.8], [177.8, 116.4], [163.8, 72.2],
-                        [188.0, 83.6], [198.1, 85.5], [175.3, 90.9], [166.4, 85.9], [190.5, 89.1],
-                        [166.4, 75.0], [177.8, 77.7], [179.7, 86.4], [172.7, 90.9], [190.5, 73.6],
-                        [185.4, 76.4], [168.9, 69.1], [167.6, 84.5], [175.3, 64.5], [170.2, 69.1],
-                        [190.5, 108.6], [177.8, 86.4], [190.5, 80.9], [177.8, 87.7], [184.2, 94.5],
-                        [176.5, 80.2], [177.8, 72.0], [180.3, 71.4], [171.4, 72.7], [172.7, 84.1],
-                        [172.7, 76.8], [177.8, 63.6], [177.8, 80.9], [182.9, 80.9], [170.2, 85.5],
-                        [167.6, 68.6], [175.3, 67.7], [165.1, 66.4], [185.4, 102.3], [181.6, 70.5],
-                        [172.7, 95.9], [190.5, 84.1], [179.1, 87.3], [175.3, 71.8], [170.2, 65.9],
-                        [193.0, 95.9], [171.4, 91.4], [177.8, 81.8], [177.8, 96.8], [167.6, 69.1],
-                        [167.6, 82.7], [180.3, 75.5], [182.9, 79.5], [176.5, 73.6], [186.7, 91.8],
-                        [188.0, 84.1], [188.0, 85.9], [177.8, 81.8], [174.0, 82.5], [177.8, 80.5],
-                        [171.4, 70.0], [185.4, 81.8], [185.4, 84.1], [188.0, 90.5], [188.0, 91.4],
-                        [182.9, 89.1], [176.5, 85.0], [175.3, 69.1], [175.3, 73.6], [188.0, 80.5],
-                        [188.0, 82.7], [175.3, 86.4], [170.5, 67.7], [179.1, 92.7], [177.8, 93.6],
-                        [175.3, 70.9], [182.9, 75.0], [170.8, 93.2], [188.0, 93.2], [180.3, 77.7],
-                        [177.8, 61.4], [185.4, 94.1], [168.9, 75.0], [185.4, 83.6], [180.3, 85.5],
-                        [174.0, 73.9], [167.6, 66.8], [182.9, 87.3], [160.0, 72.3], [180.3, 88.6],
-                        [167.6, 75.5], [186.7, 101.4], [175.3, 91.1], [175.3, 67.3], [175.9, 77.7],
-                        [175.3, 81.8], [179.1, 75.5], [181.6, 84.5], [177.8, 76.6], [182.9, 85.0],
-                        [177.8, 102.5], [184.2, 77.3], [179.1, 71.8], [176.5, 87.9], [188.0, 94.3],
-                        [174.0, 70.9], [167.6, 64.5], [170.2, 77.3], [167.6, 72.3], [188.0, 87.3],
-                        [174.0, 80.0], [176.5, 82.3], [180.3, 73.6], [167.6, 74.1], [188.0, 85.9],
-                        [180.3, 73.2], [167.6, 76.3], [183.0, 65.9], [183.0, 90.9], [179.1, 89.1],
-                        [170.2, 62.3], [177.8, 82.7], [179.1, 79.1], [190.5, 98.2], [177.8, 84.1],
-                        [180.3, 83.2], [180.3, 83.2]]
-                }]
-            });
-        });
+        if(type == 'bd') {
+            return buildings.sort(randOrd).splice(1, 50);
+        }
+
+        if(type == 'mt') {
+            return meters.sort(randOrd).splice(1, 50);
+        }
+        
     };
 
-    $scope.resizeCallback3 = function(state){
-        console.log('Callback fired with state ', state);
-        $(function () {
-            $('#container3').highcharts({
-                chart: {
-                    type: 'scatter',
-                    zoomType: 'xy'
-                },
-                title: {
-                    text: 'Height Versus Weight of 507 Individuals by Gender'
-                },
-                subtitle: {
-                    text: 'Source: Heinz  2003'
-                },
-                xAxis: {
-                    title: {
-                        enabled: true,
-                        text: 'Height (cm)'
-                    },
-                    startOnTick: true,
-                    endOnTick: true,
-                    showLastLabel: true
-                },
-                yAxis: {
-                    title: {
-                        text: 'Weight (kg)'
-                    }
-                },
-                legend: {
-                    layout: 'vertical',
-                    align: 'left',
-                    verticalAlign: 'top',
-                    x: 100,
-                    y: 70,
-                    floating: true,
-                    backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
-                    borderWidth: 1
-                },
-                plotOptions: {
-                    scatter: {
-                        marker: {
-                            radius: 5,
-                            states: {
-                                hover: {
-                                    enabled: true,
-                                    lineColor: 'rgb(100,100,100)'
-                                }
-                            }
-                        },
-                        states: {
-                            hover: {
-                                marker: {
-                                    enabled: false
-                                }
-                            }
-                        },
-                        tooltip: {
-                            headerFormat: '<b>{series.name}</b><br>',
-                            pointFormat: '{point.x} cm, {point.y} kg'
-                        }
-                    }
-                },
-                series: [{
-                    name: 'Female',
-                    color: 'rgba(223, 83, 83, .5)',
-                    data: [[161.2, 51.6], [167.5, 59.0], [159.5, 49.2], [157.0, 63.0], [155.8, 53.6],
-                        [170.0, 59.0], [159.1, 47.6], [166.0, 69.8], [176.2, 66.8], [160.2, 75.2],
-                        [172.5, 55.2], [170.9, 54.2], [172.9, 62.5], [153.4, 42.0], [160.0, 50.0],
-                        [147.2, 49.8], [168.2, 49.2], [175.0, 73.2], [157.0, 47.8], [167.6, 68.8],
-                        [159.5, 50.6], [175.0, 82.5], [166.8, 57.2], [176.5, 87.8], [170.2, 72.8],
-                        [174.0, 54.5], [173.0, 59.8], [179.9, 67.3], [170.5, 67.8], [160.0, 47.0],
-                        [154.4, 46.2], [162.0, 55.0], [176.5, 83.0], [160.0, 54.4], [152.0, 45.8],
-                        [162.1, 53.6], [170.0, 73.2], [160.2, 52.1], [161.3, 67.9], [166.4, 56.6],
-                        [168.9, 62.3], [163.8, 58.5], [167.6, 54.5], [160.0, 50.2], [161.3, 60.3],
-                        [167.6, 58.3], [165.1, 56.2], [160.0, 50.2], [170.0, 72.9], [157.5, 59.8],
-                        [167.6, 61.0], [160.7, 69.1], [163.2, 55.9], [152.4, 46.5], [157.5, 54.3],
-                        [168.3, 54.8], [180.3, 60.7], [165.5, 60.0], [165.0, 62.0], [164.5, 60.3],
-                        [156.0, 52.7], [160.0, 74.3], [163.0, 62.0], [165.7, 73.1], [161.0, 80.0],
-                        [162.0, 54.7], [166.0, 53.2], [174.0, 75.7], [172.7, 61.1], [167.6, 55.7],
-                        [151.1, 48.7], [164.5, 52.3], [163.5, 50.0], [152.0, 59.3], [169.0, 62.5],
-                        [164.0, 55.7], [161.2, 54.8], [155.0, 45.9], [170.0, 70.6], [176.2, 67.2],
-                        [170.0, 69.4], [162.5, 58.2], [170.3, 64.8], [164.1, 71.6], [169.5, 52.8],
-                        [163.2, 59.8], [154.5, 49.0], [159.8, 50.0], [173.2, 69.2], [170.0, 55.9],
-                        [161.4, 63.4], [169.0, 58.2], [166.2, 58.6], [159.4, 45.7], [162.5, 52.2],
-                        [159.0, 48.6], [162.8, 57.8], [159.0, 55.6], [179.8, 66.8], [162.9, 59.4],
-                        [161.0, 53.6], [151.1, 73.2], [168.2, 53.4], [168.9, 69.0], [173.2, 58.4],
-                        [171.8, 56.2], [178.0, 70.6], [164.3, 59.8], [163.0, 72.0], [168.5, 65.2],
-                        [166.8, 56.6], [172.7, 105.2], [163.5, 51.8], [169.4, 63.4], [167.8, 59.0],
-                        [159.5, 47.6], [167.6, 63.0], [161.2, 55.2], [160.0, 45.0], [163.2, 54.0],
-                        [162.2, 50.2], [161.3, 60.2], [149.5, 44.8], [157.5, 58.8], [163.2, 56.4],
-                        [172.7, 62.0], [155.0, 49.2], [156.5, 67.2], [164.0, 53.8], [160.9, 54.4],
-                        [162.8, 58.0], [167.0, 59.8], [160.0, 54.8], [160.0, 43.2], [168.9, 60.5],
-                        [158.2, 46.4], [156.0, 64.4], [160.0, 48.8], [167.1, 62.2], [158.0, 55.5],
-                        [167.6, 57.8], [156.0, 54.6], [162.1, 59.2], [173.4, 52.7], [159.8, 53.2],
-                        [170.5, 64.5], [159.2, 51.8], [157.5, 56.0], [161.3, 63.6], [162.6, 63.2],
-                        [160.0, 59.5], [168.9, 56.8], [165.1, 64.1], [162.6, 50.0], [165.1, 72.3],
-                        [166.4, 55.0], [160.0, 55.9], [152.4, 60.4], [170.2, 69.1], [162.6, 84.5],
-                        [170.2, 55.9], [158.8, 55.5], [172.7, 69.5], [167.6, 76.4], [162.6, 61.4],
-                        [167.6, 65.9], [156.2, 58.6], [175.2, 66.8], [172.1, 56.6], [162.6, 58.6],
-                        [160.0, 55.9], [165.1, 59.1], [182.9, 81.8], [166.4, 70.7], [165.1, 56.8],
-                        [177.8, 60.0], [165.1, 58.2], [175.3, 72.7], [154.9, 54.1], [158.8, 49.1],
-                        [172.7, 75.9], [168.9, 55.0], [161.3, 57.3], [167.6, 55.0], [165.1, 65.5],
-                        [175.3, 65.5], [157.5, 48.6], [163.8, 58.6], [167.6, 63.6], [165.1, 55.2],
-                        [165.1, 62.7], [168.9, 56.6], [162.6, 53.9], [164.5, 63.2], [176.5, 73.6],
-                        [168.9, 62.0], [175.3, 63.6], [159.4, 53.2], [160.0, 53.4], [170.2, 55.0],
-                        [162.6, 70.5], [167.6, 54.5], [162.6, 54.5], [160.7, 55.9], [160.0, 59.0],
-                        [157.5, 63.6], [162.6, 54.5], [152.4, 47.3], [170.2, 67.7], [165.1, 80.9],
-                        [172.7, 70.5], [165.1, 60.9], [170.2, 63.6], [170.2, 54.5], [170.2, 59.1],
-                        [161.3, 70.5], [167.6, 52.7], [167.6, 62.7], [165.1, 86.3], [162.6, 66.4],
-                        [152.4, 67.3], [168.9, 63.0], [170.2, 73.6], [175.2, 62.3], [175.2, 57.7],
-                        [160.0, 55.4], [165.1, 104.1], [174.0, 55.5], [170.2, 77.3], [160.0, 80.5],
-                        [167.6, 64.5], [167.6, 72.3], [167.6, 61.4], [154.9, 58.2], [162.6, 81.8],
-                        [175.3, 63.6], [171.4, 53.4], [157.5, 54.5], [165.1, 53.6], [160.0, 60.0],
-                        [174.0, 73.6], [162.6, 61.4], [174.0, 55.5], [162.6, 63.6], [161.3, 60.9],
-                        [156.2, 60.0], [149.9, 46.8], [169.5, 57.3], [160.0, 64.1], [175.3, 63.6],
-                        [169.5, 67.3], [160.0, 75.5], [172.7, 68.2], [162.6, 61.4], [157.5, 76.8],
-                        [176.5, 71.8], [164.4, 55.5], [160.7, 48.6], [174.0, 66.4], [163.8, 67.3]]
+    $scope.tiers = [
+        {name: "Organisation", icon: "fa fa-users", color: "#6781a1", bColor: "#D3D3D3"},
+        {name: "Building", icon: "fa fa-building-o", color: "#6781a1", bColor: "#E5E5E5"},
+        {name: "Meter", icon: "fa fa-tachometer", color: "#6781a1", bColor: "#F5F5F5"}
+    ];
 
-                }, {
-                    name: 'Male',
-                    color: 'rgba(119, 152, 191, .5)',
-                    data: [[174.0, 65.6], [175.3, 71.8], [193.5, 80.7], [186.5, 72.6], [187.2, 78.8],
-                        [181.5, 74.8], [184.0, 86.4], [184.5, 78.4], [175.0, 62.0], [184.0, 81.6],
-                        [180.0, 76.6], [177.8, 83.6], [192.0, 90.0], [176.0, 74.6], [174.0, 71.0],
-                        [184.0, 79.6], [192.7, 93.8], [171.5, 70.0], [173.0, 72.4], [176.0, 85.9],
-                        [176.0, 78.8], [180.5, 77.8], [172.7, 66.2], [176.0, 86.4], [173.5, 81.8],
-                        [178.0, 89.6], [180.3, 82.8], [180.3, 76.4], [164.5, 63.2], [173.0, 60.9],
-                        [183.5, 74.8], [175.5, 70.0], [188.0, 72.4], [189.2, 84.1], [172.8, 69.1],
-                        [170.0, 59.5], [182.0, 67.2], [170.0, 61.3], [177.8, 68.6], [184.2, 80.1],
-                        [186.7, 87.8], [171.4, 84.7], [172.7, 73.4], [175.3, 72.1], [180.3, 82.6],
-                        [182.9, 88.7], [188.0, 84.1], [177.2, 94.1], [172.1, 74.9], [167.0, 59.1],
-                        [169.5, 75.6], [174.0, 86.2], [172.7, 75.3], [182.2, 87.1], [164.1, 55.2],
-                        [163.0, 57.0], [171.5, 61.4], [184.2, 76.8], [174.0, 86.8], [174.0, 72.2],
-                        [177.0, 71.6], [186.0, 84.8], [167.0, 68.2], [171.8, 66.1], [182.0, 72.0],
-                        [167.0, 64.6], [177.8, 74.8], [164.5, 70.0], [192.0, 101.6], [175.5, 63.2],
-                        [171.2, 79.1], [181.6, 78.9], [167.4, 67.7], [181.1, 66.0], [177.0, 68.2],
-                        [174.5, 63.9], [177.5, 72.0], [170.5, 56.8], [182.4, 74.5], [197.1, 90.9],
-                        [180.1, 93.0], [175.5, 80.9], [180.6, 72.7], [184.4, 68.0], [175.5, 70.9],
-                        [180.6, 72.5], [177.0, 72.5], [177.1, 83.4], [181.6, 75.5], [176.5, 73.0],
-                        [175.0, 70.2], [174.0, 73.4], [165.1, 70.5], [177.0, 68.9], [192.0, 102.3],
-                        [176.5, 68.4], [169.4, 65.9], [182.1, 75.7], [179.8, 84.5], [175.3, 87.7],
-                        [184.9, 86.4], [177.3, 73.2], [167.4, 53.9], [178.1, 72.0], [168.9, 55.5],
-                        [157.2, 58.4], [180.3, 83.2], [170.2, 72.7], [177.8, 64.1], [172.7, 72.3],
-                        [165.1, 65.0], [186.7, 86.4], [165.1, 65.0], [174.0, 88.6], [175.3, 84.1],
-                        [185.4, 66.8], [177.8, 75.5], [180.3, 93.2], [180.3, 82.7], [177.8, 58.0],
-                        [177.8, 79.5], [177.8, 78.6], [177.8, 71.8], [177.8, 116.4], [163.8, 72.2],
-                        [188.0, 83.6], [198.1, 85.5], [175.3, 90.9], [166.4, 85.9], [190.5, 89.1],
-                        [166.4, 75.0], [177.8, 77.7], [179.7, 86.4], [172.7, 90.9], [190.5, 73.6],
-                        [185.4, 76.4], [168.9, 69.1], [167.6, 84.5], [175.3, 64.5], [170.2, 69.1],
-                        [190.5, 108.6], [177.8, 86.4], [190.5, 80.9], [177.8, 87.7], [184.2, 94.5],
-                        [176.5, 80.2], [177.8, 72.0], [180.3, 71.4], [171.4, 72.7], [172.7, 84.1],
-                        [172.7, 76.8], [177.8, 63.6], [177.8, 80.9], [182.9, 80.9], [170.2, 85.5],
-                        [167.6, 68.6], [175.3, 67.7], [165.1, 66.4], [185.4, 102.3], [181.6, 70.5],
-                        [172.7, 95.9], [190.5, 84.1], [179.1, 87.3], [175.3, 71.8], [170.2, 65.9],
-                        [193.0, 95.9], [171.4, 91.4], [177.8, 81.8], [177.8, 96.8], [167.6, 69.1],
-                        [167.6, 82.7], [180.3, 75.5], [182.9, 79.5], [176.5, 73.6], [186.7, 91.8],
-                        [188.0, 84.1], [188.0, 85.9], [177.8, 81.8], [174.0, 82.5], [177.8, 80.5],
-                        [171.4, 70.0], [185.4, 81.8], [185.4, 84.1], [188.0, 90.5], [188.0, 91.4],
-                        [182.9, 89.1], [176.5, 85.0], [175.3, 69.1], [175.3, 73.6], [188.0, 80.5],
-                        [188.0, 82.7], [175.3, 86.4], [170.5, 67.7], [179.1, 92.7], [177.8, 93.6],
-                        [175.3, 70.9], [182.9, 75.0], [170.8, 93.2], [188.0, 93.2], [180.3, 77.7],
-                        [177.8, 61.4], [185.4, 94.1], [168.9, 75.0], [185.4, 83.6], [180.3, 85.5],
-                        [174.0, 73.9], [167.6, 66.8], [182.9, 87.3], [160.0, 72.3], [180.3, 88.6],
-                        [167.6, 75.5], [186.7, 101.4], [175.3, 91.1], [175.3, 67.3], [175.9, 77.7],
-                        [175.3, 81.8], [179.1, 75.5], [181.6, 84.5], [177.8, 76.6], [182.9, 85.0],
-                        [177.8, 102.5], [184.2, 77.3], [179.1, 71.8], [176.5, 87.9], [188.0, 94.3],
-                        [174.0, 70.9], [167.6, 64.5], [170.2, 77.3], [167.6, 72.3], [188.0, 87.3],
-                        [174.0, 80.0], [176.5, 82.3], [180.3, 73.6], [167.6, 74.1], [188.0, 85.9],
-                        [180.3, 73.2], [167.6, 76.3], [183.0, 65.9], [183.0, 90.9], [179.1, 89.1],
-                        [170.2, 62.3], [177.8, 82.7], [179.1, 79.1], [190.5, 98.2], [177.8, 84.1],
-                        [180.3, 83.2], [180.3, 83.2]]
-                }]
-            });
-        });
+    $scope.callbackID = function(id, type) {
+        console.log('Called outside in demo.js', id, type);
     };
 
-    $scope.resizeCallback4 = function(state){
-        console.log('Callback fired with state ', state);
-        $(function () {
-            $('#container4').highcharts({
-                chart: {
-                    type: 'scatter',
-                    zoomType: 'xy'
-                },
-                title: {
-                    text: 'Height Versus Weight of 507 Individuals by Gender'
-                },
-                subtitle: {
-                    text: 'Source: Heinz  2003'
-                },
-                xAxis: {
-                    title: {
-                        enabled: true,
-                        text: 'Height (cm)'
-                    },
-                    startOnTick: true,
-                    endOnTick: true,
-                    showLastLabel: true
-                },
-                yAxis: {
-                    title: {
-                        text: 'Weight (kg)'
-                    }
-                },
-                legend: {
-                    layout: 'vertical',
-                    align: 'left',
-                    verticalAlign: 'top',
-                    x: 100,
-                    y: 70,
-                    floating: true,
-                    backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
-                    borderWidth: 1
-                },
-                plotOptions: {
-                    scatter: {
-                        marker: {
-                            radius: 5,
-                            states: {
-                                hover: {
-                                    enabled: true,
-                                    lineColor: 'rgb(100,100,100)'
-                                }
-                            }
-                        },
-                        states: {
-                            hover: {
-                                marker: {
-                                    enabled: false
-                                }
-                            }
-                        },
-                        tooltip: {
-                            headerFormat: '<b>{series.name}</b><br>',
-                            pointFormat: '{point.x} cm, {point.y} kg'
-                        }
-                    }
-                },
-                series: [{
-                    name: 'Female',
-                    color: 'rgba(223, 83, 83, .5)',
-                    data: [[161.2, 51.6], [167.5, 59.0], [159.5, 49.2], [157.0, 63.0], [155.8, 53.6],
-                        [170.0, 59.0], [159.1, 47.6], [166.0, 69.8], [176.2, 66.8], [160.2, 75.2],
-                        [172.5, 55.2], [170.9, 54.2], [172.9, 62.5], [153.4, 42.0], [160.0, 50.0],
-                        [147.2, 49.8], [168.2, 49.2], [175.0, 73.2], [157.0, 47.8], [167.6, 68.8],
-                        [159.5, 50.6], [175.0, 82.5], [166.8, 57.2], [176.5, 87.8], [170.2, 72.8],
-                        [174.0, 54.5], [173.0, 59.8], [179.9, 67.3], [170.5, 67.8], [160.0, 47.0],
-                        [154.4, 46.2], [162.0, 55.0], [176.5, 83.0], [160.0, 54.4], [152.0, 45.8],
-                        [162.1, 53.6], [170.0, 73.2], [160.2, 52.1], [161.3, 67.9], [166.4, 56.6],
-                        [168.9, 62.3], [163.8, 58.5], [167.6, 54.5], [160.0, 50.2], [161.3, 60.3],
-                        [167.6, 58.3], [165.1, 56.2], [160.0, 50.2], [170.0, 72.9], [157.5, 59.8],
-                        [167.6, 61.0], [160.7, 69.1], [163.2, 55.9], [152.4, 46.5], [157.5, 54.3],
-                        [168.3, 54.8], [180.3, 60.7], [165.5, 60.0], [165.0, 62.0], [164.5, 60.3],
-                        [156.0, 52.7], [160.0, 74.3], [163.0, 62.0], [165.7, 73.1], [161.0, 80.0],
-                        [162.0, 54.7], [166.0, 53.2], [174.0, 75.7], [172.7, 61.1], [167.6, 55.7],
-                        [151.1, 48.7], [164.5, 52.3], [163.5, 50.0], [152.0, 59.3], [169.0, 62.5],
-                        [164.0, 55.7], [161.2, 54.8], [155.0, 45.9], [170.0, 70.6], [176.2, 67.2],
-                        [170.0, 69.4], [162.5, 58.2], [170.3, 64.8], [164.1, 71.6], [169.5, 52.8],
-                        [163.2, 59.8], [154.5, 49.0], [159.8, 50.0], [173.2, 69.2], [170.0, 55.9],
-                        [161.4, 63.4], [169.0, 58.2], [166.2, 58.6], [159.4, 45.7], [162.5, 52.2],
-                        [159.0, 48.6], [162.8, 57.8], [159.0, 55.6], [179.8, 66.8], [162.9, 59.4],
-                        [161.0, 53.6], [151.1, 73.2], [168.2, 53.4], [168.9, 69.0], [173.2, 58.4],
-                        [171.8, 56.2], [178.0, 70.6], [164.3, 59.8], [163.0, 72.0], [168.5, 65.2],
-                        [166.8, 56.6], [172.7, 105.2], [163.5, 51.8], [169.4, 63.4], [167.8, 59.0],
-                        [159.5, 47.6], [167.6, 63.0], [161.2, 55.2], [160.0, 45.0], [163.2, 54.0],
-                        [162.2, 50.2], [161.3, 60.2], [149.5, 44.8], [157.5, 58.8], [163.2, 56.4],
-                        [172.7, 62.0], [155.0, 49.2], [156.5, 67.2], [164.0, 53.8], [160.9, 54.4],
-                        [162.8, 58.0], [167.0, 59.8], [160.0, 54.8], [160.0, 43.2], [168.9, 60.5],
-                        [158.2, 46.4], [156.0, 64.4], [160.0, 48.8], [167.1, 62.2], [158.0, 55.5],
-                        [167.6, 57.8], [156.0, 54.6], [162.1, 59.2], [173.4, 52.7], [159.8, 53.2],
-                        [170.5, 64.5], [159.2, 51.8], [157.5, 56.0], [161.3, 63.6], [162.6, 63.2],
-                        [160.0, 59.5], [168.9, 56.8], [165.1, 64.1], [162.6, 50.0], [165.1, 72.3],
-                        [166.4, 55.0], [160.0, 55.9], [152.4, 60.4], [170.2, 69.1], [162.6, 84.5],
-                        [170.2, 55.9], [158.8, 55.5], [172.7, 69.5], [167.6, 76.4], [162.6, 61.4],
-                        [167.6, 65.9], [156.2, 58.6], [175.2, 66.8], [172.1, 56.6], [162.6, 58.6],
-                        [160.0, 55.9], [165.1, 59.1], [182.9, 81.8], [166.4, 70.7], [165.1, 56.8],
-                        [177.8, 60.0], [165.1, 58.2], [175.3, 72.7], [154.9, 54.1], [158.8, 49.1],
-                        [172.7, 75.9], [168.9, 55.0], [161.3, 57.3], [167.6, 55.0], [165.1, 65.5],
-                        [175.3, 65.5], [157.5, 48.6], [163.8, 58.6], [167.6, 63.6], [165.1, 55.2],
-                        [165.1, 62.7], [168.9, 56.6], [162.6, 53.9], [164.5, 63.2], [176.5, 73.6],
-                        [168.9, 62.0], [175.3, 63.6], [159.4, 53.2], [160.0, 53.4], [170.2, 55.0],
-                        [162.6, 70.5], [167.6, 54.5], [162.6, 54.5], [160.7, 55.9], [160.0, 59.0],
-                        [157.5, 63.6], [162.6, 54.5], [152.4, 47.3], [170.2, 67.7], [165.1, 80.9],
-                        [172.7, 70.5], [165.1, 60.9], [170.2, 63.6], [170.2, 54.5], [170.2, 59.1],
-                        [161.3, 70.5], [167.6, 52.7], [167.6, 62.7], [165.1, 86.3], [162.6, 66.4],
-                        [152.4, 67.3], [168.9, 63.0], [170.2, 73.6], [175.2, 62.3], [175.2, 57.7],
-                        [160.0, 55.4], [165.1, 104.1], [174.0, 55.5], [170.2, 77.3], [160.0, 80.5],
-                        [167.6, 64.5], [167.6, 72.3], [167.6, 61.4], [154.9, 58.2], [162.6, 81.8],
-                        [175.3, 63.6], [171.4, 53.4], [157.5, 54.5], [165.1, 53.6], [160.0, 60.0],
-                        [174.0, 73.6], [162.6, 61.4], [174.0, 55.5], [162.6, 63.6], [161.3, 60.9],
-                        [156.2, 60.0], [149.9, 46.8], [169.5, 57.3], [160.0, 64.1], [175.3, 63.6],
-                        [169.5, 67.3], [160.0, 75.5], [172.7, 68.2], [162.6, 61.4], [157.5, 76.8],
-                        [176.5, 71.8], [164.4, 55.5], [160.7, 48.6], [174.0, 66.4], [163.8, 67.3]]
+    $scope.dataEndpoint = function(type, query) {
 
-                }, {
-                    name: 'Male',
-                    color: 'rgba(119, 152, 191, .5)',
-                    data: [[174.0, 65.6], [175.3, 71.8], [193.5, 80.7], [186.5, 72.6], [187.2, 78.8],
-                        [181.5, 74.8], [184.0, 86.4], [184.5, 78.4], [175.0, 62.0], [184.0, 81.6],
-                        [180.0, 76.6], [177.8, 83.6], [192.0, 90.0], [176.0, 74.6], [174.0, 71.0],
-                        [184.0, 79.6], [192.7, 93.8], [171.5, 70.0], [173.0, 72.4], [176.0, 85.9],
-                        [176.0, 78.8], [180.5, 77.8], [172.7, 66.2], [176.0, 86.4], [173.5, 81.8],
-                        [178.0, 89.6], [180.3, 82.8], [180.3, 76.4], [164.5, 63.2], [173.0, 60.9],
-                        [183.5, 74.8], [175.5, 70.0], [188.0, 72.4], [189.2, 84.1], [172.8, 69.1],
-                        [170.0, 59.5], [182.0, 67.2], [170.0, 61.3], [177.8, 68.6], [184.2, 80.1],
-                        [186.7, 87.8], [171.4, 84.7], [172.7, 73.4], [175.3, 72.1], [180.3, 82.6],
-                        [182.9, 88.7], [188.0, 84.1], [177.2, 94.1], [172.1, 74.9], [167.0, 59.1],
-                        [169.5, 75.6], [174.0, 86.2], [172.7, 75.3], [182.2, 87.1], [164.1, 55.2],
-                        [163.0, 57.0], [171.5, 61.4], [184.2, 76.8], [174.0, 86.8], [174.0, 72.2],
-                        [177.0, 71.6], [186.0, 84.8], [167.0, 68.2], [171.8, 66.1], [182.0, 72.0],
-                        [167.0, 64.6], [177.8, 74.8], [164.5, 70.0], [192.0, 101.6], [175.5, 63.2],
-                        [171.2, 79.1], [181.6, 78.9], [167.4, 67.7], [181.1, 66.0], [177.0, 68.2],
-                        [174.5, 63.9], [177.5, 72.0], [170.5, 56.8], [182.4, 74.5], [197.1, 90.9],
-                        [180.1, 93.0], [175.5, 80.9], [180.6, 72.7], [184.4, 68.0], [175.5, 70.9],
-                        [180.6, 72.5], [177.0, 72.5], [177.1, 83.4], [181.6, 75.5], [176.5, 73.0],
-                        [175.0, 70.2], [174.0, 73.4], [165.1, 70.5], [177.0, 68.9], [192.0, 102.3],
-                        [176.5, 68.4], [169.4, 65.9], [182.1, 75.7], [179.8, 84.5], [175.3, 87.7],
-                        [184.9, 86.4], [177.3, 73.2], [167.4, 53.9], [178.1, 72.0], [168.9, 55.5],
-                        [157.2, 58.4], [180.3, 83.2], [170.2, 72.7], [177.8, 64.1], [172.7, 72.3],
-                        [165.1, 65.0], [186.7, 86.4], [165.1, 65.0], [174.0, 88.6], [175.3, 84.1],
-                        [185.4, 66.8], [177.8, 75.5], [180.3, 93.2], [180.3, 82.7], [177.8, 58.0],
-                        [177.8, 79.5], [177.8, 78.6], [177.8, 71.8], [177.8, 116.4], [163.8, 72.2],
-                        [188.0, 83.6], [198.1, 85.5], [175.3, 90.9], [166.4, 85.9], [190.5, 89.1],
-                        [166.4, 75.0], [177.8, 77.7], [179.7, 86.4], [172.7, 90.9], [190.5, 73.6],
-                        [185.4, 76.4], [168.9, 69.1], [167.6, 84.5], [175.3, 64.5], [170.2, 69.1],
-                        [190.5, 108.6], [177.8, 86.4], [190.5, 80.9], [177.8, 87.7], [184.2, 94.5],
-                        [176.5, 80.2], [177.8, 72.0], [180.3, 71.4], [171.4, 72.7], [172.7, 84.1],
-                        [172.7, 76.8], [177.8, 63.6], [177.8, 80.9], [182.9, 80.9], [170.2, 85.5],
-                        [167.6, 68.6], [175.3, 67.7], [165.1, 66.4], [185.4, 102.3], [181.6, 70.5],
-                        [172.7, 95.9], [190.5, 84.1], [179.1, 87.3], [175.3, 71.8], [170.2, 65.9],
-                        [193.0, 95.9], [171.4, 91.4], [177.8, 81.8], [177.8, 96.8], [167.6, 69.1],
-                        [167.6, 82.7], [180.3, 75.5], [182.9, 79.5], [176.5, 73.6], [186.7, 91.8],
-                        [188.0, 84.1], [188.0, 85.9], [177.8, 81.8], [174.0, 82.5], [177.8, 80.5],
-                        [171.4, 70.0], [185.4, 81.8], [185.4, 84.1], [188.0, 90.5], [188.0, 91.4],
-                        [182.9, 89.1], [176.5, 85.0], [175.3, 69.1], [175.3, 73.6], [188.0, 80.5],
-                        [188.0, 82.7], [175.3, 86.4], [170.5, 67.7], [179.1, 92.7], [177.8, 93.6],
-                        [175.3, 70.9], [182.9, 75.0], [170.8, 93.2], [188.0, 93.2], [180.3, 77.7],
-                        [177.8, 61.4], [185.4, 94.1], [168.9, 75.0], [185.4, 83.6], [180.3, 85.5],
-                        [174.0, 73.9], [167.6, 66.8], [182.9, 87.3], [160.0, 72.3], [180.3, 88.6],
-                        [167.6, 75.5], [186.7, 101.4], [175.3, 91.1], [175.3, 67.3], [175.9, 77.7],
-                        [175.3, 81.8], [179.1, 75.5], [181.6, 84.5], [177.8, 76.6], [182.9, 85.0],
-                        [177.8, 102.5], [184.2, 77.3], [179.1, 71.8], [176.5, 87.9], [188.0, 94.3],
-                        [174.0, 70.9], [167.6, 64.5], [170.2, 77.3], [167.6, 72.3], [188.0, 87.3],
-                        [174.0, 80.0], [176.5, 82.3], [180.3, 73.6], [167.6, 74.1], [188.0, 85.9],
-                        [180.3, 73.2], [167.6, 76.3], [183.0, 65.9], [183.0, 90.9], [179.1, 89.1],
-                        [170.2, 62.3], [177.8, 82.7], [179.1, 79.1], [190.5, 98.2], [177.8, 84.1],
-                        [180.3, 83.2], [180.3, 83.2]]
-                }]
-            });
-        });
-    };
+        var deferred = $q.defer();
 
+        setTimeout(function() {
+            //var randomFailCondition = !!Math.floor(Math.random() * 2);
+            var randomFailCondition = true;
+
+            switch (type) {
+                case 'Organisation':
+                    if (randomFailCondition) {
+                        deferred.resolve(getMeRandomItems('org'));
+                    } else {
+                        deferred.reject([]);
+                    }
+                    break;
+                case 'Building':
+                    if (randomFailCondition) {
+                        deferred.resolve(getMeRandomItems('bd'));
+                    } else {
+                        deferred.reject([]);
+                    }
+                    break;
+                case 'Meter':
+                    if (randomFailCondition) {
+                        deferred.resolve(getMeRandomItems('mt'));
+                    } else {
+                        deferred.reject([]);
+                    }
+                    break;
+            }
+
+        }, 500);
+
+        return deferred.promise;
+
+    }
 
 });

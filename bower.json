@@ -6,7 +6,8 @@
     "dist/angular-hierarchical-typeahead.css"
   ],
   "dependencies": {
-    "angular": "~1.3"
+    "angular": "~1.4.0",
+    "angular-vs-repeat": "latest"
   },
   "ignore": [
     "**/.*",
@@ -25,11 +26,11 @@
     "tests"
   ],
   "devDependencies": {
-    "angular-mocks": "~1.3",
-    "jquery": "~2.1.0"
+    "angular-mocks": "~1.4.12",
+    "angular-animate": "~1.4.12"
   },
   "resolutions": {
-    "angular": "1.3.19"
+    "angular": "~1.4.12"
   },
   "homepage": "https://github.com/ArthurianX/angular-hierarchical-typeahead",
   "authors": [
