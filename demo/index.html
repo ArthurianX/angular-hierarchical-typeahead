@@ -26,13 +26,13 @@
         <div class="row">
 
             <div class="col-md-12">
-                <h2>angular-hierarchical-typeahead (WIP)</h2>
-                <p class="lead">Multi Purpose Expand / Collapse Component</p>
+                <h2>angular-hierarchical-typeahead</h2>
+                <p class="lead">Multiple Level TypeAhead Component</p>
             </div>
 
         </div>
 
-        <div class="row">
+        <div class="row" style="margin-top:50px">
             <art-typeahead levels="tiers" pagination="true" trigger="callbackID(id, type)" source="dataEndpoint"></art-typeahead>
         </div>
 
@@ -109,6 +109,50 @@
 
         <div class="row">
             <div class="col-md-12">
+                <form action="" class="form-horizontal">
+                    <legend>Available Actions</legend>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Action</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><i class="fa fa-arrow-down" aria-hidden="true"></i> & <i class="fa fa-arrow-up" aria-hidden="true"></i></td>
+                                <td valign="middle">Move up and down on the list with keyboard arrows</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> CLICK</td>
+                                <td rowspan="2" valign="middle">Send callback to controller with the element selected, for opening a new view etc.</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> SPACE</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> + <i class="fa fa-mouse-pointer" aria-hidden="true"></i> DOUBLE-CLICK</td>
+                                <td rowspan="2" valign="middle">Open the element in a new Level</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> ENTER</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> BACKSPACE</td>
+                                <td valign="middle">Go back one level</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> CLICK on a Level</td>
+                                <td valign="middle">Go back to the clicked Level</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
                 <form class="form-horizontal" role="form">
                     <legend>Component API / Options</legend>
                     <table class="table table-bordered">
@@ -126,55 +170,36 @@
                             <td>The main directive declaration</td>
                         </tr>
                         <tr>
-                            <td>resizr-type</td>
-                            <td>string</td>
-                            <td>Accepted values are 'zoom' and 'css'. 'zoom' uses the zoom css property while 'css' just resizes the container</td>
+                            <td>levels</td>
+                            <td>Object</td>
+                            <td>Mandatory. An object containing levels description. Object accepted: `[{name: "Organisation", icon: "fa fa-users", color: "#3f3f3f", bColor: "#a6b5bd"}]`</td>
                         </tr>
                         <tr>
-                            <td>resizr-collapsed</td>
-                            <td>boolean</td>
-                            <td>When 'true', the container is collapsed to begin with.</td>
-                        </tr>
-                        <tr>
-                            <td>resizr-callback</td>
+                            <td>trigger</td>
                             <td>function</td>
-                            <td>If present, this will callback a function inside your controller</td>
+                            <td>Mandatory. A function to callback the choice selected in the controller, response is two parameters, `id` and `type`, the latter being the level name. </td>
                         </tr>
                         <tr>
-                            <td>resizr-appear-hover</td>
+                            <td>source</td>
+                            <td>promise-enabled function</td>
+                            <td>Mandatory. The service that is called to get the data, parameters are `type`, `query` and `pagination`, `type` is the current level, `pagination` is a Boolean. The logic is on you in the controller. The received data should be arrays like [{id: 12, name: 'SomeItem'}], preprocess in the controller if necessary.</td>
+                        </tr>
+                        <tr>
+                            <td>pagination</td>
                             <td>boolean</td>
-                            <td>When true, the controls are hidden and will appear on hover</td>
+                            <td>Optional. If `true`, there will be a load more list item, and the `source` call will contain a true pagination parameter. The logic is on you in the controller.</td>
                         </tr>
                         <tr>
-                            <td>resizr-ratio</td>
-                            <td>string</td>
-                            <td>Default is `50/50`, the ratio with which the container will be resized [width]/[height]</td>
-                        </tr>
-                        <tr>
-                            <td>resizr-position</td>
-                            <td>string</td>
-                            <td>Position of the controls button: "bottom-left", "bottom-right", "right", "left", "top-left", "top-right"</td>
-                        </tr>
-                        <tr>
-                            <td>resizr-border</td>
-                            <td>string</td>
-                            <td>Values accepted are colors, when present the container will have a border with the specified color, the controls will have the same colors.</td>
-                        </tr>
-                        <tr>
-                            <td>resizr-parent-class</td>
-                            <td>string</td>
-                            <td>Name of class to be replaced</td>
-                        </tr>
-                        <tr>
-                            <td>resizr-parent-level</td>
+                            <td>min-query</td>
                             <td>integer</td>
-                            <td># of parents to go up for the `resizr-parent-class` property, default is `0`</td>
+                            <td>Otional. Query length to trigger a search.</td>
                         </tr>
                         <tr>
-                            <td>resizr-adjacent</td>
-                            <td>boolean</td>
-                            <td>If enabled all the sibling at the requested parent level will be resized, with a class if present or with css</td>
+                            <td>max-results</td>
+                            <td>integer</td>
+                            <td>Otional. Max results to show before displaying the user a message to user the search bar.</td>
                         </tr>
+
                         </tbody>
                     </table>
 

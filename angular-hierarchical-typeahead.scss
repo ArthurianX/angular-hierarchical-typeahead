@@ -139,7 +139,8 @@
             padding: 10px 20px;
             margin-right: 0px;
             position: relative;
-            color: #595959;
+            color: #3f3f3f; //Ex 595959
+            text-shadow: 0 0 8px rgba(255,255,255,0.7);
             -webkit-box-shadow: 4px 3px 3px rgba(0,0,0,0.3);
             -moz-box-shadow: 4px 3px 3px rgba(0,0,0,0.3);
             box-shadow: 4px 0px 3px rgba(0,0,0,0.3);
@@ -159,7 +160,7 @@
 
             i {
                 margin-right: 10px;
-                text-shadow: 0px 4px 10px #ffffff;
+                text-shadow: 0px 4px 10px rgba(255,255,255, 0.4);
                 filter: dropshadow(color=#ffffff, offx=0, offy=0)
             }
             cursor: pointer;
@@ -191,6 +192,11 @@
                 background: rgba(41,128,185, 0.5);
             }
         }
+        &.loading {
+            ul {
+                opacity: 0.4;
+            }
+        }
         ul {
             list-style: none;
             margin: 0px;
@@ -207,6 +213,11 @@
                 &:nth-child(even) {
                     background-color: #fcfcfc;
                 }
+                &.load-more {
+                    cursor: pointer;
+                    background-color: #595959;
+                    color: #fff;
+                }
             }
         }
     }
@@ -217,18 +228,20 @@
         }
     }
 
-    $green: #008744;
-    $blue: #0057e7;
-    $red: #d62d20;
-    $yellow: #ffa700;
+    $green: #61bd6d;
+    $blue: rgba(41,128,185, 1);
+    $red: #e25041;
+    $yellow: #fac51c;
     $white: #eee;
-
-    // scaling... any units
     $width: 100px;
+
     .art-loader {
-        position: relative;
-        margin: 75px auto 0 auto;
+        position: absolute;
+        margin: 105px auto 0 -($width/2);
         width: $width;
+        top: 0px;
+        left: 50%;
+        z-index: 10;
         &:before {
             content: '';
             display: block;
@@ -252,7 +265,7 @@
     .path {
         stroke-dasharray: 1, 200;
         stroke-dashoffset: 0;
-        animation: dash 1.5s ease-in-out infinite, color 3s ease-in-out infinite;
+        animation: dash 1.5s ease-in-out infinite, color 2s ease-in-out infinite;
         stroke-linecap: round;
     }
 
@@ -291,6 +304,42 @@
         80%,
         90% {
             stroke: $yellow;
+        }
+    }
+
+    .art-elements-added {
+        transition: all 0.7s ease-in-out;
+        color: #61bd6d;
+        font-size: 16px;
+        background-color: transparent;
+        padding: 2px 15px;
+        display: inline-block;
+        border-radius: 5px;
+        border: 1px solid #61bd6d;
+        position: absolute;
+        right: 17px;
+        margin-top: -37px;
+        z-index: 11;
+        opacity: 0.6;
+        i {
+            margin-right:10px;
+        }
+        &.ng-enter {
+            opacity:0;
+            margin-top: -37px;
+
+        }
+        &.ng-enter.ng-enter-active {
+            opacity:0.6;
+            margin-top: -150px;
+        }
+
+        &.ng-leave {
+            opacity:0;
+            margin-top: -150px;
+        }
+        &.ng-leave.ng-leave-active {
+            opacity:0.6;
         }
     }
 }

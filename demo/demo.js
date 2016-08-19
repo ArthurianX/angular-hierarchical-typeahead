@@ -16,32 +16,52 @@ angular.module('app').controller('DemoCtrl',function($scope,$http, $q){
         }
 
         if(type == 'org') {
-            return organisations.sort(randOrd).splice(1, 50);
+            return organisations.sort(randOrd).splice(1, number);
         }
 
         if(type == 'bd') {
-            return buildings.sort(randOrd).splice(1, 50);
+            return buildings.sort(randOrd).splice(1, number);
         }
 
         if(type == 'mt') {
-            return meters.sort(randOrd).splice(1, 50);
+            return meters.sort(randOrd).splice(1, number);
         }
         
     };
 
     $scope.tiers = [
-        {name: "Organisation", icon: "fa fa-users", color: "#2980b9", bColor: "#E6E6E6"},
-        {name: "Building", icon: "fa fa-building-o", color: "#2980b9", bColor: "#ECECEC"},
-        {name: "Meter", icon: "fa fa-tachometer", color: "#2980b9", bColor: "#F5F5F5"}
+        {name: "Organisation", icon: "fa fa-users", color: "#3f3f3f", bColor: "#a6b5bd"},
+        {name: "Building", icon: "fa fa-building-o", color: "#3f3f3f", bColor: "#c5d7e0"},
+        {name: "Meter", icon: "fa fa-tachometer", color: "#3f3f3f", bColor: "#e8eff3"},
+        {name: "Node", icon: "fa fa-codepen", color: "#3f3f3f", bColor: "#c5d7e0"},
+        {name: "Grain", icon: "fa fa-bomb", color: "#3f3f3f", bColor: "#a6b5bd"}
     ];
 
     $scope.callbackID = function(id, type) {
         console.log('Called outside in demo.js', id, type);
     };
 
-    $scope.dataEndpoint = function(type, query) {
+    $scope.dataEndpoint = function(type, query, pagination) {
+        var paginationSize = 50;
+        if (pagination) {
+            paginationSize = 100;
+        }
 
         var deferred = $q.defer();
+
+        /**
+         *
+         *  Pagination dynamic:
+         *  - always save the last data sent to the component, when the pagination parameter is true, concatenate the existing data with the new data, iterative
+         *  - add the last data inside the tiers object again, and keep adding to it and sending it while the pagination is active
+         *  TODO: ^^^ Do this in the component ? Yea, do this in the component.
+         *  
+         *  When we receive pagination parameter as true:
+         *  - increment a page number in the tiers object, to know which level has what page #
+         *  - when the pagination parameter is undefined / null / false / whatev's, reset all the page numbers
+         *
+         *
+         **/
 
         setTimeout(function() {
             //var randomFailCondition = !!Math.floor(Math.random() * 2);
@@ -50,21 +70,35 @@ angular.module('app').controller('DemoCtrl',function($scope,$http, $q){
             switch (type) {
                 case 'Organisation':
                     if (randomFailCondition) {
-                        deferred.resolve(getMeRandomItems('org'));
+                        deferred.resolve(getMeRandomItems('org', paginationSize));
                     } else {
                         deferred.reject([]);
                     }
                     break;
                 case 'Building':
                     if (randomFailCondition) {
-                        deferred.resolve(getMeRandomItems('bd'));
+                        deferred.resolve(getMeRandomItems('bd', paginationSize));
                     } else {
                         deferred.reject([]);
                     }
                     break;
                 case 'Meter':
                     if (randomFailCondition) {
-                        deferred.resolve(getMeRandomItems('mt'));
+                        deferred.resolve(getMeRandomItems('mt', paginationSize));
+                    } else {
+                        deferred.reject([]);
+                    }
+                    break;
+                case 'Node':
+                    if (randomFailCondition) {
+                        deferred.resolve(getMeRandomItems('mt', paginationSize));
+                    } else {
+                        deferred.reject([]);
+                    }
+                    break;
+                case 'Grain':
+                    if (randomFailCondition) {
+                        deferred.resolve(getMeRandomItems('mt', paginationSize));
                     } else {
                         deferred.reject([]);
                     }

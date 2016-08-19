@@ -14,21 +14,44 @@ angular.module('artTypeahead')
                     levels: "=levels", // the levels the component can go too, array of e.g.: {name: "Organisation", icon: "fa fa-users", color: "#fff", bColor: "#222"}
                     callOutside: "&trigger", //It will do an outside callback with the selected element id and level, e.g.: {level: 'Building', id: 123}
                     source: "=", //Service that will be called to fetch data depending on the level
-                    pagination: "@"
+                    pagination: "@",
+                    minQuery: '@',
+                    maxResults: '@'
                 },
                 transclude: false,
                 templateUrl: 'angular-hierarchical-typeahead.html',
-                controller: function($scope) {
+                controller: function($scope, $timeout) {
                     // Initialization
                     $scope.loading = false;
-                    $scope.currentPlaceholder = $scope.levels[0].name;
-
                     $scope.query = null;
                     $scope.lastLevel = false;
+                    $scope.addedElements = false;
+                    $scope.elementsAdded = 0;
+                    $scope.tooMany = false;
+
+                    var defaultValues = {
+                        maxResults: 200,
+                        dblClickTime: 400,
+                        minQuery: 2,
+                        defaultLevels: [{name: "Level1", icon: "fa fa-users", color: "#3f3f3f", bColor: "#a6b5bd"},
+                            {name: "Level2", icon: "fa fa-building-o", color: "#3f3f3f", bColor: "#c5d7e0"},
+                            {name: "Level3", icon: "fa fa-tachometer", color: "#3f3f3f", bColor: "#e8eff3"}]
+                    };
+
+                    // Configuration
+                    $scope.currentPlaceholder = $scope.levels[0].name;
+                    
+                    if ($scope.minQuery) {
+                        defaultValues.minQuery = parseInt($scope.minQuery); 
+                    }
+
+                    if ($scope.maxResults) {
+                        defaultValues.maxResults = parseInt($scope.maxResults);
+                    }
 
                     // Utilities
 
-                    var whichLevel = function whichLevel(){
+                    $scope.whichLevel = function whichLevel(){
                         //Always set by default to last level, so when we're at the end the last level will be returned.
                         var rightIndex = $scope.levelsActive.length -1;
 
@@ -49,7 +72,7 @@ angular.module('artTypeahead')
 
                         var detectDoubleClick = function detectDoubleClick(lastStamp, currentStamp){
                             // People instinctively double-click when single click does not work, calculate here.
-                            if ( (currentStamp - lastStamp) < 400  ) {
+                            if ( (currentStamp - lastStamp) < defaultValues.dblClickTime  ) {
                                 return true;
                             } else {
                                 return false;
@@ -57,7 +80,7 @@ angular.module('artTypeahead')
                         };
 
                         // Get the current active level
-                        var rightIndex = whichLevel();
+                        var rightIndex = $scope.whichLevel();
 
                         //Move to next level only on space, enter or double click
                         if (event.keyCode === 13 || detectDoubleClick(timeStamp, event.timeStamp)) {
@@ -109,9 +132,13 @@ angular.module('artTypeahead')
                         //$scope.transitElement(rightIndex); TODO: This does not work well yet, fix.
                     };
 
-                    $scope.actionLevel = function actionLevel(level, index){
+                    $scope.actionLevel = function actionLevel(level, index, resetBackspace){
+                        if (!level.activeName && !resetBackspace) {
+                            return false;
+                        }
+
                         // Get the current active level
-                        var rightIndex = whichLevel();
+                        var rightIndex = $scope.whichLevel();
 
                         if (index < rightIndex) {
                             // Means we have more stuff to reset, e.g. we have all levels selected, I click the first, all need to reset
@@ -129,23 +156,55 @@ angular.module('artTypeahead')
                         $scope.currentPlaceholder = level.name;
                         getOutsideData(false);
                         $scope.focusOnSearch();
+
+                        if (resetBackspace) {
+                            $scope.$apply();
+                        }
                     };
 
-                    var getOutsideData = function getOutsideData(query, oldQuery){
-
+                    var getOutsideData = function getOutsideData(query, pagination){
+                        
                         $scope.loading = true;
-                        $scope.results = false;
+                        if (!pagination) {
+                            $scope.results = false;
+                        }
 
-                        var rightIndex = whichLevel();
+                        var rightIndex = $scope.whichLevel();
 
-                        $scope.source($scope.levels[rightIndex].name, query).then(function(results){
-                            console.error($scope.levels[rightIndex].name);
+                        $scope.source($scope.levels[rightIndex].name, query, pagination).then(function(results){
+                            //console.error($scope.levels[rightIndex].name);
                             //console.log(results);
+                            $scope.tooMany = false;
                             if (results.length > 0) {
-                                $scope.results = results;
-                                $scope.callOutside({id: results[0].id, type: $scope.levels[rightIndex].name});
+
+                                if (!pagination) {
+
+                                    $scope.results = results;
+                                    $scope.callOutside({id: results[0].id, type: $scope.levels[rightIndex].name});
+                                    $scope.levels[rightIndex].dataSet = results;
+                                    
+                                } else {
+                                    
+                                    $scope.results = $scope.results.concat(results);
+                                    $scope.addedElements = true;
+                                    $scope.elementsAdded = results.length;
+                                    $timeout(function(){
+                                        $scope.addedElements = false;
+                                    }, 700);
+                                    
+                                    // If the user loads too many elements, hide everything and suggest filtering
+                                    if ($scope.results.length > defaultValues.maxResults) {
+                                        $scope.tooMany = true;
+                                        $scope.results = false;
+                                    }
+                                }
+
                             } else {
-                                $scope.results = false;
+                                // If there's no pagination, delete the results, if there's pagination leave the results intact
+                                if (!pagination) {
+                                    $scope.results = false;    
+                                } 
+                                
                             }
                             $scope.loading = false;
                         }, function(reject){
@@ -156,13 +215,15 @@ angular.module('artTypeahead')
                         
                     };
 
+                    $scope.getOutsideData = getOutsideData;
 
-                    $scope.$watch('query', function(newVal, oldVal){
-                        if (newVal && newVal.length > 2) {
-                            getOutsideData(newVal, oldVal);
+
+                    $scope.$watch('query', function(newVal){
+                        if (newVal && newVal.length > defaultValues.minQuery) {
+                            getOutsideData(newVal);
 
                             //When you search for something, deselect the current item
-                            var rightIndex = whichLevel();
+                            var rightIndex = $scope.whichLevel();
                             $scope.levelsActive[rightIndex].activeName = false;
                         }
                     });
@@ -246,11 +307,21 @@ angular.module('artTypeahead')
 
 
                     element[0].querySelector('.levels.search-bar').addEventListener('keydown', function searchDown(event) {
+
                         if (event.keyCode === 40 && scope.results) {
                             event.stopPropagation();
                             event.preventDefault();
                             element[0].querySelectorAll('.art-results li')[1].click();
                         }
+
+                        if (event.keyCode === 8 && (!scope.query || scope.query.length)  ) {
+                            // Go back one level
+                            var rightIndex = scope.whichLevel();
+                            if (rightIndex > 0) {
+                                scope.actionLevel(scope.levelsActive[rightIndex-1], rightIndex-1, true);
+                            }
+                        }
+
                     }, false);
 
                     scope.focusOnSearch = function focusOnSearch(){
