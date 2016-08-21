@@ -1,7 +1,7 @@
 {
   "name": "angular-hierarchical-typeahead",
   "main": "angular-hierarchical-typeahead.js",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "",
   "repository": {
     "type": "git",

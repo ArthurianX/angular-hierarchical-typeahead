@@ -6,8 +6,7 @@
     "dist/angular-hierarchical-typeahead.css"
   ],
   "dependencies": {
-    "angular": "~1.4.0",
-    "angular-vs-repeat": "latest"
+    "angular": "~1.4.0"
   },
   "ignore": [
     "**/.*",
