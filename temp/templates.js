@@ -23,7 +23,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "    <div class=\"art-results\" ng-class=\"{'loading': loading}\">\n" +
     "        <ul kb-list ng-if=\"results\">\n" +
-    "            <li ng-repeat=\"item in results\" kb-item kb-invoke=\"selectItem(item, $index, $event)\">\n" +
+    "            <li ng-repeat=\"item in results\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" ng-keydown=\"focusOnSearch($event)\">\n" +
     "                {{item.name}}\n" +
     "            </li>\n" +
     "            <li ng-if=\"pagination\" class=\"load-more\" ng-click=\"getOutsideData(false, true)\">\n" +
@@ -81,6 +81,10 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                <tr>\n" +
     "                    <td><i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> CLICK on a Level</td>\n" +
     "                    <td valign=\"middle\">Go back to the clicked Level</td>\n" +
+    "                </tr>\n" +
+    "                <tr>\n" +
+    "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> ANY KEY</td>\n" +
+    "                    <td valign=\"middle\">While on the {{currentPlaceholder}} list any key you press will focus the search input and make a new search.</td>\n" +
     "                </tr>\n" +
     "                </tbody>\n" +
     "            </table>\n" +

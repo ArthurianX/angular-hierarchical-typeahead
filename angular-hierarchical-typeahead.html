@@ -19,7 +19,7 @@
     </div>
     <div class="art-results" ng-class="{'loading': loading}">
         <ul kb-list ng-if="results">
-            <li ng-repeat="item in results" kb-item kb-invoke="selectItem(item, $index, $event)">
+            <li ng-repeat="item in results" kb-item kb-invoke="selectItem(item, $index, $event)" ng-keydown="focusOnSearch($event)">
                 {{item.name}}
             </li>
             <li ng-if="pagination" class="load-more" ng-click="getOutsideData(false, true)">
@@ -77,6 +77,10 @@
                 <tr>
                     <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> CLICK on a Level</td>
                     <td valign="middle">Go back to the clicked Level</td>
+                </tr>
+                <tr>
+                    <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> ANY KEY</td>
+                    <td valign="middle">While on the {{currentPlaceholder}} list any key you press will focus the search input and make a new search.</td>
                 </tr>
                 </tbody>
             </table>

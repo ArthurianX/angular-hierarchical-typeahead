@@ -324,9 +324,23 @@ angular.module('artTypeahead')
 
                     }, false);
 
-                    scope.focusOnSearch = function focusOnSearch(){
-                        element[0].querySelector('.search-bar').focus();
+                    scope.focusOnSearch = function focusOnSearch(event){
+
+                        if (event) {
+                            // Respond only to keyboard inputs
+                            if (event.keyCode && event.keyCode !== 13 && event.keyCode !== 32 && event.keyCode !== 38 && event.keyCode !== 40) {
+                                console.log(event.keyCode);
+                                element[0].querySelector('.search-bar').focus();
+                            }
+
+                        } else {
+                            element[0].querySelector('.search-bar').focus();
+                        }
+
+
                     };
+
+                    //TODO: While focused on the list, when pressing any alphanumeric key focus back on the input.
 
                 }
             };
