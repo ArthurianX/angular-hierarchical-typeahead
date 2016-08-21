@@ -50,3 +50,11 @@ There's also a full set of options:
 ## Release History
  * v0.1.1 - Launch gh-pages.
  * v0.1.0 - Initial release.
+
+## TODO
+ * v0.1.2 - Make all the texts as dynamic parameters from the outside to support `i18n` options.
+ * v0.1.3 - `source` service response mapping, to feed it whatever data and to provide a map on how to use that data.
+ * v0.1.4 - Crossbrowser testing & fixes.
+ * v0.1.5 - TBD
+
+
