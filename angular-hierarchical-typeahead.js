@@ -28,6 +28,7 @@ angular.module('artTypeahead')
                     $scope.addedElements = false;
                     $scope.elementsAdded = 0;
                     $scope.tooMany = false;
+                    var previouslySelectedID = 0;
 
                     //TODO: Check the keyCode's on all the browsers.
 
@@ -71,6 +72,8 @@ angular.module('artTypeahead')
                     var timeStamp = 0;
                     $scope.selectItem = function selectItem(item, index, event){
                         //console.log('Selected item', item, index, event);
+
+                        previouslySelectedID = item.id;
 
                         var detectDoubleClick = function detectDoubleClick(lastStamp, currentStamp){
                             // People instinctively double-click when single click does not work, calculate here.
@@ -173,7 +176,7 @@ angular.module('artTypeahead')
 
                         var rightIndex = $scope.whichLevel();
 
-                        $scope.source($scope.levels[rightIndex].name, query, pagination).then(function(results){
+                        $scope.source($scope.levels[rightIndex].name, query, pagination, previouslySelectedID).then(function(results){
                             //console.error($scope.levels[rightIndex].name);
                             //console.log(results);
                             $scope.tooMany = false;
