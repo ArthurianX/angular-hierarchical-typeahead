@@ -13,7 +13,7 @@
     -webkit-backface-visibility: hidden; }
   .edge--bottom:after {
     bottom: 0;
-    transform: skewY(-5deg);
+    transform: skewY(-3deg);
     transform-origin: 100%; }
 
 .edge--bottom--reverse {
@@ -31,7 +31,7 @@
     -webkit-backface-visibility: hidden; }
   .edge--bottom--reverse:after {
     bottom: 0;
-    transform: skewY(5deg);
+    transform: skewY(3deg);
     transform-origin: 0 100%; }
 
 .edge--top {
@@ -49,7 +49,7 @@
     -webkit-backface-visibility: hidden; }
   .edge--top:before {
     top: 0;
-    transform: skewY(5deg);
+    transform: skewY(3deg);
     transform-origin: 100% 0; }
 
 .edge--top--reverse {
@@ -67,7 +67,7 @@
     -webkit-backface-visibility: hidden; }
   .edge--top--reverse:before {
     top: 0;
-    transform: skewY(-5deg);
+    transform: skewY(-3deg);
     transform-origin: 0 0; }
 
 .edge--both {
@@ -85,11 +85,11 @@
     -webkit-backface-visibility: hidden; }
   .edge--both:before {
     top: 0;
-    transform: skewY(5deg);
+    transform: skewY(3deg);
     transform-origin: 100% 0; }
   .edge--both:after {
     bottom: 0;
-    transform: skewY(-5deg);
+    transform: skewY(-3deg);
     transform-origin: 100%; }
 
 .edge--both--reverse {
@@ -107,11 +107,11 @@
     -webkit-backface-visibility: hidden; }
   .edge--both--reverse:before {
     top: 0;
-    transform: skewY(-5deg);
+    transform: skewY(-3deg);
     transform-origin: 0 0; }
   .edge--both--reverse:after {
     bottom: 0;
-    transform: skewY(5deg);
+    transform: skewY(3deg);
     transform-origin: 0 0; }
 
 .art-typeahead-container {
@@ -166,7 +166,7 @@
         -webkit-backface-visibility: hidden; }
       .art-typeahead-container .art-search .levels:before {
         top: 0;
-        transform: skewY(5deg);
+        transform: skewY(3deg);
         transform-origin: 100% 0; }
       .art-typeahead-container .art-search .levels:nth-child(1) {
         z-index: 10; }

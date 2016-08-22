@@ -1,4 +1,4 @@
-@mixin angle($pseudo, $flip: false, $angle: 5deg) {
+@mixin angle($pseudo, $flip: false, $angle: 3deg) {
     // Possible values for $pseudo are: before, after, both
     @if $pseudo == 'before' or $pseudo == 'after' or $pseudo == 'both' {
         position: relative;
