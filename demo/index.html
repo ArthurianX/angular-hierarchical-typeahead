@@ -33,7 +33,7 @@
         </div>
 
         <div class="row" style="margin-top:50px">
-            <art-typeahead levels="tiers" pagination="true" trigger="callbackID(id, type)" source="dataEndpoint"></art-typeahead>
+            <art-typeahead art-levels="tiers" art-pagination="true" art-trigger="callbackID(id, type)" art-source="dataEndpoint"></art-typeahead>
         </div>
 
 
@@ -175,32 +175,32 @@
                             <td>The main directive declaration. Example usage `< art-typeahead levels="tiers" pagination="true" trigger="callbackID(id, type)" source="dataEndpoint"></ art-typeahead>`</td>
                         </tr>
                         <tr>
-                            <td>levels</td>
+                            <td>art-levels</td>
                             <td>Object</td>
                             <td>Mandatory. An object containing levels description. Object accepted: `[{name: "Organisation", icon: "fa fa-users", color: "#3f3f3f", bColor: "#a6b5bd"}]`</td>
                         </tr>
                         <tr>
-                            <td>trigger</td>
+                            <td>art-trigger</td>
                             <td>function</td>
                             <td>Mandatory. A function to callback the choice selected in the controller, response is two parameters, `id` and `type`, the latter being the level name. </td>
                         </tr>
                         <tr>
-                            <td>source</td>
+                            <td>art-source</td>
                             <td>promise-enabled function</td>
                             <td>Mandatory. The service that is called to get the data, parameters are `type`, `query` and `pagination`, `type` is the current level, `pagination` is a Boolean. The logic is on you in the controller. The received data should be arrays like [{id: 12, name: 'SomeItem'}], preprocess in the controller if necessary.</td>
                         </tr>
                         <tr>
-                            <td>pagination</td>
+                            <td>art-pagination</td>
                             <td>boolean</td>
                             <td>Optional. If `true`, there will be a load more list item, and the `source` call will contain a true pagination parameter. The logic is on you in the controller.</td>
                         </tr>
                         <tr>
-                            <td>min-query</td>
+                            <td>art-min-query</td>
                             <td>integer</td>
                             <td>Otional. Query length to trigger a search.</td>
                         </tr>
                         <tr>
-                            <td>max-results</td>
+                            <td>art-max-results</td>
                             <td>integer</td>
                             <td>Otional. Max results to show before displaying the user a message to user the search bar.</td>
                         </tr>

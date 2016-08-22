@@ -37,12 +37,12 @@ There's also a full set of options:
 
 
 * `art-typeahead` - The main directive declaration. Example usage `<art-typeahead levels="tiers" pagination="true" trigger="callbackID(id, type)" source="dataEndpoint"></art-typeahead>`
-* `levels` - Mandatory. Object. An object containing levels description. Object accepted: `[{name: "Organisation", icon: "fa fa-users", color: "#3f3f3f", bColor: "#a6b5bd"}]`
-* `trigger` - Mandatory.  Function. A function to callback the choice selected in the controller, response is two parameters, `id` and `type`, the latter being the level name.
-* `source` - Mandatory.  Promise-enabled function. The service that is called to get the data, parameters are `type`, `query` and `pagination`, `type` is the current level, `pagination` is a Boolean. The logic is on you in the controller. The received data should be arrays like [{id: 12, name: 'SomeItem'}], preprocess in the controller if necessary.
-* `pagination` - Optional. Boolean. If `true`, there will be a load more list item, and the `source` call will contain a true pagination parameter. The logic is on you in the controller.
-* `min-query` - Optional. Integer. Query length to trigger a search.
-* `max-results` - Optional. Integer. Max results to show before displaying the user a message to user the search bar.
+* `art-levels` - Mandatory. Object. An object containing levels description. Object accepted: `[{name: "Organisation", icon: "fa fa-users", color: "#3f3f3f", bColor: "#a6b5bd"}]`
+* `art-trigger` - Mandatory.  Function. A function to callback the choice selected in the controller, response is two parameters, `id` and `type`, the latter being the level name.
+* `art-source` - Mandatory.  Promise-enabled function. The service that is called to get the data, parameters are `type`, `query` and `pagination`, `type` is the current level, `pagination` is a Boolean. The logic is on you in the controller. The received data should be arrays like [{id: 12, name: 'SomeItem'}], preprocess in the controller if necessary.
+* `art-pagination` - Optional. Boolean. If `true`, there will be a load more list item, and the `source` call will contain a true pagination parameter. The logic is on you in the controller.
+* `art-min-query` - Optional. Integer. Query length to trigger a search.
+* `art-max-results` - Optional. Integer. Max results to show before displaying the user a message to user the search bar.
 
 
 

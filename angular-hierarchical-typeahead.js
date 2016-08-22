@@ -227,6 +227,8 @@ angular.module('artTypeahead')
                             //When you search for something, deselect the current item
                             var rightIndex = $scope.whichLevel();
                             $scope.levelsActive[rightIndex].activeName = false;
+                        } else if (newVal && newVal.length <= defaultValues.minQuery) {
+                            getOutsideData(false);
                         }
                     });
 
