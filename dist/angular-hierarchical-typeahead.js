@@ -11,12 +11,12 @@ angular.module('artTypeahead')
             return {
                 restrict: 'E',
                 scope: {
-                    levels: "=levels", // the levels the component can go too, array of e.g.: {name: "Organisation", icon: "fa fa-users", color: "#fff", bColor: "#222"}
-                    callOutside: "&trigger", //It will do an outside callback with the selected element id and level, e.g.: {level: 'Building', id: 123}
-                    source: "=", //Service that will be called to fetch data depending on the level
-                    pagination: "@",
-                    minQuery: '@',
-                    maxResults: '@'
+                    levels: "=artLevels", // the levels the component can go too, array of e.g.: {name: "Organisation", icon: "fa fa-users", color: "#fff", bColor: "#222"}
+                    callOutside: "&artTrigger", //It will do an outside callback with the selected element id and level, e.g.: {level: 'Building', id: 123}
+                    source: "=artSource", //Service that will be called to fetch data depending on the level
+                    pagination: "@artPagination",
+                    minQuery: '@artMinQuery',
+                    maxResults: '@artMaxResults'
                 },
                 transclude: false,
                 templateUrl: 'angular-hierarchical-typeahead.html',
