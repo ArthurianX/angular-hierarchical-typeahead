@@ -29,6 +29,8 @@ angular.module('artTypeahead')
                     $scope.elementsAdded = 0;
                     $scope.tooMany = false;
 
+                    //TODO: Check the keyCode's on all the browsers.
+
                     var defaultValues = {
                         maxResults: 200,
                         dblClickTime: 400,
@@ -314,8 +316,9 @@ angular.module('artTypeahead')
                             element[0].querySelectorAll('.art-results li')[1].click();
                         }
 
-                        if (event.keyCode === 8 && (!scope.query || scope.query.length)  ) {
+                        if (event.keyCode === 8 && (!scope.query)  ) {
                             // Go back one level
+                            console.log('Fire back event');
                             var rightIndex = scope.whichLevel();
                             if (rightIndex > 0) {
                                 scope.actionLevel(scope.levelsActive[rightIndex-1], rightIndex-1, true);
@@ -339,9 +342,6 @@ angular.module('artTypeahead')
 
 
                     };
-
-                    //TODO: While focused on the list, when pressing any alphanumeric key focus back on the input.
-
                 }
             };
         }
