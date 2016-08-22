@@ -28,7 +28,6 @@ angular.module('artTypeahead')
                     $scope.addedElements = false;
                     $scope.elementsAdded = 0;
                     $scope.tooMany = false;
-                    var previouslySelectedID = 0;
 
                     //TODO: Check the keyCode's on all the browsers.
 
@@ -73,8 +72,6 @@ angular.module('artTypeahead')
                     $scope.selectItem = function selectItem(item, index, event){
                         //console.log('Selected item', item, index, event);
 
-                        previouslySelectedID = item.id;
-
                         var detectDoubleClick = function detectDoubleClick(lastStamp, currentStamp){
                             // People instinctively double-click when single click does not work, calculate here.
                             if ( (currentStamp - lastStamp) < defaultValues.dblClickTime  ) {
@@ -92,6 +89,7 @@ angular.module('artTypeahead')
 
                             // Do the whole loading of a new level
                             $scope.levelsActive[rightIndex].activeName = item.name;
+                            $scope.levelsActive[rightIndex].activeId = item.id;
                             $scope.levelsActive[rightIndex].isActive = true;
                             $scope.query = null;
 
@@ -127,6 +125,7 @@ angular.module('artTypeahead')
                                 $scope.lastLevel = true;
                                 $scope.query = null;
                                 $scope.levelsActive[rightIndex].activeName = item.name;
+                                $scope.levelsActive[rightIndex].activeId = item.id;
                                 $scope.levelsActive[rightIndex].isActive = true;
                             }
 
@@ -149,12 +148,14 @@ angular.module('artTypeahead')
                             // Means we have more stuff to reset, e.g. we have all levels selected, I click the first, all need to reset
                             for (var i = index ; i < $scope.levelsActive.length; i++) {
                                 $scope.levelsActive[i].activeName = false;
+                                $scope.levelsActive[i].activeid = false;
                                 $scope.levelsActive[i].isActive = false;
                                 $scope.levelsActive[i].isVisible = false;
                             }
                         }
 
                         level.activeName = false;
+                        level.activeId = false;
                         level.isActive = true;
                         level.isVisible = true;
                         $scope.lastLevel = false;
@@ -176,7 +177,7 @@ angular.module('artTypeahead')
 
                         var rightIndex = $scope.whichLevel();
 
-                        $scope.source($scope.levels[rightIndex].name, query, pagination, previouslySelectedID).then(function(results){
+                        $scope.source($scope.levels[rightIndex].name, query, pagination, $scope.levelsActive[rightIndex].activeId).then(function(results){
                             //console.error($scope.levels[rightIndex].name);
                             //console.log(results);
                             $scope.tooMany = false;
@@ -272,7 +273,8 @@ angular.module('artTypeahead')
                             bColor: item.bColor,
                             isActive: false,
                             isVisible: false,
-                            activeName: false
+                            activeName: false,
+                            activeId: false
                         };
                     });
 
