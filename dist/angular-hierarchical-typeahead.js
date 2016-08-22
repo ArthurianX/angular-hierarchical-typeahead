@@ -28,6 +28,7 @@ angular.module('artTypeahead')
                     $scope.addedElements = false;
                     $scope.elementsAdded = 0;
                     $scope.tooMany = false;
+                    var previousDataSet = [];
 
                     //TODO: Check the keyCode's on all the browsers.
 
@@ -194,13 +195,17 @@ angular.module('artTypeahead')
                                     $scope.levels[rightIndex].dataSet = results;
                                     
                                 } else {
-                                    
-                                    $scope.results = $scope.results.concat(results);
-                                    $scope.addedElements = true;
-                                    $scope.elementsAdded = results.length;
-                                    $timeout(function(){
-                                        $scope.addedElements = false;
-                                    }, 700);
+                                    if (!angular.equals(previousDataSet, results)) {
+
+                                        $scope.results = $scope.results.concat(results);
+                                        $scope.addedElements = true;
+                                        $scope.elementsAdded = results.length;
+                                        $timeout(function(){
+                                            $scope.addedElements = false;
+                                        }, 700);
+
+                                    }
+
                                     
                                     // If the user loads too many elements, hide everything and suggest filtering
                                     if ($scope.results.length > defaultValues.maxResults) {
@@ -217,6 +222,8 @@ angular.module('artTypeahead')
                                 
                             }
                             $scope.loading = false;
+
+                            previousDataSet = results;
                         }, function(reject){
                             //console.log('rejected', reject);
                             $scope.results = false;
@@ -235,7 +242,7 @@ angular.module('artTypeahead')
                             //When you search for something, deselect the current item
                             var rightIndex = $scope.whichLevel();
                             $scope.levelsActive[rightIndex].activeName = false;
-                        } else if (newVal && newVal.length <= defaultValues.minQuery) {
+                        } else if (!newVal || (newVal && newVal.length <= defaultValues.minQuery)) {
                             getOutsideData(false);
                         }
                     });
@@ -329,11 +336,17 @@ angular.module('artTypeahead')
 
                         if (event.keyCode === 8 && (!scope.query)  ) {
                             // Go back one level
-                            console.log('Fire back event');
+
                             var rightIndex = scope.whichLevel();
                             if (rightIndex > 0) {
                                 scope.actionLevel(scope.levelsActive[rightIndex-1], rightIndex-1, true);
                             }
+                        }
+
+                        if (event.keyCode === 13) {
+                            var index = parseInt(angular.element(element[0].querySelector('.art-results li.kb-active'))[0].getAttribute('data-has-index'));
+                            scope.selectItem(scope.results[index], index, {keyCode: 13});
+                            scope.$apply();
                         }
 
                     }, false);
@@ -383,7 +396,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "    <div class=\"art-results\" ng-class=\"{'loading': loading}\">\n" +
     "        <ul kb-list ng-if=\"results\">\n" +
-    "            <li ng-repeat=\"item in results\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" ng-keydown=\"focusOnSearch($event)\">\n" +
+    "            <li ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\">\n" +
     "                {{item.name}}\n" +
     "            </li>\n" +
     "            <li ng-if=\"pagination\" class=\"load-more\" ng-click=\"getOutsideData(false, true)\">\n" +

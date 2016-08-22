@@ -19,7 +19,7 @@
     </div>
     <div class="art-results" ng-class="{'loading': loading}">
         <ul kb-list ng-if="results">
-            <li ng-repeat="item in results" kb-item kb-invoke="selectItem(item, $index, $event)" ng-keydown="focusOnSearch($event)">
+            <li ng-repeat="item in results track by $index" kb-item kb-invoke="selectItem(item, $index, $event)" data-has-index="{{$index}}" ng-keydown="focusOnSearch($event)">
                 {{item.name}}
             </li>
             <li ng-if="pagination" class="load-more" ng-click="getOutsideData(false, true)">

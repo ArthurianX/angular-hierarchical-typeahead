@@ -23,7 +23,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "    <div class=\"art-results\" ng-class=\"{'loading': loading}\">\n" +
     "        <ul kb-list ng-if=\"results\">\n" +
-    "            <li ng-repeat=\"item in results\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" ng-keydown=\"focusOnSearch($event)\">\n" +
+    "            <li ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\">\n" +
     "                {{item.name}}\n" +
     "            </li>\n" +
     "            <li ng-if=\"pagination\" class=\"load-more\" ng-click=\"getOutsideData(false, true)\">\n" +
