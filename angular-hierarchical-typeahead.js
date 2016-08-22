@@ -89,7 +89,9 @@ angular.module('artTypeahead')
 
                             // Do the whole loading of a new level
                             $scope.levelsActive[rightIndex].activeName = item.name;
-                            $scope.levelsActive[rightIndex].activeId = item.id;
+                            if ($scope.levelsActive[rightIndex+1]) {
+                                $scope.levelsActive[rightIndex+1].activeId = item.id;
+                            }
                             $scope.levelsActive[rightIndex].isActive = true;
                             $scope.query = null;
 
@@ -118,14 +120,16 @@ angular.module('artTypeahead')
 
                             // Just call outside the current selection
                             if (rightIndex < $scope.levelsActive.length - 1) {
-                                $scope.callOutside({id: item.id, type: $scope.levels[rightIndex+1].name});
+                                $scope.callOutside({id: item.id, type: $scope.levels[rightIndex].name});
                             } else if (parseInt(rightIndex) === $scope.levelsActive.length - 1) {
                                 //Call outside the choice made
                                 $scope.callOutside({id: item.id, type: $scope.levels[rightIndex].name});
                                 $scope.lastLevel = true;
                                 $scope.query = null;
                                 $scope.levelsActive[rightIndex].activeName = item.name;
-                                $scope.levelsActive[rightIndex].activeId = item.id;
+                                if ($scope.levelsActive[rightIndex+1]) {
+                                    $scope.levelsActive[rightIndex+1].activeId = item.id;
+                                }
                                 $scope.levelsActive[rightIndex].isActive = true;
                             }
 
@@ -148,14 +152,14 @@ angular.module('artTypeahead')
                             // Means we have more stuff to reset, e.g. we have all levels selected, I click the first, all need to reset
                             for (var i = index ; i < $scope.levelsActive.length; i++) {
                                 $scope.levelsActive[i].activeName = false;
-                                $scope.levelsActive[i].activeid = false;
+                                //$scope.levelsActive[i].activeId = false;
                                 $scope.levelsActive[i].isActive = false;
                                 $scope.levelsActive[i].isVisible = false;
                             }
                         }
 
                         level.activeName = false;
-                        level.activeId = false;
+                        //level.activeId = false;
                         level.isActive = true;
                         level.isVisible = true;
                         $scope.lastLevel = false;
