@@ -209,7 +209,7 @@
       cursor: pointer; }
       .art-typeahead-container .art-results [kb-item].kb-active {
         background: rgba(41, 128, 185, 0.5); }
-    .art-typeahead-container .art-results.loading ul {
+    .art-typeahead-container .art-results.art-loading ul {
       opacity: 0.4; }
     .art-typeahead-container .art-results ul {
       list-style: none;

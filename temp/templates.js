@@ -21,7 +21,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "            <circle class=\"path\" cx=\"50\" cy=\"50\" r=\"20\" fill=\"none\" stroke-width=\"2\" stroke-miterlimit=\"10\"/>\n" +
     "        </svg>\n" +
     "    </div>\n" +
-    "    <div class=\"art-results\" ng-class=\"{'loading': loading}\">\n" +
+    "    <div class=\"art-results\" ng-class=\"{'art-loading': loading}\">\n" +
     "        <ul kb-list ng-if=\"results\">\n" +
     "            <li ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\">\n" +
     "                {{item.name}}\n" +
