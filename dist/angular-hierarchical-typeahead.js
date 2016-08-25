@@ -16,7 +16,10 @@ angular.module('artTypeahead')
                     source: "=artSource", //Service that will be called to fetch data depending on the level
                     pagination: "@artPagination",
                     minQuery: '@artMinQuery',
-                    maxResults: '@artMaxResults'
+                    maxResults: '@artMaxResults',
+                    i18n: '=artTranslations',
+                    allData: '@artDisplayAll', // Can be true, which means full display for everything, or 'partial', to display only for where there's mappings
+                    mappings: '=artLevelsMap'
                 },
                 transclude: false,
                 templateUrl: 'angular-hierarchical-typeahead.html',
@@ -28,6 +31,7 @@ angular.module('artTypeahead')
                     $scope.addedElements = false;
                     $scope.elementsAdded = 0;
                     $scope.tooMany = false;
+                    $scope.activeLevel = 0;
                     var previousDataSet = [];
 
                     //TODO: Check the keyCode's on all the browsers.
@@ -38,8 +42,33 @@ angular.module('artTypeahead')
                         minQuery: 2,
                         defaultLevels: [{name: "Level1", icon: "fa fa-users", color: "#3f3f3f", bColor: "#a6b5bd"},
                             {name: "Level2", icon: "fa fa-building-o", color: "#3f3f3f", bColor: "#c5d7e0"},
-                            {name: "Level3", icon: "fa fa-tachometer", color: "#3f3f3f", bColor: "#e8eff3"}]
+                            {name: "Level3", icon: "fa fa-tachometer", color: "#3f3f3f", bColor: "#e8eff3"}],
+                        translations: {
+                            SEARCH_FOR: 'Search for',
+                            LOAD_MORE: 'Load More',
+                            NO_RESULTS: 'No results.',
+                            TOO_MANY_RESULTS: 'Too many results, please use the search function',
+                            HELP_ACTION: 'Action',
+                            HELP_DESCRIPTION: 'Description',
+                            HELP_CLICK: 'Click',
+                            HELP_SPACE: 'Space',
+                            HELP_ENTER: 'Enter',
+                            HELP_BACKSPACE: 'Backspace',
+                            HELP_DOUBLE_CLICK: 'Double Click',
+                            HELP_ANY_KEY: 'Any key',
+                            HELP_ARROWS_TEXT: 'Move up and down on the list with keyboard arrows',
+                            HELP_LOAD: 'Load the',
+                            HELP_VIEW: 'into view',
+                            HELP_OPEN: 'Open the',
+                            HELP_LEVEL: 'in a new level',
+                            HELP_LEVEL2: 'on a level',
+                            HELP_GO_BACK: 'Go back one level',
+                            HELP_GO_BACK_CLICKED: 'Go back to the selected level',
+                            HELP_ANY_KEY_PART1: 'While on the',
+                            HELP_ANY_KEY_PART2: 'list any key you press will focus the search input and make a new search.'
+                        }                         
                     };
+
 
                     // Configuration
                     $scope.currentPlaceholder = $scope.levels[0].name;
@@ -50,6 +79,13 @@ angular.module('artTypeahead')
 
                     if ($scope.maxResults) {
                         defaultValues.maxResults = parseInt($scope.maxResults);
+                    }
+
+                    if ($scope.i18n) {
+                        $scope.translations = defaultValues.translations;
+                        angular.extend($scope.translations, $scope.i18n);
+                    } else {
+                        $scope.translations = defaultValues.translations;
                     }
 
                     // Utilities
@@ -64,11 +100,50 @@ angular.module('artTypeahead')
                             }
                         });
 
+                        $scope.activeLevel = rightIndex;
+
                         return rightIndex;
+                    };
+
+                    var mapActionLogic = function(map, list) {
+                        // Filter the list and leave only the elements from the map
+                        var resultingList = [];
+                        var callback = false; // False or the index number where the callback is found
+
+                        var strippedMap = map.map(function(item, index){
+                            if (angular.isFunction(item.value)) {
+                                callback = index;
+                                return false;
+                            } else {
+                                return item.value;
+                            }
+
+                        });
+
+                        for (var i=0; i < list.length; i++) {
+                            var listItem = {};
+                            for (var key in list[i]) {
+                                //Add only the properties in the map.
+                                if (strippedMap.indexOf(key) > -1) {
+                                    listItem[key] = list[i][key];
+                                }
+                            }
+
+                            listItem.id = list[i].id;
+
+                            if (callback) {
+                                listItem.ZZZZZZZ = {hasCallback: true, callback: map[callback].value, action: map[callback].actionName};
+                            }
+
+                            resultingList.push(listItem);
+                        }
+
+                        return resultingList;
                     };
 
 
                     // Select an item, send it outside with callOutside
+
                     var timeStamp = 0;
                     $scope.selectItem = function selectItem(item, index, event){
                         //console.log('Selected item', item, index, event);
@@ -221,6 +296,13 @@ angular.module('artTypeahead')
                                 } 
                                 
                             }
+
+
+                            if ($scope.results && $scope.mappings && $scope.mappings[$scope.activeLevel]) {
+
+                                $scope.results = mapActionLogic($scope.mappings[$scope.activeLevel], $scope.results);
+                            }
+
                             $scope.loading = false;
 
                             previousDataSet = results;
@@ -331,7 +413,12 @@ angular.module('artTypeahead')
                         if (event.keyCode === 40 && scope.results) {
                             event.stopPropagation();
                             event.preventDefault();
-                            element[0].querySelectorAll('.art-results li')[1].click();
+                            if (scope.allData) {
+                                element[0].querySelectorAll('.art-results tr')[2].click();
+                            } else {
+                                element[0].querySelectorAll('.art-results li')[1].click();
+                            }
+
                         }
 
                         if (event.keyCode === 8 && (!scope.query)  ) {
@@ -387,7 +474,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "            <i style=\"color: {{level.color}}\" class=\"{{level.icon}}\" aria-hidden=\"true\"></i> {{level.activeName || level.name}}\n" +
     "        </div>\n" +
     "        <span class=\"text-clone\"></span>\n" +
-    "        <input ng-style=\"hideInput(lastLevel)\" type=\"text\" ng-model=\"query\" ng-model-options=\"{ debounce: 500 }\" class=\"levels search-bar\" placeholder=\"Search for {{currentPlaceholder}}\" autofocus>\n" +
+    "        <input ng-style=\"hideInput(lastLevel)\" type=\"text\" ng-model=\"query\" ng-model-options=\"{ debounce: 500 }\" class=\"levels search-bar\" placeholder=\"{{translations.SEARCH_FOR}} {{currentPlaceholder}}\" autofocus>\n" +
     "    </div>\n" +
     "    <div class=\"art-loader\" ng-if=\"loading\">\n" +
     "        <svg class=\"art-circular\" viewBox=\"25 25 50 50\">\n" +
@@ -396,20 +483,46 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "    <div class=\"art-results\" ng-class=\"{'art-loading': loading}\">\n" +
     "        <ul kb-list ng-if=\"results\">\n" +
-    "            <li ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\">\n" +
+    "\n" +
+    "            <li ng-if=\"!allData || !mappings\" ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\">\n" +
     "                {{item.name}}\n" +
     "            </li>\n" +
+    "\n" +
+    "            <!-- Map all the existing properties into display if there's no mapping object for this level-->\n" +
+    "            <li class=\"art-no-height\" ng-if=\"allData\">\n" +
+    "                <table class=\"table\">\n" +
+    "                    <thead>\n" +
+    "                        <tr>\n" +
+    "                            <th ng-if=\"!mappings[activeLevel]\" ng-repeat=\"(key, value) in results[0]\">{{key}}</th>\n" +
+    "                            <th ng-if=\"mappings && mappings[activeLevel]\" ng-repeat=\"heading in mappings[activeLevel]\">\n" +
+    "                                {{heading.name}}\n" +
+    "                            </th>\n" +
+    "                        </tr>\n" +
+    "                    </thead>\n" +
+    "                    <tbody>\n" +
+    "                        <tr ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\">\n" +
+    "                            <td ng-repeat=\"(key, value) in item\" ng-if=\"key != 'id'\">\n" +
+    "                                <span ng-if=\"!item[key].hasCallback\">{{item[key]}}</span>\n" +
+    "                                <span ng-if=\"item[key].hasCallback\">\n" +
+    "                                    <button ng-click=\"item[key].callback(item)\">{{item[key].action}}</button>\n" +
+    "                                </span>\n" +
+    "                            </td>\n" +
+    "                        </tr>\n" +
+    "                    </tbody>\n" +
+    "                </table>\n" +
+    "            </li>\n" +
+    "\n" +
     "            <li ng-if=\"pagination\" class=\"load-more\" ng-click=\"getOutsideData(false, true)\">\n" +
-    "                <i class=\"fa fa-plus\" aria-hidden=\"true\"></i> Load More\n" +
+    "                <i class=\"fa fa-plus\" aria-hidden=\"true\"></i> {{translations.LOAD_MORE}}\n" +
     "            </li>\n" +
     "        </ul>\n" +
     "        <ul>\n" +
     "            <li ng-if=\"!results && !loading && !tooMany\">\n" +
-    "                <i class=\"fa fa-ban\" aria-hidden=\"true\"></i> No results.\n" +
+    "                <i class=\"fa fa-ban\" aria-hidden=\"true\"></i> {{translations.NO_RESULTS}}\n" +
     "            </li>\n" +
     "\n" +
     "            <li ng-if=\"!results && !loading && tooMany\">\n" +
-    "                <i class=\"fa fa-ban\" aria-hidden=\"true\"></i> Too many results, please use the search function.\n" +
+    "                <i class=\"fa fa-ban\" aria-hidden=\"true\"></i> {{translations.TOO_MANY_RESULTS}}\n" +
     "            </li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
@@ -424,40 +537,40 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "            <table class=\"table table-bordered\" style=\"width: 50%; float: right\">\n" +
     "                <thead>\n" +
     "                <tr>\n" +
-    "                    <th>Action</th>\n" +
-    "                    <th>Description</th>\n" +
+    "                    <th>{{translations.HELP_ACTION}}</th>\n" +
+    "                    <th>{{translations.HELP_DESCRIPTION}}</th>\n" +
     "                </tr>\n" +
     "                </thead>\n" +
     "                <tbody>\n" +
     "                <tr>\n" +
     "                    <td><i class=\"fa fa-arrow-down\" aria-hidden=\"true\"></i> & <i class=\"fa fa-arrow-up\" aria-hidden=\"true\"></i></td>\n" +
-    "                    <td valign=\"middle\">Move up and down on the list with keyboard arrows</td>\n" +
+    "                    <td valign=\"middle\">{{translations.HELP_ARROWS_TEXT}}</td>\n" +
     "                </tr>\n" +
     "                <tr>\n" +
-    "                    <td><i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> CLICK</td>\n" +
-    "                    <td rowspan=\"2\" valign=\"middle\">Load the {{currentPlaceholder}} into view</td>\n" +
+    "                    <td><i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> {{translations.HELP_CLICK}}</td>\n" +
+    "                    <td rowspan=\"2\" valign=\"middle\">{{translations.HELP_LOAD}} {{currentPlaceholder}} {{translations.HELP_VIEW}}</td>\n" +
     "                </tr>\n" +
     "                <tr>\n" +
-    "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> SPACE</td>\n" +
+    "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> {{translations.HELP_SPACE}}</td>\n" +
     "                </tr>\n" +
     "                <tr>\n" +
-    "                    <td><i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> + <i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> DOUBLE-CLICK</td>\n" +
-    "                    <td rowspan=\"2\" valign=\"middle\">Open the {{currentPlaceholder}} in a new Level</td>\n" +
+    "                    <td><i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> + <i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> {{translations.HELP_DOUBLE_CLICK}}</td>\n" +
+    "                    <td rowspan=\"2\" valign=\"middle\">{{translations.HELP_OPEN}} {{currentPlaceholder}} {{translations.HELP_LEVEL}}</td>\n" +
     "                </tr>\n" +
     "                <tr>\n" +
-    "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> ENTER</td>\n" +
+    "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> {{translations.HELP_ENTER}}</td>\n" +
     "                </tr>\n" +
     "                <tr>\n" +
-    "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> BACKSPACE</td>\n" +
-    "                    <td valign=\"middle\">Go back one level</td>\n" +
+    "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> {{translations.HELP_BACKSPACE}}</td>\n" +
+    "                    <td valign=\"middle\">{{translations.HELP_GO_BACK}}</td>\n" +
     "                </tr>\n" +
     "                <tr>\n" +
-    "                    <td><i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> CLICK on a Level</td>\n" +
-    "                    <td valign=\"middle\">Go back to the clicked Level</td>\n" +
+    "                    <td><i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> {{translations.HELP_CLICK}} {{translations.HELP_LEVEL2}}</td>\n" +
+    "                    <td valign=\"middle\">{{translations.HELP_GO_BACK_CLICKED}}</td>\n" +
     "                </tr>\n" +
     "                <tr>\n" +
-    "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> ANY KEY</td>\n" +
-    "                    <td valign=\"middle\">While on the {{currentPlaceholder}} list any key you press will focus the search input and make a new search.</td>\n" +
+    "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> {{translations.HELP_ANY_KEY}}</td>\n" +
+    "                    <td valign=\"middle\">{{translations.HELP_ANY_KEY_PART1}} {{currentPlaceholder}} {{translations.HELP_ANY_KEY_PART2}}</td>\n" +
     "                </tr>\n" +
     "                </tbody>\n" +
     "            </table>\n" +

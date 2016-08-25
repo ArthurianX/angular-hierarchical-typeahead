@@ -33,7 +33,7 @@
         </div>
 
         <div class="row" style="margin-top:50px">
-            <art-typeahead art-levels="tiers" art-pagination="true" art-trigger="callbackID(id, type)" art-source="dataEndpoint"></art-typeahead>
+            <art-typeahead art-levels="tiers" art-levels-map="tiersMappings" art-pagination="true" art-trigger="callbackID(id, type)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
         </div>
 
 
@@ -179,6 +179,21 @@
                             <td>Object</td>
                             <td>Mandatory. An object containing levels description. Object accepted: `[{name: "Organisation", icon: "fa fa-users", color: "#3f3f3f", bColor: "#a6b5bd"}]`</td>
                         </tr>
+
+                        <tr>
+                            <td>art-levels-map</td>
+                            <td>Object</td>
+                            <td>Optional. A mapping object for each level or for any level, but if you to make a map for the second level, the object must look like [[],[{map}]]. When a map is set,
+                            only the keys from the map will be displayed, you can also send a callback button for a row. A map example looks like this: `$scope.tiersMappings = [[{name: "Building Code", value: 'buildingCode'}, {name: "Building Name", value: 'name'}, {name: 'Action', value: $scope.customMapAction, actionName: 'Set Active Organisation'}]]`.
+                            The callback function will send the item clicked back in the controller, you can do actions like activate something separate than the normal click / space call.</td>
+                        </tr>
+
+                        <tr>
+                            <td>art-display-all</td>
+                            <td>boolean</td>
+                            <td>Optional. If set to true it will display all the properties of the data received in a table</td>
+                        </tr>
+
                         <tr>
                             <td>art-trigger</td>
                             <td>function</td>
@@ -204,6 +219,12 @@
                             <td>integer</td>
                             <td>Otional. Max results to show before displaying the user a message to user the search bar.</td>
                         </tr>
+                        <tr>
+                            <td>art-translations</td>
+                            <td>Object</td>
+                            <td>Otional. An object with translations for the whole component static messages / text. Get the object on the github page.</td>
+                        </tr>
+
 
                         </tbody>
                     </table>

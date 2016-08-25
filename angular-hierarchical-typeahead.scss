@@ -102,6 +102,13 @@
     position: relative;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+    &:before {
+        content: ' ';
+        display: table
+    }
+    &:after {
+        clear: both
+    }
     .art-search {
         font-size: 16px;
         font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
@@ -209,6 +216,26 @@
                 padding: 10px 20px;
                 height: 40px;
                 border-bottom: 1px solid #f1f1f1;
+                &.art-no-height {
+                    height: auto;
+                    padding: 0;
+                    border-color: transparent;
+                    thead tr {
+                        background-color: darken(#fcfcfc, 5);
+                    }
+                    tr {
+                        outline: none;
+                        &:nth-child(even) {
+                            background-color: #fcfcfc;
+                        }
+                    }
+                    td {
+                        padding: 10px 20px;
+                        height: 40px;
+                        border-bottom: 1px solid #f1f1f1;
+                        outline: none;
+                    }
+                }
                 &:nth-child(odd) {}
                 &:nth-child(even) {
                     background-color: #fcfcfc;

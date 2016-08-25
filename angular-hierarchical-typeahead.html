@@ -10,7 +10,7 @@
             <i style="color: {{level.color}}" class="{{level.icon}}" aria-hidden="true"></i> {{level.activeName || level.name}}
         </div>
         <span class="text-clone"></span>
-        <input ng-style="hideInput(lastLevel)" type="text" ng-model="query" ng-model-options="{ debounce: 500 }" class="levels search-bar" placeholder="Search for {{currentPlaceholder}}" autofocus>
+        <input ng-style="hideInput(lastLevel)" type="text" ng-model="query" ng-model-options="{ debounce: 500 }" class="levels search-bar" placeholder="{{translations.SEARCH_FOR}} {{currentPlaceholder}}" autofocus>
     </div>
     <div class="art-loader" ng-if="loading">
         <svg class="art-circular" viewBox="25 25 50 50">
@@ -19,20 +19,46 @@
     </div>
     <div class="art-results" ng-class="{'art-loading': loading}">
         <ul kb-list ng-if="results">
-            <li ng-repeat="item in results track by $index" kb-item kb-invoke="selectItem(item, $index, $event)" data-has-index="{{$index}}" ng-keydown="focusOnSearch($event)">
+
+            <li ng-if="!allData || !mappings" ng-repeat="item in results track by $index" kb-item kb-invoke="selectItem(item, $index, $event)" data-has-index="{{$index}}" ng-keydown="focusOnSearch($event)">
                 {{item.name}}
             </li>
+
+            <!-- Map all the existing properties into display if there's no mapping object for this level-->
+            <li class="art-no-height" ng-if="allData">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th ng-if="!mappings[activeLevel]" ng-repeat="(key, value) in results[0]">{{key}}</th>
+                            <th ng-if="mappings && mappings[activeLevel]" ng-repeat="heading in mappings[activeLevel]">
+                                {{heading.name}}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in results track by $index" kb-item kb-invoke="selectItem(item, $index, $event)" data-has-index="{{$index}}" ng-keydown="focusOnSearch($event)">
+                            <td ng-repeat="(key, value) in item" ng-if="key != 'id'">
+                                <span ng-if="!item[key].hasCallback">{{item[key]}}</span>
+                                <span ng-if="item[key].hasCallback">
+                                    <button ng-click="item[key].callback(item)">{{item[key].action}}</button>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+
             <li ng-if="pagination" class="load-more" ng-click="getOutsideData(false, true)">
-                <i class="fa fa-plus" aria-hidden="true"></i> Load More
+                <i class="fa fa-plus" aria-hidden="true"></i> {{translations.LOAD_MORE}}
             </li>
         </ul>
         <ul>
             <li ng-if="!results && !loading && !tooMany">
-                <i class="fa fa-ban" aria-hidden="true"></i> No results.
+                <i class="fa fa-ban" aria-hidden="true"></i> {{translations.NO_RESULTS}}
             </li>
 
             <li ng-if="!results && !loading && tooMany">
-                <i class="fa fa-ban" aria-hidden="true"></i> Too many results, please use the search function.
+                <i class="fa fa-ban" aria-hidden="true"></i> {{translations.TOO_MANY_RESULTS}}
             </li>
         </ul>
     </div>
@@ -47,40 +73,40 @@
             <table class="table table-bordered" style="width: 50%; float: right">
                 <thead>
                 <tr>
-                    <th>Action</th>
-                    <th>Description</th>
+                    <th>{{translations.HELP_ACTION}}</th>
+                    <th>{{translations.HELP_DESCRIPTION}}</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                     <td><i class="fa fa-arrow-down" aria-hidden="true"></i> & <i class="fa fa-arrow-up" aria-hidden="true"></i></td>
-                    <td valign="middle">Move up and down on the list with keyboard arrows</td>
+                    <td valign="middle">{{translations.HELP_ARROWS_TEXT}}</td>
                 </tr>
                 <tr>
-                    <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> CLICK</td>
-                    <td rowspan="2" valign="middle">Load the {{currentPlaceholder}} into view</td>
+                    <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> {{translations.HELP_CLICK}}</td>
+                    <td rowspan="2" valign="middle">{{translations.HELP_LOAD}} {{currentPlaceholder}} {{translations.HELP_VIEW}}</td>
                 </tr>
                 <tr>
-                    <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> SPACE</td>
+                    <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> {{translations.HELP_SPACE}}</td>
                 </tr>
                 <tr>
-                    <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> + <i class="fa fa-mouse-pointer" aria-hidden="true"></i> DOUBLE-CLICK</td>
-                    <td rowspan="2" valign="middle">Open the {{currentPlaceholder}} in a new Level</td>
+                    <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> + <i class="fa fa-mouse-pointer" aria-hidden="true"></i> {{translations.HELP_DOUBLE_CLICK}}</td>
+                    <td rowspan="2" valign="middle">{{translations.HELP_OPEN}} {{currentPlaceholder}} {{translations.HELP_LEVEL}}</td>
                 </tr>
                 <tr>
-                    <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> ENTER</td>
+                    <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> {{translations.HELP_ENTER}}</td>
                 </tr>
                 <tr>
-                    <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> BACKSPACE</td>
-                    <td valign="middle">Go back one level</td>
+                    <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> {{translations.HELP_BACKSPACE}}</td>
+                    <td valign="middle">{{translations.HELP_GO_BACK}}</td>
                 </tr>
                 <tr>
-                    <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> CLICK on a Level</td>
-                    <td valign="middle">Go back to the clicked Level</td>
+                    <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> {{translations.HELP_CLICK}} {{translations.HELP_LEVEL2}}</td>
+                    <td valign="middle">{{translations.HELP_GO_BACK_CLICKED}}</td>
                 </tr>
                 <tr>
-                    <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> ANY KEY</td>
-                    <td valign="middle">While on the {{currentPlaceholder}} list any key you press will focus the search input and make a new search.</td>
+                    <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> {{translations.HELP_ANY_KEY}}</td>
+                    <td valign="middle">{{translations.HELP_ANY_KEY_PART1}} {{currentPlaceholder}} {{translations.HELP_ANY_KEY_PART2}}</td>
                 </tr>
                 </tbody>
             </table>

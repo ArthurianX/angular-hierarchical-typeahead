@@ -16,7 +16,10 @@ angular.module('artTypeahead')
                     source: "=artSource", //Service that will be called to fetch data depending on the level
                     pagination: "@artPagination",
                     minQuery: '@artMinQuery',
-                    maxResults: '@artMaxResults'
+                    maxResults: '@artMaxResults',
+                    i18n: '=artTranslations',
+                    allData: '@artDisplayAll', // Can be true, which means full display for everything, or 'partial', to display only for where there's mappings
+                    mappings: '=artLevelsMap'
                 },
                 transclude: false,
                 templateUrl: 'angular-hierarchical-typeahead.html',
@@ -28,6 +31,7 @@ angular.module('artTypeahead')
                     $scope.addedElements = false;
                     $scope.elementsAdded = 0;
                     $scope.tooMany = false;
+                    $scope.activeLevel = 0;
                     var previousDataSet = [];
 
                     //TODO: Check the keyCode's on all the browsers.
@@ -38,8 +42,33 @@ angular.module('artTypeahead')
                         minQuery: 2,
                         defaultLevels: [{name: "Level1", icon: "fa fa-users", color: "#3f3f3f", bColor: "#a6b5bd"},
                             {name: "Level2", icon: "fa fa-building-o", color: "#3f3f3f", bColor: "#c5d7e0"},
-                            {name: "Level3", icon: "fa fa-tachometer", color: "#3f3f3f", bColor: "#e8eff3"}]
+                            {name: "Level3", icon: "fa fa-tachometer", color: "#3f3f3f", bColor: "#e8eff3"}],
+                        translations: {
+                            SEARCH_FOR: 'Search for',
+                            LOAD_MORE: 'Load More',
+                            NO_RESULTS: 'No results.',
+                            TOO_MANY_RESULTS: 'Too many results, please use the search function',
+                            HELP_ACTION: 'Action',
+                            HELP_DESCRIPTION: 'Description',
+                            HELP_CLICK: 'Click',
+                            HELP_SPACE: 'Space',
+                            HELP_ENTER: 'Enter',
+                            HELP_BACKSPACE: 'Backspace',
+                            HELP_DOUBLE_CLICK: 'Double Click',
+                            HELP_ANY_KEY: 'Any key',
+                            HELP_ARROWS_TEXT: 'Move up and down on the list with keyboard arrows',
+                            HELP_LOAD: 'Load the',
+                            HELP_VIEW: 'into view',
+                            HELP_OPEN: 'Open the',
+                            HELP_LEVEL: 'in a new level',
+                            HELP_LEVEL2: 'on a level',
+                            HELP_GO_BACK: 'Go back one level',
+                            HELP_GO_BACK_CLICKED: 'Go back to the selected level',
+                            HELP_ANY_KEY_PART1: 'While on the',
+                            HELP_ANY_KEY_PART2: 'list any key you press will focus the search input and make a new search.'
+                        }                         
                     };
+
 
                     // Configuration
                     $scope.currentPlaceholder = $scope.levels[0].name;
@@ -50,6 +79,13 @@ angular.module('artTypeahead')
 
                     if ($scope.maxResults) {
                         defaultValues.maxResults = parseInt($scope.maxResults);
+                    }
+
+                    if ($scope.i18n) {
+                        $scope.translations = defaultValues.translations;
+                        angular.extend($scope.translations, $scope.i18n);
+                    } else {
+                        $scope.translations = defaultValues.translations;
                     }
 
                     // Utilities
@@ -64,11 +100,50 @@ angular.module('artTypeahead')
                             }
                         });
 
+                        $scope.activeLevel = rightIndex;
+
                         return rightIndex;
+                    };
+
+                    var mapActionLogic = function(map, list) {
+                        // Filter the list and leave only the elements from the map
+                        var resultingList = [];
+                        var callback = false; // False or the index number where the callback is found
+
+                        var strippedMap = map.map(function(item, index){
+                            if (angular.isFunction(item.value)) {
+                                callback = index;
+                                return false;
+                            } else {
+                                return item.value;
+                            }
+
+                        });
+
+                        for (var i=0; i < list.length; i++) {
+                            var listItem = {};
+                            for (var key in list[i]) {
+                                //Add only the properties in the map.
+                                if (strippedMap.indexOf(key) > -1) {
+                                    listItem[key] = list[i][key];
+                                }
+                            }
+
+                            listItem.id = list[i].id;
+
+                            if (callback) {
+                                listItem.ZZZZZZZ = {hasCallback: true, callback: map[callback].value, action: map[callback].actionName};
+                            }
+
+                            resultingList.push(listItem);
+                        }
+
+                        return resultingList;
                     };
 
 
                     // Select an item, send it outside with callOutside
+
                     var timeStamp = 0;
                     $scope.selectItem = function selectItem(item, index, event){
                         //console.log('Selected item', item, index, event);
@@ -221,6 +296,13 @@ angular.module('artTypeahead')
                                 } 
                                 
                             }
+
+
+                            if ($scope.results && $scope.mappings && $scope.mappings[$scope.activeLevel]) {
+
+                                $scope.results = mapActionLogic($scope.mappings[$scope.activeLevel], $scope.results);
+                            }
+
                             $scope.loading = false;
 
                             previousDataSet = results;
@@ -331,7 +413,12 @@ angular.module('artTypeahead')
                         if (event.keyCode === 40 && scope.results) {
                             event.stopPropagation();
                             event.preventDefault();
-                            element[0].querySelectorAll('.art-results li')[1].click();
+                            if (scope.allData) {
+                                element[0].querySelectorAll('.art-results tr')[2].click();
+                            } else {
+                                element[0].querySelectorAll('.art-results li')[1].click();
+                            }
+
                         }
 
                         if (event.keyCode === 8 && (!scope.query)  ) {
