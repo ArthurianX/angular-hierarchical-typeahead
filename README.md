@@ -46,40 +46,41 @@ There's also a full set of options:
 * `art-min-query` - Optional. Integer. Query length to trigger a search.
 * `art-max-results` - Optional. Integer. Max results to show before displaying the user a message to user the search bar.
 * `art-translations` - Optional. Object. An object with translations for the whole component static messages / text that * needs * to look like this ```{
-                                                                                                                                                                SEARCH_FOR: 'Search for',
-                                                                                                                                                                LOAD_MORE: 'Load More',
-                                                                                                                                                                NO_RESULTS: 'No results.',
-                                                                                                                                                                TOO_MANY_RESULTS: 'Too many results, please use the search function',
-                                                                                                                                                                HELP_ACTION: 'Action',
-                                                                                                                                                                HELP_DESCRIPTION: 'Description',
-                                                                                                                                                                HELP_CLICK: 'Click',
-                                                                                                                                                                HELP_SPACE: 'Space',
-                                                                                                                                                                HELP_ENTER: 'Enter',
-                                                                                                                                                                HELP_BACKSPACE: 'Backspace',
-                                                                                                                                                                HELP_DOUBLE_CLICK: 'Double Click',
-                                                                                                                                                                HELP_ANY_KEY: 'Any key',
-                                                                                                                                                                HELP_ARROWS_TEXT: 'Move up and down on the list with keyboard arrows',
-                                                                                                                                                                HELP_LOAD: 'Load the',
-                                                                                                                                                                HELP_VIEW: 'into view',
-                                                                                                                                                                HELP_OPEN: 'Open the',
-                                                                                                                                                                HELP_LEVEL: 'in a new level',
-                                                                                                                                                                HELP_LEVEL2: 'on a level',
-                                                                                                                                                                HELP_GO_BACK: 'Go back one level',
-                                                                                                                                                                HELP_GO_BACK_CLICKED: 'Go back to the selected level',
-                                                                                                                                                                HELP_ANY_KEY_PART1: 'While on the',
-                                                                                                                                                                HELP_ANY_KEY_PART2: 'list any key you press will focus the search input and make a new search.'
-                                                                                                                                                            }```
+        SEARCH_FOR: 'Search for',
+        LOAD_MORE: 'Load More',
+        NO_RESULTS: 'No results.',
+        TOO_MANY_RESULTS: 'Too many results, please use the search function',
+        HELP_ACTION: 'Action',
+        HELP_DESCRIPTION: 'Description',
+        HELP_CLICK: 'Click',
+        HELP_SPACE: 'Space',
+        HELP_ENTER: 'Enter',
+        HELP_BACKSPACE: 'Backspace',
+        HELP_DOUBLE_CLICK: 'Double Click',
+        HELP_ANY_KEY: 'Any key',
+        HELP_ARROWS_TEXT: 'Move up and down on the list with keyboard arrows',
+        HELP_LOAD: 'Load the',
+        HELP_VIEW: 'into view',
+        HELP_OPEN: 'Open the',
+        HELP_LEVEL: 'in a new level',
+        HELP_LEVEL2: 'on a level',
+        HELP_GO_BACK: 'Go back one level',
+        HELP_GO_BACK_CLICKED: 'Go back to the selected level',
+        HELP_ANY_KEY_PART1: 'While on the',
+        HELP_ANY_KEY_PART2: 'list any key you press will focus the search input and make a new search.'
+    }```
 
 
 
 
 ## Release History
+ * v0.2.0 - Added translations, object mapping for table view and inner item callback
  * v0.1.1 - Launch gh-pages.
  * v0.1.0 - Initial release.
 
 ## TODO
- * v0.2.x - Make all the texts as dynamic parameters from the outside to support `i18n` options.
- * v0.3.x - `source` service response mapping, to feed it whatever data and to provide a map on how to use that data.
+ 
+ * v0.3.x - `source` service response mapping, to feed it whatever data and to provide a map on how to use that data. (already done but needs testing)
  * v0.4.x - Crossbrowser testing & fixes.
  * v0.5.x - TBD
 
