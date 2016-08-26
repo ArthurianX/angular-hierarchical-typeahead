@@ -37,10 +37,13 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="item in results track by $index" kb-item kb-invoke="selectItem(item, $index, $event)" data-has-index="{{$index}}" ng-keydown="focusOnSearch($event)">
-                            <td ng-repeat="(key, value) in item" ng-if="key != 'id'">
+                            <td ng-repeat="(key, value) in item" ng-if="key != 'id'" valign="middle">
                                 <span ng-if="!item[key].hasCallback">{{item[key]}}</span>
                                 <span ng-if="item[key].hasCallback">
-                                    <button ng-click="item[key].callback(item)">{{item[key].action}}</button>
+                                    <button class="art-inner-callback-button" ng-click="item[key].callback($event, item)">
+                                        <i ng-if="item[key].icon" class="{{item[key].icon}}" aria-hidden="true"></i>
+                                        {{item[key].action}}
+                                    </button>
                                 </span>
                             </td>
                         </tr>

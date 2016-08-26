@@ -132,7 +132,7 @@ angular.module('artTypeahead')
                             listItem.id = list[i].id;
 
                             if (callback) {
-                                listItem.ZZZZZZZ = {hasCallback: true, callback: map[callback].value, action: map[callback].actionName};
+                                listItem.ZZZZZZZ = {hasCallback: true, callback: map[callback].value, action: map[callback].actionName, icon: map[callback].actionIcon};
                             }
 
                             resultingList.push(listItem);

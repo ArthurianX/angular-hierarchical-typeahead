@@ -65,12 +65,14 @@ angular.module('app').controller('DemoCtrl',function($scope,$http, $q){
         console.log('Called outside in demo.js', id, type);
     };
 
-    $scope.customMapAction = function(item) {
+    $scope.customMapAction = function($event, item) {
+        $event.preventDefault();
+        $event.stopPropagation();
         console.log('Custom map', item);
     };
 
     // Tier Mappings works for puttin
-    $scope.tiersMappings = [[{name: "Organisation Name", value: 'name'}, {name: 'Action', value: $scope.customMapAction, actionName: 'Set Active Organisation'}]];
+    $scope.tiersMappings = [[{name: "Organisation Name", value: 'name'}, {name: 'Action', value: $scope.customMapAction, actionName: 'Set Active', actionIcon: 'fa fa-check'}]];
     // Note We mapped only the first level
 
     $scope.dataEndpoint = function(type, query, pagination) {

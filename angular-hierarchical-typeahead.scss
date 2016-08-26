@@ -196,7 +196,7 @@
         [kb-item] {
             cursor: pointer;
             &.kb-active {
-                background: rgba(41,128,185, 0.5);
+                background: rgba(41,128,185, 0.5) !important;
             }
         }
         &.art-loading {
@@ -234,6 +234,22 @@
                         height: 40px;
                         border-bottom: 1px solid #f1f1f1;
                         outline: none;
+                        span {
+                            vertical-align: sub;
+                        }
+
+                        .art-inner-callback-button {
+                            background-color: #a6b5bd;
+                            border: 0px solid #fff;
+                            color: #fff;
+                            padding: 3px 10px;
+                            -webkit-border-radius: 3px;
+                            -moz-border-radius: 3px;
+                            border-radius: 3px;
+                            i {
+                                margin-right: 5px;
+                            }
+                        }
                     }
                 }
                 &:nth-child(odd) {}
