@@ -193,6 +193,11 @@
         position: relative;
         z-index: 2;
         background-color: #fff;
+        transition: opacity 0.5s ease-in-out;
+        &.art-tooltip-open {
+            opacity: 0.5;
+            pointer-events: none;
+        }
         [kb-item] {
             cursor: pointer;
             &.kb-active {
@@ -249,6 +254,9 @@
                             i {
                                 margin-right: 5px;
                             }
+                            &:hover {
+                                background-color: darken(#a6b5bd, 4);
+                            }
                         }
                     }
                 }
@@ -266,6 +274,37 @@
     }
     .art-tooltip-helper {
         cursor: pointer;
+        text-align: right;
+        position: absolute;
+        top: 43px;
+        right: 19px;
+        z-index: 9;
+        width: 15px;
+        overflow: hidden;
+        height: 18px;
+        transition: all 0.5s ease-in-out;
+        table {
+            background-color: #fff;
+            transition: all 0.5s ease-in-out;
+            min-height: 300px;
+            min-width: 500px;
+            opacity: 0;
+            margin-bottom: 0px;
+        }
+        &.art-open {
+            height: 250px;
+            width: 600px;
+            overflow: auto;
+            table {
+                opacity: 1;
+                color: #2e2e2e;
+                background-color: #efefef;
+                th, td {
+                    border-color: #cfcfcf;
+                }
+            }
+
+        }
         > i {
             color: rgba(41,128,185, 1);
         }
@@ -351,7 +390,7 @@
     }
 
     .art-elements-added {
-        transition: all 0.7s ease-in-out;
+        transition: all 1.2s ease-in-out;
         color: #61bd6d;
         font-size: 16px;
         background-color: transparent;

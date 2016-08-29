@@ -209,7 +209,11 @@
     padding: 4px;
     position: relative;
     z-index: 2;
-    background-color: #fff; }
+    background-color: #fff;
+    transition: opacity 0.5s ease-in-out; }
+    .art-typeahead-container .art-results.art-tooltip-open {
+      opacity: 0.5;
+      pointer-events: none; }
     .art-typeahead-container .art-results [kb-item] {
       cursor: pointer; }
       .art-typeahead-container .art-results [kb-item].kb-active {
@@ -254,6 +258,8 @@
               border-radius: 3px; }
               .art-typeahead-container .art-results ul li.art-no-height td .art-inner-callback-button i {
                 margin-right: 5px; }
+              .art-typeahead-container .art-results ul li.art-no-height td .art-inner-callback-button:hover {
+                background-color: #9aabb4; }
         .art-typeahead-container .art-results ul li:nth-child(even) {
           background-color: #fcfcfc; }
         .art-typeahead-container .art-results ul li.load-more {
@@ -261,7 +267,33 @@
           background-color: #595959;
           color: #fff; }
   .art-typeahead-container .art-tooltip-helper {
-    cursor: pointer; }
+    cursor: pointer;
+    text-align: right;
+    position: absolute;
+    top: 43px;
+    right: 19px;
+    z-index: 9;
+    width: 15px;
+    overflow: hidden;
+    height: 18px;
+    transition: all 0.5s ease-in-out; }
+    .art-typeahead-container .art-tooltip-helper table {
+      background-color: #fff;
+      transition: all 0.5s ease-in-out;
+      min-height: 300px;
+      min-width: 500px;
+      opacity: 0;
+      margin-bottom: 0px; }
+    .art-typeahead-container .art-tooltip-helper.art-open {
+      height: 250px;
+      width: 600px;
+      overflow: auto; }
+      .art-typeahead-container .art-tooltip-helper.art-open table {
+        opacity: 1;
+        color: #2e2e2e;
+        background-color: #efefef; }
+        .art-typeahead-container .art-tooltip-helper.art-open table th, .art-typeahead-container .art-tooltip-helper.art-open table td {
+          border-color: #cfcfcf; }
     .art-typeahead-container .art-tooltip-helper > i {
       color: #2980b9; }
   .art-typeahead-container .art-loader {
@@ -319,7 +351,7 @@
   90% {
     stroke: #fac51c; } }
   .art-typeahead-container .art-elements-added {
-    transition: all 0.7s ease-in-out;
+    transition: all 1.2s ease-in-out;
     color: #61bd6d;
     font-size: 16px;
     background-color: transparent;

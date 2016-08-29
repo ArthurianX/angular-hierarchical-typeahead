@@ -32,6 +32,7 @@ angular.module('artTypeahead')
                     $scope.elementsAdded = 0;
                     $scope.tooMany = false;
                     $scope.activeLevel = 0;
+                    $scope.showTooltip = false;
                     var previousDataSet = [];
 
                     //TODO: Check the keyCode's on all the browsers.
@@ -91,8 +92,11 @@ angular.module('artTypeahead')
                     // Utilities
 
                     $scope.whichLevel = function whichLevel(){
-                        //Always set by default to last level, so when we're at the end the last level will be returned.
+                        // Always set by default to last level, so when we're at the end the last level will be returned.
                         var rightIndex = $scope.levelsActive.length -1;
+
+                        // whichLevel is always called, so it;s a fitting place to put the hiding of the tooltip here.
+                        $scope.showTooltip = false;
 
                         $scope.levelsActive.forEach(function(item, index){
                             if (item.isVisible && !item.activeName) {
@@ -443,7 +447,7 @@ angular.module('artTypeahead')
                         if (event) {
                             // Respond only to keyboard inputs
                             if (event.keyCode && event.keyCode !== 13 && event.keyCode !== 32 && event.keyCode !== 38 && event.keyCode !== 40) {
-                                console.log(event.keyCode);
+                                //console.log(event.keyCode);
                                 element[0].querySelector('.search-bar').focus();
                             }
 

@@ -32,6 +32,7 @@ angular.module('artTypeahead')
                     $scope.elementsAdded = 0;
                     $scope.tooMany = false;
                     $scope.activeLevel = 0;
+                    $scope.showTooltip = false;
                     var previousDataSet = [];
 
                     //TODO: Check the keyCode's on all the browsers.
@@ -91,8 +92,11 @@ angular.module('artTypeahead')
                     // Utilities
 
                     $scope.whichLevel = function whichLevel(){
-                        //Always set by default to last level, so when we're at the end the last level will be returned.
+                        // Always set by default to last level, so when we're at the end the last level will be returned.
                         var rightIndex = $scope.levelsActive.length -1;
+
+                        // whichLevel is always called, so it;s a fitting place to put the hiding of the tooltip here.
+                        $scope.showTooltip = false;
 
                         $scope.levelsActive.forEach(function(item, index){
                             if (item.isVisible && !item.activeName) {
@@ -443,7 +447,7 @@ angular.module('artTypeahead')
                         if (event) {
                             // Respond only to keyboard inputs
                             if (event.keyCode && event.keyCode !== 13 && event.keyCode !== 32 && event.keyCode !== 38 && event.keyCode !== 40) {
-                                console.log(event.keyCode);
+                                //console.log(event.keyCode);
                                 element[0].querySelector('.search-bar').focus();
                             }
 
@@ -481,7 +485,53 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "            <circle class=\"path\" cx=\"50\" cy=\"50\" r=\"20\" fill=\"none\" stroke-width=\"2\" stroke-miterlimit=\"10\"/>\n" +
     "        </svg>\n" +
     "    </div>\n" +
-    "    <div class=\"art-results\" ng-class=\"{'art-loading': loading}\">\n" +
+    "    <div style=\"text-align: right;\" class=\"art-tooltip-helper\" ng-click=\"showTooltip = !showTooltip\" ng-class=\"{'art-open': showTooltip}\">\n" +
+    "        <i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i>\n" +
+    "        <small class=\"art-tooltip\">\n" +
+    "\n" +
+    "            <table class=\"table table-bordered\" style=\"width: 95%; float: right\">\n" +
+    "                <thead>\n" +
+    "                <tr>\n" +
+    "                    <th>{{translations.HELP_ACTION}}</th>\n" +
+    "                    <th>{{translations.HELP_DESCRIPTION}}</th>\n" +
+    "                </tr>\n" +
+    "                </thead>\n" +
+    "                <tbody>\n" +
+    "                <tr>\n" +
+    "                    <td><i class=\"fa fa-arrow-down\" aria-hidden=\"true\"></i> & <i class=\"fa fa-arrow-up\" aria-hidden=\"true\"></i></td>\n" +
+    "                    <td valign=\"middle\">{{translations.HELP_ARROWS_TEXT}}</td>\n" +
+    "                </tr>\n" +
+    "                <tr>\n" +
+    "                    <td><i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> {{translations.HELP_CLICK}}</td>\n" +
+    "                    <td rowspan=\"2\" valign=\"middle\">{{translations.HELP_LOAD}} {{currentPlaceholder}} {{translations.HELP_VIEW}}</td>\n" +
+    "                </tr>\n" +
+    "                <tr>\n" +
+    "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> {{translations.HELP_SPACE}}</td>\n" +
+    "                </tr>\n" +
+    "                <tr>\n" +
+    "                    <td><i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> + <i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> {{translations.HELP_DOUBLE_CLICK}}</td>\n" +
+    "                    <td rowspan=\"2\" valign=\"middle\">{{translations.HELP_OPEN}} {{currentPlaceholder}} {{translations.HELP_LEVEL}}</td>\n" +
+    "                </tr>\n" +
+    "                <tr>\n" +
+    "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> {{translations.HELP_ENTER}}</td>\n" +
+    "                </tr>\n" +
+    "                <tr>\n" +
+    "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> {{translations.HELP_BACKSPACE}}</td>\n" +
+    "                    <td valign=\"middle\">{{translations.HELP_GO_BACK}}</td>\n" +
+    "                </tr>\n" +
+    "                <tr>\n" +
+    "                    <td><i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> {{translations.HELP_CLICK}} {{translations.HELP_LEVEL2}}</td>\n" +
+    "                    <td valign=\"middle\">{{translations.HELP_GO_BACK_CLICKED}}</td>\n" +
+    "                </tr>\n" +
+    "                <tr>\n" +
+    "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> {{translations.HELP_ANY_KEY}}</td>\n" +
+    "                    <td valign=\"middle\">{{translations.HELP_ANY_KEY_PART1}} {{currentPlaceholder}} {{translations.HELP_ANY_KEY_PART2}}</td>\n" +
+    "                </tr>\n" +
+    "                </tbody>\n" +
+    "            </table>\n" +
+    "        </small>\n" +
+    "    </div>\n" +
+    "    <div class=\"art-results\" ng-class=\"{'art-loading': loading, 'art-tooltip-open': showTooltip}\">\n" +
     "        <ul kb-list ng-if=\"results\">\n" +
     "\n" +
     "            <li ng-if=\"!allData || !mappings\" ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\">\n" +
@@ -533,52 +583,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "        <i class=\"fa fa-plus\" aria-hidden=\"true\"></i>{{elementsAdded}}\n" +
     "    </div>\n" +
     "\n" +
-    "    <div style=\"text-align: right; clear: both\" class=\"art-tooltip-helper\" ng-click=\"showTooltip = !showTooltip\">\n" +
-    "        <i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i>\n" +
-    "        <small ng-if=\"results && showTooltip\" class=\"art-tooltip\">\n" +
     "\n" +
-    "            <table class=\"table table-bordered\" style=\"width: 50%; float: right\">\n" +
-    "                <thead>\n" +
-    "                <tr>\n" +
-    "                    <th>{{translations.HELP_ACTION}}</th>\n" +
-    "                    <th>{{translations.HELP_DESCRIPTION}}</th>\n" +
-    "                </tr>\n" +
-    "                </thead>\n" +
-    "                <tbody>\n" +
-    "                <tr>\n" +
-    "                    <td><i class=\"fa fa-arrow-down\" aria-hidden=\"true\"></i> & <i class=\"fa fa-arrow-up\" aria-hidden=\"true\"></i></td>\n" +
-    "                    <td valign=\"middle\">{{translations.HELP_ARROWS_TEXT}}</td>\n" +
-    "                </tr>\n" +
-    "                <tr>\n" +
-    "                    <td><i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> {{translations.HELP_CLICK}}</td>\n" +
-    "                    <td rowspan=\"2\" valign=\"middle\">{{translations.HELP_LOAD}} {{currentPlaceholder}} {{translations.HELP_VIEW}}</td>\n" +
-    "                </tr>\n" +
-    "                <tr>\n" +
-    "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> {{translations.HELP_SPACE}}</td>\n" +
-    "                </tr>\n" +
-    "                <tr>\n" +
-    "                    <td><i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> + <i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> {{translations.HELP_DOUBLE_CLICK}}</td>\n" +
-    "                    <td rowspan=\"2\" valign=\"middle\">{{translations.HELP_OPEN}} {{currentPlaceholder}} {{translations.HELP_LEVEL}}</td>\n" +
-    "                </tr>\n" +
-    "                <tr>\n" +
-    "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> {{translations.HELP_ENTER}}</td>\n" +
-    "                </tr>\n" +
-    "                <tr>\n" +
-    "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> {{translations.HELP_BACKSPACE}}</td>\n" +
-    "                    <td valign=\"middle\">{{translations.HELP_GO_BACK}}</td>\n" +
-    "                </tr>\n" +
-    "                <tr>\n" +
-    "                    <td><i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> {{translations.HELP_CLICK}} {{translations.HELP_LEVEL2}}</td>\n" +
-    "                    <td valign=\"middle\">{{translations.HELP_GO_BACK_CLICKED}}</td>\n" +
-    "                </tr>\n" +
-    "                <tr>\n" +
-    "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> {{translations.HELP_ANY_KEY}}</td>\n" +
-    "                    <td valign=\"middle\">{{translations.HELP_ANY_KEY_PART1}} {{currentPlaceholder}} {{translations.HELP_ANY_KEY_PART2}}</td>\n" +
-    "                </tr>\n" +
-    "                </tbody>\n" +
-    "            </table>\n" +
-    "        </small>\n" +
-    "    </div>\n" +
     "\n" +
     "\n" +
     "\n" +

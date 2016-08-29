@@ -17,7 +17,53 @@
             <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
         </svg>
     </div>
-    <div class="art-results" ng-class="{'art-loading': loading}">
+    <div style="text-align: right;" class="art-tooltip-helper" ng-click="showTooltip = !showTooltip" ng-class="{'art-open': showTooltip}">
+        <i class="fa fa-question-circle" aria-hidden="true"></i>
+        <small class="art-tooltip">
+
+            <table class="table table-bordered" style="width: 95%; float: right">
+                <thead>
+                <tr>
+                    <th>{{translations.HELP_ACTION}}</th>
+                    <th>{{translations.HELP_DESCRIPTION}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><i class="fa fa-arrow-down" aria-hidden="true"></i> & <i class="fa fa-arrow-up" aria-hidden="true"></i></td>
+                    <td valign="middle">{{translations.HELP_ARROWS_TEXT}}</td>
+                </tr>
+                <tr>
+                    <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> {{translations.HELP_CLICK}}</td>
+                    <td rowspan="2" valign="middle">{{translations.HELP_LOAD}} {{currentPlaceholder}} {{translations.HELP_VIEW}}</td>
+                </tr>
+                <tr>
+                    <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> {{translations.HELP_SPACE}}</td>
+                </tr>
+                <tr>
+                    <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> + <i class="fa fa-mouse-pointer" aria-hidden="true"></i> {{translations.HELP_DOUBLE_CLICK}}</td>
+                    <td rowspan="2" valign="middle">{{translations.HELP_OPEN}} {{currentPlaceholder}} {{translations.HELP_LEVEL}}</td>
+                </tr>
+                <tr>
+                    <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> {{translations.HELP_ENTER}}</td>
+                </tr>
+                <tr>
+                    <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> {{translations.HELP_BACKSPACE}}</td>
+                    <td valign="middle">{{translations.HELP_GO_BACK}}</td>
+                </tr>
+                <tr>
+                    <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> {{translations.HELP_CLICK}} {{translations.HELP_LEVEL2}}</td>
+                    <td valign="middle">{{translations.HELP_GO_BACK_CLICKED}}</td>
+                </tr>
+                <tr>
+                    <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> {{translations.HELP_ANY_KEY}}</td>
+                    <td valign="middle">{{translations.HELP_ANY_KEY_PART1}} {{currentPlaceholder}} {{translations.HELP_ANY_KEY_PART2}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </small>
+    </div>
+    <div class="art-results" ng-class="{'art-loading': loading, 'art-tooltip-open': showTooltip}">
         <ul kb-list ng-if="results">
 
             <li ng-if="!allData || !mappings" ng-repeat="item in results track by $index" kb-item kb-invoke="selectItem(item, $index, $event)" data-has-index="{{$index}}" ng-keydown="focusOnSearch($event)">
@@ -69,52 +115,7 @@
         <i class="fa fa-plus" aria-hidden="true"></i>{{elementsAdded}}
     </div>
 
-    <div style="text-align: right; clear: both" class="art-tooltip-helper" ng-click="showTooltip = !showTooltip">
-        <i class="fa fa-question-circle" aria-hidden="true"></i>
-        <small ng-if="results && showTooltip" class="art-tooltip">
 
-            <table class="table table-bordered" style="width: 50%; float: right">
-                <thead>
-                <tr>
-                    <th>{{translations.HELP_ACTION}}</th>
-                    <th>{{translations.HELP_DESCRIPTION}}</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td><i class="fa fa-arrow-down" aria-hidden="true"></i> & <i class="fa fa-arrow-up" aria-hidden="true"></i></td>
-                    <td valign="middle">{{translations.HELP_ARROWS_TEXT}}</td>
-                </tr>
-                <tr>
-                    <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> {{translations.HELP_CLICK}}</td>
-                    <td rowspan="2" valign="middle">{{translations.HELP_LOAD}} {{currentPlaceholder}} {{translations.HELP_VIEW}}</td>
-                </tr>
-                <tr>
-                    <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> {{translations.HELP_SPACE}}</td>
-                </tr>
-                <tr>
-                    <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> + <i class="fa fa-mouse-pointer" aria-hidden="true"></i> {{translations.HELP_DOUBLE_CLICK}}</td>
-                    <td rowspan="2" valign="middle">{{translations.HELP_OPEN}} {{currentPlaceholder}} {{translations.HELP_LEVEL}}</td>
-                </tr>
-                <tr>
-                    <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> {{translations.HELP_ENTER}}</td>
-                </tr>
-                <tr>
-                    <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> {{translations.HELP_BACKSPACE}}</td>
-                    <td valign="middle">{{translations.HELP_GO_BACK}}</td>
-                </tr>
-                <tr>
-                    <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> {{translations.HELP_CLICK}} {{translations.HELP_LEVEL2}}</td>
-                    <td valign="middle">{{translations.HELP_GO_BACK_CLICKED}}</td>
-                </tr>
-                <tr>
-                    <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> {{translations.HELP_ANY_KEY}}</td>
-                    <td valign="middle">{{translations.HELP_ANY_KEY_PART1}} {{currentPlaceholder}} {{translations.HELP_ANY_KEY_PART2}}</td>
-                </tr>
-                </tbody>
-            </table>
-        </small>
-    </div>
 
 
 
