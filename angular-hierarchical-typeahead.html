@@ -97,7 +97,7 @@
                 </table>
             </li>
 
-            <li ng-if="pagination" class="load-more" ng-click="getOutsideData(false, true)">
+            <li ng-if="pagination && loadMore" class="load-more" ng-click="getOutsideData(false, true)">
                 <i class="fa fa-plus" aria-hidden="true"></i> {{translations.LOAD_MORE}}
             </li>
         </ul>

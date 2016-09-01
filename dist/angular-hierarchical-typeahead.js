@@ -6,7 +6,19 @@ angular.module('artTypeahead',['keyboard']);
 
 
 angular.module('artTypeahead')
-    .directive('artTypeahead',['$parse', '$document', '$http', '$timeout', '$compile',
+    .factory('artTypeExternal', function(){
+        /**
+         * Service to manipulate the component directive from outside
+         * Methods:
+         *  - goToLevel: go to a specific level
+         *  - selectItem: select a specific item on the current level
+         *  -
+         *  -
+         * */
+
+        return {};
+    })
+    .directive('artTypeahead',['$parse', '$document', '$http', '$timeout', '$compile', 'artTypeExternal',
         function(){
             return {
                 restrict: 'E',
@@ -17,13 +29,14 @@ angular.module('artTypeahead')
                     pagination: "@artPagination",
                     minQuery: '@artMinQuery',
                     maxResults: '@artMaxResults',
+                    callSize: '@artCallSize',
                     i18n: '=artTranslations',
                     allData: '@artDisplayAll', // Can be true, which means full display for everything, or 'partial', to display only for where there's mappings
                     mappings: '=artLevelsMap'
                 },
                 transclude: false,
                 templateUrl: 'angular-hierarchical-typeahead.html',
-                controller: function($scope, $timeout) {
+                controller: function($scope, $timeout, artTypeExternal) {
                     // Initialization
                     $scope.loading = false;
                     $scope.query = null;
@@ -33,6 +46,8 @@ angular.module('artTypeahead')
                     $scope.tooMany = false;
                     $scope.activeLevel = 0;
                     $scope.showTooltip = false;
+                    $scope.loadMore = true;
+                    var callSize = 0;
                     var previousDataSet = [];
 
                     //TODO: Check the keyCode's on all the browsers.
@@ -41,6 +56,7 @@ angular.module('artTypeahead')
                         maxResults: 200,
                         dblClickTime: 400,
                         minQuery: 2,
+                        callSize: 25,
                         defaultLevels: [{name: "Level1", icon: "fa fa-users", color: "#3f3f3f", bColor: "#a6b5bd"},
                             {name: "Level2", icon: "fa fa-building-o", color: "#3f3f3f", bColor: "#c5d7e0"},
                             {name: "Level3", icon: "fa fa-tachometer", color: "#3f3f3f", bColor: "#e8eff3"}],
@@ -87,6 +103,12 @@ angular.module('artTypeahead')
                         angular.extend($scope.translations, $scope.i18n);
                     } else {
                         $scope.translations = defaultValues.translations;
+                    }
+
+                    if ($scope.callSize) {
+                        callSize = parseInt($scope.callSize);
+                    } else {
+                        callSize = defaultValues.callSize;
                     }
 
                     // Utilities
@@ -259,6 +281,7 @@ angular.module('artTypeahead')
                             $scope.results = false;
                         }
 
+                        $scope.loadMore = true;
                         var rightIndex = $scope.whichLevel();
 
                         $scope.source($scope.levels[rightIndex].name, query, pagination, $scope.levelsActive[rightIndex].activeId).then(function(results){
@@ -309,7 +332,15 @@ angular.module('artTypeahead')
 
                             $scope.loading = false;
 
+                            // If we don't have multiples of 25 elements do not display the load more.
+                            if ($scope.results && ( ($scope.results.length / callSize) % 1 !== 0 || $scope.results.length < callSize  ) ) {
+                                $scope.loadMore = false;
+                            }
+
                             previousDataSet = results;
+
+                            $scope.$emit('ART:External:Ready');
+
                         }, function(reject){
                             //console.log('rejected', reject);
                             $scope.results = false;
@@ -354,11 +385,6 @@ angular.module('artTypeahead')
                     };
 
 
-
-                    //TODO: When Last level is active the input should disappear.
-                    //TODO: Clicking on a level will reset the search to that level
-
-
                     // Process levels
                     $scope.levelsActive = angular.copy($scope.levels);
                     $scope.levelsActive = $scope.levelsActive.map(function(item){
@@ -383,34 +409,118 @@ angular.module('artTypeahead')
                     $scope.levelsActive[0].isVisible = true;
                     getOutsideData(false);
 
-                },
-                link: function(scope, element, attrs) {
 
-                    var transitionElementWidth = function(element) {
-                        /* jshint ignore:start */
-                        console.log('transitioning element', element);
-                        var prevWidth = element.style.width;
-                        element.style.width = 'auto';
-                        var endWidth = getComputedStyle(element).width;
-                        element.style.width = prevWidth;
-                        element.offsetWidth;// force repaint
-                        element.style.transition = 'width .5s ease-in-out';
-                        element.style.width = endWidth;
-                        element.addEventListener('transitionend', function transitionEnd(event) {
-                            if (event.propertyName === 'width') {
-                                element.style.transition = '';
-                                element.style.width = 'auto';
-                                element.removeEventListener('transitionend', transitionEnd, false)
+                    // External Factory Component Controls
+
+                    artTypeExternal.goBackToLevel = function (level) {
+                        $scope.actionLevel($scope.levelsActive[level], level);
+                    };
+
+                    artTypeExternal.goBackToItem = function (item) {
+
+                        //Utility
+                        var checkIdContext = function(id){
+
+                            var found = 0;
+                            for (var i=0; i < $scope.results.length; i++) {
+                                if ($scope.results[i].id === id) {
+                                    found = i;
+                                }
                             }
-                        }, false);
-                        /* jshint ignore:end */
+                            return found;
+                        };
+
+                        /* Item should be in format {id: id, name: name, level: level index} */
+
+                        if (item.level !== undefined) {
+                            /** Means we need to change the levels also */
+
+                            $scope.actionLevel($scope.levelsActive[item.level], item.level);
+
+                            var sourceListener = $scope.$on('ART:External:Ready', function() {
+                                //Do the actions
+
+                                // Check to see first if the element exists in the current results
+                                //TODO: Scroll to it if it does exist ?
+                                var exists = checkIdContext(item.id);
+                                if (exists > 0) {
+
+                                    if ($scope.allData) {
+                                        $timeout(function(){ $scope.selectSpecificItem(exists + 1); }, 250);
+                                    } else {
+                                        $timeout(function(){ $scope.selectSpecificItem(exists); }, 250);
+                                    }
+
+                                } else {
+                                    $scope.query = item.name;
+
+                                    var sourceListenerInner = $scope.$on('ART:External:Ready', function() {
+                                        //Do the actions
+                                        if ($scope.allData) {
+                                            $timeout(function(){ $scope.selectSpecificItem(1); }, 250);
+                                        } else {
+                                            $timeout(function(){ $scope.selectSpecificItem(0); }, 250);
+                                        }
+                                        //Destroy the listener
+                                        sourceListenerInner();
+                                    });
+                                }
+
+                                sourceListener();
+                            });
+
+                        } else {
+
+                            // Check to see first if the element exists in the current results
+                            //TODO: Scroll to it if it does exist ?
+                            var exists = checkIdContext(item.id);
+                            if (exists > 0) {
+
+                                if ($scope.allData) {
+                                    $timeout(function(){ $scope.selectSpecificItem(exists + 1); }, 250);
+                                } else {
+                                    $timeout(function(){ $scope.selectSpecificItem(exists); }, 250);
+                                }
+
+                            } else {
+
+                                $scope.query = name;
+
+                                var sourceListenerSimple = $scope.$on('ART:External:Ready', function() {
+                                    //Do the actions
+                                    if ($scope.allData) {
+                                        $timeout(function(){ $scope.selectSpecificItem(1); }, 250);
+                                    } else {
+                                        $timeout(function(){ $scope.selectSpecificItem(0); }, 250);
+                                    }
+                                    //Destroy the listener
+                                    sourceListenerSimple();
+                                });
+
+                            }
+
+                        }
+
                     };
 
-                    scope.transitElement = function(rightIndex) {
-                        var transitionElement = angular.element(element[0].querySelector('.levels'))[rightIndex];
-                        transitionElementWidth(transitionElement);
+                    artTypeExternal.goForwad = function (tree) {
+                      console.log(tree);
                     };
 
+                },
+                link: function(scope, element, attrs, $timeout) {
+
+                    scope.selectSpecificItem = function(index){
+
+                        if (scope.allData) {
+                            element[0].querySelectorAll('.art-results tr')[index].click();
+                            //TODO: scroll to it!
+                        } else {
+                            element[0].querySelectorAll('.art-results li')[index].click();
+                            //TODO: scroll to it!
+                        }
+
+                    };
 
                     element[0].querySelector('.levels.search-bar').addEventListener('keydown', function searchDown(event) {
 
@@ -565,7 +675,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                </table>\n" +
     "            </li>\n" +
     "\n" +
-    "            <li ng-if=\"pagination\" class=\"load-more\" ng-click=\"getOutsideData(false, true)\">\n" +
+    "            <li ng-if=\"pagination && loadMore\" class=\"load-more\" ng-click=\"getOutsideData(false, true)\">\n" +
     "                <i class=\"fa fa-plus\" aria-hidden=\"true\"></i> {{translations.LOAD_MORE}}\n" +
     "            </li>\n" +
     "        </ul>\n" +

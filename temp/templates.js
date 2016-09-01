@@ -101,7 +101,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                </table>\n" +
     "            </li>\n" +
     "\n" +
-    "            <li ng-if=\"pagination\" class=\"load-more\" ng-click=\"getOutsideData(false, true)\">\n" +
+    "            <li ng-if=\"pagination && loadMore\" class=\"load-more\" ng-click=\"getOutsideData(false, true)\">\n" +
     "                <i class=\"fa fa-plus\" aria-hidden=\"true\"></i> {{translations.LOAD_MORE}}\n" +
     "            </li>\n" +
     "        </ul>\n" +

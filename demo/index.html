@@ -33,6 +33,7 @@
         </div>
 
         <div class="row" style="margin-top:50px">
+            <button ng-click="communicate()">mumu</button>
             <art-typeahead art-levels="tiers" art-levels-map="tiersMappings" art-pagination="true" art-trigger="callbackID(id, type)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
         </div>
 
@@ -212,17 +213,22 @@
                         <tr>
                             <td>art-min-query</td>
                             <td>integer</td>
-                            <td>Otional. Query length to trigger a search.</td>
+                            <td>Optional. Query length to trigger a search.</td>
                         </tr>
                         <tr>
                             <td>art-max-results</td>
                             <td>integer</td>
-                            <td>Otional. Max results to show before displaying the user a message to user the search bar.</td>
+                            <td>Optional. Max results to show before displaying the user a message to user the search bar.</td>
                         </tr>
                         <tr>
                             <td>art-translations</td>
                             <td>Object</td>
-                            <td>Otional. An object with translations for the whole component static messages / text. Get the object on the github page.</td>
+                            <td>Optional. An object with translations for the whole component static messages / text. Get the object on the github page.</td>
+                        </tr>
+                        <tr>
+                            <td>art-call-size</td>
+                            <td>integer</td>
+                            <td>Optional. Number of items that the `art-source` service will give on each call. Defaults to 25 if not specified</td>
                         </tr>
 
 
