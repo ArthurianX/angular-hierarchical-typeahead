@@ -476,11 +476,19 @@ angular.module('artTypeahead')
                             var exists = checkIdContext(item.id);
                             if (exists > 0) {
 
-                                if ($scope.allData) {
-                                    $timeout(function(){ $scope.selectSpecificItem(exists + 1); }, 250);
-                                } else {
-                                    $timeout(function(){ $scope.selectSpecificItem(exists); }, 250);
-                                }
+                                // Even if we are on the same level, get the data anew so we refresh it in the list
+                                getOutsideData(false);
+
+                                var sourceListenerSimple = $scope.$on('ART:External:Ready', function() {
+                                    //Do the actions
+                                    if ($scope.allData) {
+                                        $timeout(function(){ $scope.selectSpecificItem(exists + 1); }, 250);
+                                    } else {
+                                        $timeout(function(){ $scope.selectSpecificItem(exists); }, 250);
+                                    }
+                                    //Destroy the listener
+                                    sourceListenerSimple();
+                                });
 
                             } else {
 
@@ -503,8 +511,9 @@ angular.module('artTypeahead')
 
                     };
 
-                    artTypeExternal.goForwad = function (tree) {
-                      console.log(tree);
+                    artTypeExternal.goForward = function (tree) {
+                        console.log(tree);
+                        //TODO: Make going forward logic ?
                     };
 
                 },
