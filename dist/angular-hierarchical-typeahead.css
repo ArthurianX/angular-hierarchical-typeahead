@@ -211,6 +211,10 @@
     z-index: 2;
     background-color: #fff;
     transition: opacity 0.5s ease-in-out; }
+    .art-typeahead-container .art-results .open-level i {
+      font-size: 16px;
+      padding-right: 5px;
+      color: #2980b9 !important; }
     .art-typeahead-container .art-results.art-tooltip-open {
       opacity: 0.5;
       pointer-events: none; }

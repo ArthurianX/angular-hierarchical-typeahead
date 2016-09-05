@@ -88,6 +88,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                    <tbody>\n" +
     "                        <tr ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\">\n" +
     "                            <td ng-repeat=\"(key, value) in item\" ng-if=\"key != 'id'\" valign=\"middle\">\n" +
+    "                                <span class=\"open-level\" ng-if=\"key == 'name' && !lastLevel\" ng-click=\"loadNextLevel(item, $index)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
     "                                <span ng-if=\"!item[key].hasCallback\">{{item[key]}}</span>\n" +
     "                                <span ng-if=\"item[key].hasCallback\">\n" +
     "                                    <button class=\"art-inner-callback-button\" ng-click=\"item[key].callback($event, item)\">\n" +

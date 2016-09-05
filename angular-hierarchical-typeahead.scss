@@ -194,6 +194,11 @@
         z-index: 2;
         background-color: #fff;
         transition: opacity 0.5s ease-in-out;
+        .open-level i {
+            font-size: 16px;
+            padding-right: 5px;
+            color: rgba(41,128,185,1) !important;
+        }
         &.art-tooltip-open {
             opacity: 0.5;
             pointer-events: none;

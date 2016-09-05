@@ -168,8 +168,43 @@ angular.module('artTypeahead')
                     };
 
 
-                    // Select an item, send it outside with callOutside
+                    $scope.loadNextLevel = function(item, index){
 
+                        // Get the current active level
+                        var rightIndex = $scope.whichLevel();
+
+                        // Do the whole loading of a new level
+                        $scope.levelsActive[rightIndex].activeName = item.name;
+                        if ($scope.levelsActive[rightIndex+1]) {
+                            $scope.levelsActive[rightIndex+1].activeId = item.id;
+                        }
+                        $scope.levelsActive[rightIndex].isActive = true;
+                        $scope.query = null;
+
+                        // Show the next level
+                        if (rightIndex < $scope.levelsActive.length - 1) {
+                            //console.log('Calling level', rightIndex);
+                            //Call outside the choice made
+                            //$scope.callOutside({id: item.id, type: $scope.levels[rightIndex+1].name});
+
+                            $scope.levelsActive[rightIndex+1].isVisible = true;
+                            //Animate the display of the next level
+
+                            // Change the placeholder
+                            $scope.currentPlaceholder = $scope.levels[rightIndex+1].name;
+                            //Get Data for that level
+                            getOutsideData(false);
+                            $scope.focusOnSearch();
+                        } else if (parseInt(rightIndex) === $scope.levelsActive.length - 1) {
+                            //Call outside the choice made
+                            //console.log('End of levels', rightIndex, {id: item.id, type: $scope.levels[rightIndex].name});
+                            $scope.lastLevel = true;
+                            $scope.callOutside({id: item.id, type: $scope.levels[rightIndex].name});
+                        }
+
+                    };
+
+                    // Select an item, send it outside with callOutside
                     var timeStamp = 0;
                     $scope.selectItem = function selectItem(item, index, event){
                         //console.log('Selected item', item, index, event);
