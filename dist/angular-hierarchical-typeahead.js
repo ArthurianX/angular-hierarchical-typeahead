@@ -422,7 +422,9 @@ angular.module('artTypeahead')
                         var checkIdContext = function(id){
 
                             var found = 0;
-                            for (var i=0; i < $scope.results.length; i++) {
+                            // Find the ID only in the first 25 results, reloading after that index needs a query first
+                            var length = $scope.results.length <= callSize ? $scope.results.length -1 : callSize -1;
+                            for (var i=0; i < length; i++) {
                                 if ($scope.results[i].id === id) {
                                     found = i;
                                 }
@@ -492,7 +494,7 @@ angular.module('artTypeahead')
 
                             } else {
 
-                                $scope.query = name;
+                                $scope.query = item.name;
 
                                 var sourceListenerSimple = $scope.$on('ART:External:Ready', function() {
                                     //Do the actions
