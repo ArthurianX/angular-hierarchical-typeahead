@@ -456,9 +456,9 @@ angular.module('artTypeahead')
                         //Utility
                         var checkIdContext = function(id){
 
-                            var found = 0;
+                            var found = -1;
                             // Find the ID only in the first 25 results, reloading after that index needs a query first
-                            var length = $scope.results.length <= callSize ? $scope.results.length -1 : callSize -1;
+                            var length = $scope.results.length <= callSize ? $scope.results.length : callSize;
                             for (var i=0; i < length; i++) {
                                 if ($scope.results[i].id === id) {
                                     found = i;
@@ -478,9 +478,8 @@ angular.module('artTypeahead')
                                 //Do the actions
 
                                 // Check to see first if the element exists in the current results
-                                //TODO: Scroll to it if it does exist ?
                                 var exists = checkIdContext(item.id);
-                                if (exists > 0) {
+                                if (exists > -1) {
 
                                     if ($scope.allData) {
                                         $timeout(function(){ $scope.selectSpecificItem(exists + 1); }, 250);
@@ -509,9 +508,8 @@ angular.module('artTypeahead')
                         } else {
 
                             // Check to see first if the element exists in the current results
-                            //TODO: Scroll to it if it does exist ?
                             var exists = checkIdContext(item.id);
-                            if (exists > 0) {
+                            if (exists > -1) {
 
                                 // Even if we are on the same level, get the data anew so we refresh it in the list
                                 getOutsideData(false);
