@@ -301,7 +301,7 @@
             width: 600px;
             overflow: auto;
             table {
-                opacity: 1;
+                opacity: 0.8;
                 color: #2e2e2e;
                 background-color: #efefef;
                 th, td {
@@ -312,6 +312,7 @@
         }
         > i {
             color: rgba(41,128,185, 1);
+            padding-top: 16px;
         }
     }
 

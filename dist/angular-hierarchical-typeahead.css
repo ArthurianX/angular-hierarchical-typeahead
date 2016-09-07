@@ -293,13 +293,14 @@
       width: 600px;
       overflow: auto; }
       .art-typeahead-container .art-tooltip-helper.art-open table {
-        opacity: 1;
+        opacity: 0.8;
         color: #2e2e2e;
         background-color: #efefef; }
         .art-typeahead-container .art-tooltip-helper.art-open table th, .art-typeahead-container .art-tooltip-helper.art-open table td {
           border-color: #cfcfcf; }
     .art-typeahead-container .art-tooltip-helper > i {
-      color: #2980b9; }
+      color: #2980b9;
+      padding-top: 16px; }
   .art-typeahead-container .art-loader {
     position: absolute;
     margin: 105px auto -50px;

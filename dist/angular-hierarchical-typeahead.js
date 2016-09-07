@@ -207,22 +207,12 @@ angular.module('artTypeahead')
                     // Select an item, send it outside with callOutside
                     var timeStamp = 0;
                     $scope.selectItem = function selectItem(item, index, event){
-                        //console.log('Selected item', item, index, event);
-
-                        var detectDoubleClick = function detectDoubleClick(lastStamp, currentStamp){
-                            // People instinctively double-click when single click does not work, calculate here.
-                            if ( (currentStamp - lastStamp) < defaultValues.dblClickTime  ) {
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        };
 
                         // Get the current active level
                         var rightIndex = $scope.whichLevel();
 
                         //Move to next level only on space, enter or double click
-                        if (event.keyCode === 13 || detectDoubleClick(timeStamp, event.timeStamp)) {
+                        if (event.keyCode === 13) {
 
                             // Do the whole loading of a new level
                             $scope.levelsActive[rightIndex].activeName = item.name;
@@ -253,7 +243,7 @@ angular.module('artTypeahead')
                                 $scope.callOutside({id: item.id, type: $scope.levels[rightIndex].name});
                             }
 
-                        } else if (event.keyCode === 32 || !detectDoubleClick(timeStamp, event.timeStamp)) {
+                        } else if (event.keyCode === 32 || event.type === 'click') {
 
                             // Just call outside the current selection
                             if (rightIndex < $scope.levelsActive.length - 1) {
@@ -529,7 +519,7 @@ angular.module('artTypeahead')
 
                                 $scope.query = item.name;
 
-                                var sourceListenerSimple = $scope.$on('ART:External:Ready', function() {
+                                var sourceListenerExtended = $scope.$on('ART:External:Ready', function() {
                                     //Do the actions
                                     if ($scope.allData) {
                                         $timeout(function(){ $scope.selectSpecificItem(1); }, 250);
@@ -537,7 +527,7 @@ angular.module('artTypeahead')
                                         $timeout(function(){ $scope.selectSpecificItem(0); }, 250);
                                     }
                                     //Destroy the listener
-                                    sourceListenerSimple();
+                                    sourceListenerExtended();
                                 });
 
                             }
@@ -663,7 +653,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> {{translations.HELP_SPACE}}</td>\n" +
     "                </tr>\n" +
     "                <tr>\n" +
-    "                    <td><i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> + <i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> {{translations.HELP_DOUBLE_CLICK}}</td>\n" +
+    "                    <td><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i> {{translations.HELP_CLICK}}</td>\n" +
     "                    <td rowspan=\"2\" valign=\"middle\">{{translations.HELP_OPEN}} {{currentPlaceholder}} {{translations.HELP_LEVEL}}</td>\n" +
     "                </tr>\n" +
     "                <tr>\n" +

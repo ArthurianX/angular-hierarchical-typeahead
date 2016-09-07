@@ -45,7 +45,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                    <td><i class=\"fa fa-keyboard-o\" aria-hidden=\"true\"></i> {{translations.HELP_SPACE}}</td>\n" +
     "                </tr>\n" +
     "                <tr>\n" +
-    "                    <td><i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> + <i class=\"fa fa-mouse-pointer\" aria-hidden=\"true\"></i> {{translations.HELP_DOUBLE_CLICK}}</td>\n" +
+    "                    <td><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i> {{translations.HELP_CLICK}}</td>\n" +
     "                    <td rowspan=\"2\" valign=\"middle\">{{translations.HELP_OPEN}} {{currentPlaceholder}} {{translations.HELP_LEVEL}}</td>\n" +
     "                </tr>\n" +
     "                <tr>\n" +
