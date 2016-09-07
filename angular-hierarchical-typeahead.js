@@ -411,7 +411,14 @@ angular.module('artTypeahead')
                     // External Factory Component Controls
 
                     artTypeExternal.goBackToLevel = function (level) {
+
                         $scope.actionLevel($scope.levelsActive[level], level);
+
+                        var rightIndex = $scope.whichLevel();
+
+                        if (rightIndex === level) {
+                            getOutsideData(false);
+                        }
                     };
 
                     artTypeExternal.goBackToItem = function (item) {
