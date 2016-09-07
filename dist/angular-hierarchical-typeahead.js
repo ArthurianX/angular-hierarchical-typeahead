@@ -50,16 +50,12 @@ angular.module('artTypeahead')
                     var callSize = 0;
                     var previousDataSet = [];
 
-                    //TODO: Check the keyCode's on all the browsers.
 
                     var defaultValues = {
                         maxResults: 200,
                         dblClickTime: 400,
                         minQuery: 2,
                         callSize: 25,
-                        defaultLevels: [{name: "Level1", icon: "fa fa-users", color: "#3f3f3f", bColor: "#a6b5bd"},
-                            {name: "Level2", icon: "fa fa-building-o", color: "#3f3f3f", bColor: "#c5d7e0"},
-                            {name: "Level3", icon: "fa fa-tachometer", color: "#3f3f3f", bColor: "#e8eff3"}],
                         translations: {
                             SEARCH_FOR: 'Search for',
                             LOAD_MORE: 'Load More',
@@ -168,51 +164,14 @@ angular.module('artTypeahead')
                     };
 
 
-                    $scope.loadNextLevel = function(item, index){
-
-                        // Get the current active level
-                        var rightIndex = $scope.whichLevel();
-
-                        // Do the whole loading of a new level
-                        $scope.levelsActive[rightIndex].activeName = item.name;
-                        if ($scope.levelsActive[rightIndex+1]) {
-                            $scope.levelsActive[rightIndex+1].activeId = item.id;
-                        }
-                        $scope.levelsActive[rightIndex].isActive = true;
-                        $scope.query = null;
-
-                        // Show the next level
-                        if (rightIndex < $scope.levelsActive.length - 1) {
-                            //console.log('Calling level', rightIndex);
-                            //Call outside the choice made
-                            //$scope.callOutside({id: item.id, type: $scope.levels[rightIndex+1].name});
-
-                            $scope.levelsActive[rightIndex+1].isVisible = true;
-                            //Animate the display of the next level
-
-                            // Change the placeholder
-                            $scope.currentPlaceholder = $scope.levels[rightIndex+1].name;
-                            //Get Data for that level
-                            getOutsideData(false);
-                            $scope.focusOnSearch();
-                        } else if (parseInt(rightIndex) === $scope.levelsActive.length - 1) {
-                            //Call outside the choice made
-                            //console.log('End of levels', rightIndex, {id: item.id, type: $scope.levels[rightIndex].name});
-                            $scope.lastLevel = true;
-                            $scope.callOutside({id: item.id, type: $scope.levels[rightIndex].name});
-                        }
-
-                    };
-
                     // Select an item, send it outside with callOutside
-                    var timeStamp = 0;
-                    $scope.selectItem = function selectItem(item, index, event){
+                    $scope.selectItem = function selectItem(item, index, event, forceEnter){
 
                         // Get the current active level
                         var rightIndex = $scope.whichLevel();
 
                         //Move to next level only on space, enter or double click
-                        if (event.keyCode === 13) {
+                        if (event.keyCode === 13 || forceEnter) {
 
                             // Do the whole loading of a new level
                             $scope.levelsActive[rightIndex].activeName = item.name;
@@ -253,6 +212,18 @@ angular.module('artTypeahead')
                                 $scope.callOutside({id: item.id, type: $scope.levels[rightIndex].name});
                                 $scope.lastLevel = true;
                                 $scope.query = null;
+
+                                if (!$scope.results || $scope.results.length < 1) {
+                                    return false;
+                                }
+
+                                var nameChecks = $scope.results.map(function(item){return item.name;});
+
+                                if (nameChecks.indexOf(item.name) < 0) {
+                                    return false;
+                                }
+
+                                // This will happen only if we have the right data loaded and clicked on an item
                                 $scope.levelsActive[rightIndex].activeName = item.name;
                                 if ($scope.levelsActive[rightIndex+1]) {
                                     $scope.levelsActive[rightIndex+1].activeId = item.id;
@@ -261,8 +232,6 @@ angular.module('artTypeahead')
                             }
 
                         }
-
-                        timeStamp = event.timeStamp;
 
                         //$scope.transitElement(rightIndex); TODO: This does not work well yet, fix.
                     };
@@ -578,8 +547,16 @@ angular.module('artTypeahead')
                             }
                         }
 
-                        if (event.keyCode === 13) {
-                            var index = parseInt(angular.element(element[0].querySelector('.art-results li.kb-active'))[0].getAttribute('data-has-index'));
+                        if (event.keyCode === 13 && scope.results) {
+
+                            var index = null;
+
+                            if (scope.allData) {
+                                index = parseInt(angular.element(element[0].querySelectorAll('.art-results tr'))[1].getAttribute('data-has-index'));
+                            } else {
+                                index = parseInt(angular.element(element[0].querySelector('.art-results li.kb-active'))[0].getAttribute('data-has-index'));
+                            }
+
                             scope.selectItem(scope.results[index], index, {keyCode: 13});
                             scope.$apply();
                         }
@@ -678,16 +655,18 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "    <div class=\"art-results\" ng-class=\"{'art-loading': loading, 'art-tooltip-open': showTooltip}\">\n" +
     "        <ul kb-list ng-if=\"results\">\n" +
     "\n" +
-    "            <li ng-if=\"!allData || !mappings\" ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\">\n" +
+    "            <li ng-if=\"allData == 'false'\" ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\">\n" +
     "                {{item.name}}\n" +
     "            </li>\n" +
     "\n" +
     "            <!-- Map all the existing properties into display if there's no mapping object for this level-->\n" +
-    "            <li class=\"art-no-height\" ng-if=\"allData\">\n" +
+    "\n" +
+    "            <li class=\"art-no-height\" ng-if=\"allData == 'true'\">\n" +
+    "\n" +
     "                <table class=\"table\">\n" +
     "                    <thead>\n" +
     "                        <tr>\n" +
-    "                            <th ng-if=\"!mappings[activeLevel]\" ng-repeat=\"(key, value) in results[0]\">{{key}}</th>\n" +
+    "                            <th ng-if=\"!mappings[activeLevel] && key != 'id'\" ng-repeat=\"(key, value) in results[0]\">{{key}}</th>\n" +
     "                            <th ng-if=\"mappings && mappings[activeLevel]\" ng-repeat=\"heading in mappings[activeLevel]\">\n" +
     "                                {{heading.name}}\n" +
     "                            </th>\n" +
@@ -696,7 +675,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                    <tbody>\n" +
     "                        <tr ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\">\n" +
     "                            <td ng-repeat=\"(key, value) in item\" ng-if=\"key != 'id'\" valign=\"middle\">\n" +
-    "                                <span class=\"open-level\" ng-if=\"key == 'name' && !lastLevel\" ng-click=\"loadNextLevel(item, $index)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
+    "                                <span class=\"open-level\" ng-if=\"key == 'name' && !lastLevel\" ng-click=\"selectItem(item, $index, $event, true)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
     "                                <span ng-if=\"!item[key].hasCallback\">{{item[key]}}</span>\n" +
     "                                <span ng-if=\"item[key].hasCallback\">\n" +
     "                                    <button class=\"art-inner-callback-button\" ng-click=\"item[key].callback($event, item)\">\n" +

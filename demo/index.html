@@ -32,80 +32,58 @@
 
         </div>
 
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    This component is best suited for navigating through large sets of hierarchical data fetched from an API <small>(it can also be locally loaded data, but it defeats the purpose)</small>,
+                    it has multiple view options for the data, per element callback in your controller and custom element callback <small>(if used with object mapping, see the examples)</small>.
+                </div>
+
+            </div>
+            <h4>Features:</h4>
+            <ul class="list-group">
+                <li class="list-group-item">View large sets of hierarchical data</li>
+                <li class="list-group-item">Normal view, mapped table view, key value table property view</li>
+                <li class="list-group-item">Callback on each element select, with it's type and id</li>
+                <li class="list-group-item">Extra Callback on individual elements if mapped data is used</li>
+                <li class="list-group-item">External Service to manipulate actions inside the component <small>go back to level X, go back to item Y on level X</small></li>
+                <li class="list-group-item">Load More items with external logic to handle `pagination`</li>
+                <li class="list-group-item">Color and Icon customizable levels</li>
+                <li class="list-group-item">i18n support <small>push a specific object with all the translations</small></li>
+            </ul>
+        </div>
+
         <div class="row" style="margin-top:50px">
+            <h3 style="padding-bottom: 15px;">DEMO: A list of companies and their presence in countries:
+                <br>
+                <small>Full Info View with Object Mapping</small>
+            </h3>
             <art-typeahead art-levels="tiers" art-levels-map="tiersMappings" art-pagination="true" art-trigger="callbackID(id, type)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
+            <h5>Email Support (first level): <small>{{emailSupport.name}}: {{emailSupport.email}}</small></h5>
+            <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
+            <hr>
+        </div>
+
+        <div class="row" style="margin-top:50px">
+            <h3 style="padding-bottom: 15px;">
+                <small>Full Info View <strong>without</strong> Object Mapping (properties are used directly). Also, no extra row actions can be used like this</small>
+            </h3>
+            <art-typeahead art-levels="tiers" art-pagination="true" art-trigger="callbackID(id, type)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
+            <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
+            <hr>
+        </div>
+
+        <div class="row" style="margin-top:50px">
+            <h3 style="padding-bottom: 15px;">
+                <small>List View, no object mapping, no extra callbacks.</small>
+            </h3>
+            <art-typeahead art-levels="tiers" art-pagination="true" art-trigger="callbackID(id, type)" art-source="dataEndpoint" art-translations="translations" art-display-all="false"></art-typeahead>
+            <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
+            <hr>
         </div>
 
 
 
-       <!-- <div class="row">
-
-            <div class="col-md-4">
-                <form class="form-horizontal" role="form">
-                    <legend>Demo</legend>
-                    <div class="form-group">
-                        <label for="delayInput" class="col-sm-5 control-label">Years</label>
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" id="delayInput" ng-model="ctrYears">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="delayInput" class="col-sm-5 control-label">Attach To</label>
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" id="delayInput" ng-disabled="!ctrAttachTo" ng-model="ctrAttachTo">
-                        </div>
-                        <div class="col-sm-2">
-                            <input type="checkbox" class="form-control" id="delayInput" ng-click="ctrAttachToEnable()">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="delayInput" class="col-sm-5 control-label">Attach Now</label>
-                        <div class="col-sm-4">
-                            <button ng-disabled="!ctrAttachTo" ng-click="ctrAttachNow = true">Trigger Outside Attach</button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="delayInput" class="col-sm-5 control-label">Callback</label>
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" id="delayInput" ng-model="ctrCallback">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="delayInput" class="col-sm-5 control-label">Drag</label>
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" id="delayInput" ng-model="ctrDrag">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="delayInput" class="col-sm-5 control-label">Range</label>
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" id="delayInput" ng-model="ctrRange">
-                        </div>
-                    </div>
-
-                    <div class="col-sm-offset-5 col-sm-7" style="padding-right:0px">
-                        <button class="btn btn-default pull-right" ng-click="demo()">Reset</button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="col-md-offset-1 col-md-7" style="padding-top:28px">
-
-                <h5>Directive Demo</h5>
-                <p><input type="text" ng-model="defaultModel"/></p>
-                <div year-selector="{years: ctrYears, model: 'defaultModel', attachTo: ctrAttachTo, attachNow: ctrAttachNow, externalCallback: ctrCallback, range: ctrRange, drag: ctrDrag }"></div>
-
-                <div class="delayed-attachment">
-                    <legend>Outside attachment</legend>
-                    <p>Delayed & triggered attachment will happen here.</p>
-                </div>
-            </div>
-
-        </div>-->
 
         <div class="row">
             <div class="col-md-12">
@@ -131,7 +109,7 @@
                                 <td><i class="fa fa-keyboard-o" aria-hidden="true"></i> SPACE</td>
                             </tr>
                             <tr>
-                                <td><i class="fa fa-mouse-pointer" aria-hidden="true"></i> + <i class="fa fa-mouse-pointer" aria-hidden="true"></i> DOUBLE-CLICK</td>
+                                <td><i class="fa fa-external-link-square" aria-hidden="true"></i> {{translations.HELP_CLICK}}</td>
                                 <td rowspan="2" valign="middle">Open the element in a new Level</td>
                             </tr>
                             <tr>
@@ -217,7 +195,7 @@
                         <tr>
                             <td>art-max-results</td>
                             <td>integer</td>
-                            <td>Optional. Max results to show before displaying the user a message to user the search bar.</td>
+                            <td>Optional. Max results to show before displaying the user a message to user the search bar. Max results is tied with the art-call-size, their division must yield a number with no decimals, e.g. 25 results per page, show the max results message at 100 elements, 100 / 25 = 4.0</td>
                         </tr>
                         <tr>
                             <td>art-translations</td>
@@ -228,6 +206,12 @@
                             <td>art-call-size</td>
                             <td>integer</td>
                             <td>Optional. Number of items that the `art-source` service will give on each call. Defaults to 25 if not specified</td>
+                        </tr>
+
+                        <tr>
+                            <td>artTypeExternal</td>
+                            <td>Angular Service</td>
+                            <td>Optional. You can call this service to manipulate level actions inside the component. We have artTypeExternal.goBackToLevel(1) or artTypeExternal.goBackToItem({id: 25, name: 'Google', level: 0}) </td>
                         </tr>
 
 

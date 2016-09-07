@@ -66,16 +66,18 @@
     <div class="art-results" ng-class="{'art-loading': loading, 'art-tooltip-open': showTooltip}">
         <ul kb-list ng-if="results">
 
-            <li ng-if="!allData || !mappings" ng-repeat="item in results track by $index" kb-item kb-invoke="selectItem(item, $index, $event)" data-has-index="{{$index}}" ng-keydown="focusOnSearch($event)">
+            <li ng-if="allData == 'false'" ng-repeat="item in results track by $index" kb-item kb-invoke="selectItem(item, $index, $event)" data-has-index="{{$index}}" ng-keydown="focusOnSearch($event)">
                 {{item.name}}
             </li>
 
             <!-- Map all the existing properties into display if there's no mapping object for this level-->
-            <li class="art-no-height" ng-if="allData">
+
+            <li class="art-no-height" ng-if="allData == 'true'">
+
                 <table class="table">
                     <thead>
                         <tr>
-                            <th ng-if="!mappings[activeLevel]" ng-repeat="(key, value) in results[0]">{{key}}</th>
+                            <th ng-if="!mappings[activeLevel] && key != 'id'" ng-repeat="(key, value) in results[0]">{{key}}</th>
                             <th ng-if="mappings && mappings[activeLevel]" ng-repeat="heading in mappings[activeLevel]">
                                 {{heading.name}}
                             </th>
@@ -84,7 +86,7 @@
                     <tbody>
                         <tr ng-repeat="item in results track by $index" kb-item kb-invoke="selectItem(item, $index, $event)" data-has-index="{{$index}}" ng-keydown="focusOnSearch($event)">
                             <td ng-repeat="(key, value) in item" ng-if="key != 'id'" valign="middle">
-                                <span class="open-level" ng-if="key == 'name' && !lastLevel" ng-click="loadNextLevel(item, $index)"><i class="fa fa-external-link-square" aria-hidden="true"></i></span>
+                                <span class="open-level" ng-if="key == 'name' && !lastLevel" ng-click="selectItem(item, $index, $event, true)"><i class="fa fa-external-link-square" aria-hidden="true"></i></span>
                                 <span ng-if="!item[key].hasCallback">{{item[key]}}</span>
                                 <span ng-if="item[key].hasCallback">
                                     <button class="art-inner-callback-button" ng-click="item[key].callback($event, item)">

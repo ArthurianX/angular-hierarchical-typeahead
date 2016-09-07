@@ -2,6 +2,8 @@
 
 > Multiple breadcrumb like selection typeahead component.
 
+## Github README is not completely up to date, for the moment refer to the demo site for API info.
+
 ## Demo
 
 [Live Demo](http://arthurianx.github.io/angular-hierarchical-typeahead/demo)

@@ -70,16 +70,18 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "    <div class=\"art-results\" ng-class=\"{'art-loading': loading, 'art-tooltip-open': showTooltip}\">\n" +
     "        <ul kb-list ng-if=\"results\">\n" +
     "\n" +
-    "            <li ng-if=\"!allData || !mappings\" ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\">\n" +
+    "            <li ng-if=\"allData == 'false'\" ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\">\n" +
     "                {{item.name}}\n" +
     "            </li>\n" +
     "\n" +
     "            <!-- Map all the existing properties into display if there's no mapping object for this level-->\n" +
-    "            <li class=\"art-no-height\" ng-if=\"allData\">\n" +
+    "\n" +
+    "            <li class=\"art-no-height\" ng-if=\"allData == 'true'\">\n" +
+    "\n" +
     "                <table class=\"table\">\n" +
     "                    <thead>\n" +
     "                        <tr>\n" +
-    "                            <th ng-if=\"!mappings[activeLevel]\" ng-repeat=\"(key, value) in results[0]\">{{key}}</th>\n" +
+    "                            <th ng-if=\"!mappings[activeLevel] && key != 'id'\" ng-repeat=\"(key, value) in results[0]\">{{key}}</th>\n" +
     "                            <th ng-if=\"mappings && mappings[activeLevel]\" ng-repeat=\"heading in mappings[activeLevel]\">\n" +
     "                                {{heading.name}}\n" +
     "                            </th>\n" +
@@ -88,7 +90,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                    <tbody>\n" +
     "                        <tr ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\">\n" +
     "                            <td ng-repeat=\"(key, value) in item\" ng-if=\"key != 'id'\" valign=\"middle\">\n" +
-    "                                <span class=\"open-level\" ng-if=\"key == 'name' && !lastLevel\" ng-click=\"loadNextLevel(item, $index)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
+    "                                <span class=\"open-level\" ng-if=\"key == 'name' && !lastLevel\" ng-click=\"selectItem(item, $index, $event, true)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
     "                                <span ng-if=\"!item[key].hasCallback\">{{item[key]}}</span>\n" +
     "                                <span ng-if=\"item[key].hasCallback\">\n" +
     "                                    <button class=\"art-inner-callback-button\" ng-click=\"item[key].callback($event, item)\">\n" +
