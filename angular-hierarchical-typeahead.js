@@ -50,6 +50,10 @@ angular.module('artTypeahead')
                     var callSize = 0;
                     var previousDataSet = [];
 
+                    $scope.sugePula = function(event) {
+                        console.log(event);
+                    };
+
 
                     var defaultValues = {
                         maxResults: 200,
@@ -171,7 +175,7 @@ angular.module('artTypeahead')
                         var rightIndex = $scope.whichLevel();
 
                         //Move to next level only on space, enter or double click
-                        if (event.keyCode === 13 || forceEnter) {
+                        if (event.keyCode === 13 || forceEnter || event.type === 'dblclick') {
 
                             // Do the whole loading of a new level
                             $scope.levelsActive[rightIndex].activeName = item.name;

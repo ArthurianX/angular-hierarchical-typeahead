@@ -50,6 +50,10 @@ angular.module('artTypeahead')
                     var callSize = 0;
                     var previousDataSet = [];
 
+                    $scope.sugePula = function(event) {
+                        console.log(event);
+                    };
+
 
                     var defaultValues = {
                         maxResults: 200,
@@ -171,7 +175,7 @@ angular.module('artTypeahead')
                         var rightIndex = $scope.whichLevel();
 
                         //Move to next level only on space, enter or double click
-                        if (event.keyCode === 13 || forceEnter) {
+                        if (event.keyCode === 13 || forceEnter || event.type === 'dblclick') {
 
                             // Do the whole loading of a new level
                             $scope.levelsActive[rightIndex].activeName = item.name;
@@ -655,7 +659,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "    <div class=\"art-results\" ng-class=\"{'art-loading': loading, 'art-tooltip-open': showTooltip}\">\n" +
     "        <ul kb-list ng-if=\"results\">\n" +
     "\n" +
-    "            <li ng-if=\"allData == 'false'\" ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\">\n" +
+    "            <li ng-if=\"allData == 'false'\" ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\" ng-dblclick=\"selectItem(item, $index, $event)\">\n" +
     "                {{item.name}}\n" +
     "            </li>\n" +
     "\n" +
@@ -673,7 +677,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                        </tr>\n" +
     "                    </thead>\n" +
     "                    <tbody>\n" +
-    "                        <tr ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\">\n" +
+    "                        <tr ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\" ng-dblclick=\"selectItem(item, $index, $event)\">\n" +
     "                            <td ng-repeat=\"(key, value) in item\" ng-if=\"key != 'id'\" valign=\"middle\">\n" +
     "                                <span class=\"open-level\" ng-if=\"key == 'name' && !lastLevel\" ng-click=\"selectItem(item, $index, $event, true)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
     "                                <span ng-if=\"!item[key].hasCallback\">{{item[key]}}</span>\n" +
