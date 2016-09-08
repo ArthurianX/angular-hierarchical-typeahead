@@ -98,6 +98,7 @@
     @include angle(both, true);
 }
 
+
 .art-typeahead-container {
     position: relative;
     -webkit-box-sizing: border-box;
@@ -183,6 +184,41 @@
             box-shadow: 0 0 0 rgba(0,0,0,0);
             transition: all 0.5s ease-in-out, opacity 1s ease-in-out;
         }
+        .art-clear-text {
+            padding: 12px 10px 10px 10px;
+            color: #979292;
+            font-size: 14px;
+            margin-left: -31px;
+            z-index: 12;
+            cursor: pointer;
+            transition: all 0.5s ease-in-out;
+            text-decoration: none;
+            &:hover {
+                border-radius: 32px;
+                color: #fff;
+                background-color: rgba(151, 146, 146, 1);
+                padding: 11px 15px 10px 15px;
+            }
+            /*&:focus {
+                !*-webkit-animation: art-btn-color 1s forwards linear;
+                -moz-animation: art-btn-color 1s forwards linear;
+                -ms-animation: art-btn-color 1s forwards linear;
+                -o-animation: art-btn-color 1s forwards linear;*!
+                -webkit-animation: art-btn-color 0.5s linear forwards;
+                -moz-animation: art-btn-color 0.5s linear forwards;
+                -ms-animation: art-btn-color 0.5s linear forwards;
+                -o-animation: art-btn-color 0.5s linear forwards;
+                animation: art-btn-color 0.5s linear forwards;
+            }*/
+
+        }
+
+        /*@-webkit-keyframes art-btn-color { 0% { background: #3aa48d; } 99% { background: #3aa48d; } 100% { padding: 12px 10px 10px 10px; color: #979292; background: transparent; } }
+        @-moz-keyframes art-btn-color { 0% { background: #3aa48d; } 99% { background: #3aa48d; } 100% { padding: 12px 10px 10px 10px; color: #979292; background: transparent; } }
+        @-ms-keyframes art-btn-color { 0% { background: #3aa48d; } 99% { background: #3aa48d; } 100% { padding: 12px 10px 10px 10px; color: #979292; background: transparent; } }
+        @-o-keyframes art-btn-color { 0% { background: #3aa48d; } 99% { background: #3aa48d; } 100% { padding: 12px 10px 10px 10px; color: #979292; background: transparent; } }
+        @keyframes art-btn-color { 0% { background: #3aa48d; } 99% { background: #3aa48d; } 100% { padding: 12px 10px 10px 10px; color: #979292; } }*/
+
     }
     .art-results {
         height: 250px;

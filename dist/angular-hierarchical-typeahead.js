@@ -49,11 +49,7 @@ angular.module('artTypeahead')
                     $scope.loadMore = true;
                     var callSize = 0;
                     var previousDataSet = [];
-
-                    $scope.sugePula = function(event) {
-                        console.log(event);
-                    };
-
+                    var untouchedResults = [];
 
                     var defaultValues = {
                         maxResults: 200,
@@ -112,6 +108,26 @@ angular.module('artTypeahead')
                     }
 
                     // Utilities
+                    
+                    var sendProperData = function(id) {
+                        //console.log('sendProperData start', id);
+                        // As I alter the data a lot for display, I am keeping a copy of the data and send the proper response from the copy on a callback event.
+                        if (untouchedResults.length > 0) {
+
+                            //console.log('sendProperData results', untouchedResults);
+                            var resLen = untouchedResults.length;
+                            var sendData = {};
+                            for (var i=0; i < resLen; i++) {
+                                if (untouchedResults[i].id === id) {
+                                    sendData = untouchedResults[i];
+                                    //console.log('sendProperData found', sendData);
+                                }
+                            }
+                            
+                            return sendData;
+                            
+                        }
+                    };
 
                     $scope.whichLevel = function whichLevel(){
                         // Always set by default to last level, so when we're at the end the last level will be returned.
@@ -132,15 +148,31 @@ angular.module('artTypeahead')
                     };
 
                     var mapActionLogic = function(map, list) {
+
                         // Filter the list and leave only the elements from the map
                         var resultingList = [];
                         var callback = false; // False or the index number where the callback is found
+                        var color = false;
+                        var colorApplyOn = false;
+                        var icon = false;
+                        var iconApplyOn = false;
 
                         var strippedMap = map.map(function(item, index){
                             if (angular.isFunction(item.value)) {
                                 callback = index;
                                 return false;
                             } else {
+
+                                if (item.color) {
+                                    color = index;
+                                    colorApplyOn = item.value;
+
+                                }
+                                if (item.icon) {
+                                    icon = index;
+                                    iconApplyOn = item.value;
+                                }
+
                                 return item.value;
                             }
 
@@ -151,14 +183,25 @@ angular.module('artTypeahead')
                             for (var key in list[i]) {
                                 //Add only the properties in the map.
                                 if (strippedMap.indexOf(key) > -1) {
-                                    listItem[key] = list[i][key];
+                                    listItem[key]= {value: list[i][key]};
                                 }
                             }
 
                             listItem.id = list[i].id;
 
+                            // Does the Cell have a callback button ?
                             if (callback) {
                                 listItem.ZZZZZZZ = {hasCallback: true, callback: map[callback].value, action: map[callback].actionName, icon: map[callback].actionIcon};
+                            }
+
+                            // Does the Cell have a custom color ?
+                            if (color) {
+                                listItem[colorApplyOn].color = map[color].color;
+                            }
+
+                            // Does the Cell have a custom icon ?
+                            if (icon) {
+                                listItem[iconApplyOn].icon = map[icon].icon;
                             }
 
                             resultingList.push(listItem);
@@ -178,7 +221,13 @@ angular.module('artTypeahead')
                         if (event.keyCode === 13 || forceEnter || event.type === 'dblclick') {
 
                             // Do the whole loading of a new level
-                            $scope.levelsActive[rightIndex].activeName = item.name;
+                            if ($scope.mappings && $scope.mappings[$scope.activeLevel]) {
+                                // If we have level mapping, I am changing the string to an object to be able to serve icons and colors too
+                                $scope.levelsActive[rightIndex].activeName = item.name.value;
+                            } else {
+                                $scope.levelsActive[rightIndex].activeName = item.name;
+                            }
+
                             if ($scope.levelsActive[rightIndex+1]) {
                                 $scope.levelsActive[rightIndex+1].activeId = item.id;
                             }
@@ -203,17 +252,17 @@ angular.module('artTypeahead')
                                 //Call outside the choice made
                                 //console.log('End of levels', rightIndex, {id: item.id, type: $scope.levels[rightIndex].name});
                                 $scope.lastLevel = true;
-                                $scope.callOutside({id: item.id, type: $scope.levels[rightIndex].name});
+                                $scope.callOutside({id: item.id, type: $scope.levels[rightIndex].name, fullResponse: sendProperData(item.id)});
                             }
 
                         } else if (event.keyCode === 32 || event.type === 'click') {
 
                             // Just call outside the current selection
                             if (rightIndex < $scope.levelsActive.length - 1) {
-                                $scope.callOutside({id: item.id, type: $scope.levels[rightIndex].name});
+                                $scope.callOutside({id: item.id, type: $scope.levels[rightIndex].name, fullResponse: sendProperData(item.id)});
                             } else if (parseInt(rightIndex) === $scope.levelsActive.length - 1) {
                                 //Call outside the choice made
-                                $scope.callOutside({id: item.id, type: $scope.levels[rightIndex].name});
+                                $scope.callOutside({id: item.id, type: $scope.levels[rightIndex].name, fullResponse: sendProperData(item.id)});
                                 $scope.lastLevel = true;
                                 $scope.query = null;
 
@@ -228,7 +277,12 @@ angular.module('artTypeahead')
                                 }
 
                                 // This will happen only if we have the right data loaded and clicked on an item
-                                $scope.levelsActive[rightIndex].activeName = item.name;
+                                if ($scope.mappings && $scope.mappings[$scope.activeLevel]) {
+                                    // If we have level mapping, I am changing the string to an object to be able to serve icons and colors too
+                                    $scope.levelsActive[rightIndex].activeName = item.name.value;
+                                } else {
+                                    $scope.levelsActive[rightIndex].activeName = item.name;
+                                }
                                 if ($scope.levelsActive[rightIndex+1]) {
                                     $scope.levelsActive[rightIndex+1].activeId = item.id;
                                 }
@@ -291,7 +345,7 @@ angular.module('artTypeahead')
                                 if (!pagination) {
 
                                     $scope.results = results;
-                                    $scope.callOutside({id: results[0].id, type: $scope.levels[rightIndex].name});
+                                    $scope.callOutside({id: results[0].id, type: $scope.levels[rightIndex].name, fullResponse: sendProperData(results[0].id)});
                                     $scope.levels[rightIndex].dataSet = results;
                                     
                                 } else {
@@ -323,8 +377,13 @@ angular.module('artTypeahead')
                             }
 
 
+                            if ($scope.results) {
+                                // Create a copy of the results to use later for callbacks.
+                                untouchedResults = angular.copy($scope.results);    
+                            }
+                            
                             if ($scope.results && $scope.mappings && $scope.mappings[$scope.activeLevel]) {
-
+                                
                                 $scope.results = mapActionLogic($scope.mappings[$scope.activeLevel], $scope.results);
                             }
 
@@ -375,6 +434,21 @@ angular.module('artTypeahead')
                         } else {
                             return {
                                 flex: 1,
+                                width: 'initial',
+                                opacity: 1
+                            };
+                        }
+
+                    };
+
+                    $scope.hideClearInput = function hideClearInput(lastLevel){
+                        if (lastLevel && !$scope.query) {
+                            return {
+                                width: '0px',
+                                opacity: 0
+                            };
+                        } else {
+                            return {
                                 width: 'initial',
                                 opacity: 1
                             };
@@ -609,8 +683,8 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "        >\n" +
     "            <i style=\"color: {{level.color}}\" class=\"{{level.icon}}\" aria-hidden=\"true\"></i> {{level.activeName || level.name}}\n" +
     "        </div>\n" +
-    "        <span class=\"text-clone\"></span>\n" +
     "        <input ng-style=\"hideInput(lastLevel)\" type=\"text\" ng-model=\"query\" ng-model-options=\"{ debounce: 500 }\" class=\"levels search-bar\" placeholder=\"{{translations.SEARCH_FOR}} {{currentPlaceholder}}\" autofocus>\n" +
+    "        <a ng-style=\"hideClearInput(lastLevel)\" href=\"javascript:;\" class=\"art-clear-text\" ng-click=\"query = ''\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i></a>\n" +
     "    </div>\n" +
     "    <div class=\"art-loader\" ng-if=\"loading\">\n" +
     "        <svg class=\"art-circular\" viewBox=\"25 25 50 50\">\n" +
@@ -672,26 +746,34 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <!-- Map all the existing properties into display if there's no mapping object for this level-->\n" +
     "\n" +
-    "            <li class=\"art-no-height\" ng-if=\"allData == 'true'\">\n" +
+    "            <li class=\"art-no-height\" ng-if=\"::allData == 'true'\">\n" +
     "\n" +
     "                <table class=\"table\">\n" +
     "                    <thead>\n" +
     "                        <tr>\n" +
-    "                            <th ng-if=\"!mappings[activeLevel] && key != 'id'\" ng-repeat=\"(key, value) in results[0]\">{{key}}</th>\n" +
-    "                            <th ng-if=\"mappings && mappings[activeLevel]\" ng-repeat=\"heading in mappings[activeLevel]\">\n" +
+    "                            <th ng-if=\"::!mappings[activeLevel] && key != 'id'\" ng-repeat=\"(key, value) in ::results[0]\">{{key}}</th>\n" +
+    "                            <th ng-if=\"::mappings && mappings[activeLevel]\" ng-repeat=\"heading in ::mappings[activeLevel]\">\n" +
     "                                {{heading.name}}\n" +
     "                            </th>\n" +
     "                        </tr>\n" +
     "                    </thead>\n" +
     "                    <tbody>\n" +
     "                        <tr ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\" ng-dblclick=\"selectItem(item, $index, $event)\">\n" +
-    "                            <td ng-repeat=\"(key, value) in item\" ng-if=\"key != 'id'\" valign=\"middle\">\n" +
-    "                                <span class=\"open-level\" ng-if=\"key == 'name' && !lastLevel\" ng-click=\"selectItem(item, $index, $event, true)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
-    "                                <span ng-if=\"!item[key].hasCallback\">{{item[key]}}</span>\n" +
-    "                                <span ng-if=\"item[key].hasCallback\">\n" +
+    "                            <!-- THIS SECTION HAS ALL THE ELEMENTS BOUND ONLY ONCE -->\n" +
+    "                            <td ng-repeat=\"(key, value) in ::item\" ng-if=\"::key != 'id'\" valign=\"middle\">\n" +
+    "\n" +
+    "                                <!-- IF is the name cell, show the load next level icon -->\n" +
+    "                                <span class=\"open-level\" ng-if=\"::key == 'name' && !lastLevel\" ng-click=\"selectItem(item, $index, $event, true)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
+    "\n" +
+    "                                <!-- IF there's no callback involved, just show the text itself -->\n" +
+    "                                <span ng-if=\"::!item[key].hasCallback && mappings[activeLevel]\" ng-style=\"{color: item[key].color}\"> <i ng-if=\"::item[key].icon\" class=\"{{::item[key].icon}}\" aria-hidden=\"true\"></i> {{::item[key].value}}</span>\n" +
+    "                                <span ng-if=\"::!item[key].hasCallback && !mappings[activeLevel]\">{{item[key]}}</span>\n" +
+    "\n" +
+    "                                <!-- IF there's a callback involved, show a button with the action on it -->\n" +
+    "                                <span ng-if=\"::item[key].hasCallback\">\n" +
     "                                    <button class=\"art-inner-callback-button\" ng-click=\"item[key].callback($event, item)\">\n" +
-    "                                        <i ng-if=\"item[key].icon\" class=\"{{item[key].icon}}\" aria-hidden=\"true\"></i>\n" +
-    "                                        {{item[key].action}}\n" +
+    "                                        <i ng-if=\"::item[key].icon\" class=\"{{::item[key].icon}}\" aria-hidden=\"true\"></i>\n" +
+    "                                        {{::item[key].action}}\n" +
     "                                    </button>\n" +
     "                                </span>\n" +
     "                            </td>\n" +

@@ -2079,11 +2079,12 @@ angular.module('app').controller('DemoCtrl',function($scope,$http, $q, artTypeEx
         HELP_ANY_KEY_PART2: 'list any key you press will focus the search input and make a new search.'
     };
 
-    $scope.callbackID = function(id, type) {
+    $scope.callbackID = function(id, type, fullResponse) {
         $scope.loadItem = {
             id: id,
             name: type
         };
+        //console.log('fullResponse is', fullResponse);
         $timeout(function(){
             $scope.loadItem = false;
         }, 2000)
@@ -2127,7 +2128,7 @@ angular.module('app').controller('DemoCtrl',function($scope,$http, $q, artTypeEx
         [
             {name: "Employee Name", value: 'name'},
             {name: 'Role', value: 'role'},
-            {name: 'Email', value: 'email'}
+            {name: 'Email', value: 'email', icon: 'fa fa-envelope', color: '#3aa48d'}
         ]
     ];
     // Note We mapped only the first level

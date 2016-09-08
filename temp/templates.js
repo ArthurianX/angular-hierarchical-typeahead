@@ -13,8 +13,8 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "        >\n" +
     "            <i style=\"color: {{level.color}}\" class=\"{{level.icon}}\" aria-hidden=\"true\"></i> {{level.activeName || level.name}}\n" +
     "        </div>\n" +
-    "        <span class=\"text-clone\"></span>\n" +
     "        <input ng-style=\"hideInput(lastLevel)\" type=\"text\" ng-model=\"query\" ng-model-options=\"{ debounce: 500 }\" class=\"levels search-bar\" placeholder=\"{{translations.SEARCH_FOR}} {{currentPlaceholder}}\" autofocus>\n" +
+    "        <a ng-style=\"hideClearInput(lastLevel)\" href=\"javascript:;\" class=\"art-clear-text\" ng-click=\"query = ''\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i></a>\n" +
     "    </div>\n" +
     "    <div class=\"art-loader\" ng-if=\"loading\">\n" +
     "        <svg class=\"art-circular\" viewBox=\"25 25 50 50\">\n" +
@@ -76,26 +76,34 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <!-- Map all the existing properties into display if there's no mapping object for this level-->\n" +
     "\n" +
-    "            <li class=\"art-no-height\" ng-if=\"allData == 'true'\">\n" +
+    "            <li class=\"art-no-height\" ng-if=\"::allData == 'true'\">\n" +
     "\n" +
     "                <table class=\"table\">\n" +
     "                    <thead>\n" +
     "                        <tr>\n" +
-    "                            <th ng-if=\"!mappings[activeLevel] && key != 'id'\" ng-repeat=\"(key, value) in results[0]\">{{key}}</th>\n" +
-    "                            <th ng-if=\"mappings && mappings[activeLevel]\" ng-repeat=\"heading in mappings[activeLevel]\">\n" +
+    "                            <th ng-if=\"::!mappings[activeLevel] && key != 'id'\" ng-repeat=\"(key, value) in ::results[0]\">{{key}}</th>\n" +
+    "                            <th ng-if=\"::mappings && mappings[activeLevel]\" ng-repeat=\"heading in ::mappings[activeLevel]\">\n" +
     "                                {{heading.name}}\n" +
     "                            </th>\n" +
     "                        </tr>\n" +
     "                    </thead>\n" +
     "                    <tbody>\n" +
     "                        <tr ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\" ng-dblclick=\"selectItem(item, $index, $event)\">\n" +
-    "                            <td ng-repeat=\"(key, value) in item\" ng-if=\"key != 'id'\" valign=\"middle\">\n" +
-    "                                <span class=\"open-level\" ng-if=\"key == 'name' && !lastLevel\" ng-click=\"selectItem(item, $index, $event, true)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
-    "                                <span ng-if=\"!item[key].hasCallback\">{{item[key]}}</span>\n" +
-    "                                <span ng-if=\"item[key].hasCallback\">\n" +
+    "                            <!-- THIS SECTION HAS ALL THE ELEMENTS BOUND ONLY ONCE -->\n" +
+    "                            <td ng-repeat=\"(key, value) in ::item\" ng-if=\"::key != 'id'\" valign=\"middle\">\n" +
+    "\n" +
+    "                                <!-- IF is the name cell, show the load next level icon -->\n" +
+    "                                <span class=\"open-level\" ng-if=\"::key == 'name' && !lastLevel\" ng-click=\"selectItem(item, $index, $event, true)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
+    "\n" +
+    "                                <!-- IF there's no callback involved, just show the text itself -->\n" +
+    "                                <span ng-if=\"::!item[key].hasCallback && mappings[activeLevel]\" ng-style=\"{color: item[key].color}\"> <i ng-if=\"::item[key].icon\" class=\"{{::item[key].icon}}\" aria-hidden=\"true\"></i> {{::item[key].value}}</span>\n" +
+    "                                <span ng-if=\"::!item[key].hasCallback && !mappings[activeLevel]\">{{item[key]}}</span>\n" +
+    "\n" +
+    "                                <!-- IF there's a callback involved, show a button with the action on it -->\n" +
+    "                                <span ng-if=\"::item[key].hasCallback\">\n" +
     "                                    <button class=\"art-inner-callback-button\" ng-click=\"item[key].callback($event, item)\">\n" +
-    "                                        <i ng-if=\"item[key].icon\" class=\"{{item[key].icon}}\" aria-hidden=\"true\"></i>\n" +
-    "                                        {{item[key].action}}\n" +
+    "                                        <i ng-if=\"::item[key].icon\" class=\"{{::item[key].icon}}\" aria-hidden=\"true\"></i>\n" +
+    "                                        {{::item[key].action}}\n" +
     "                                    </button>\n" +
     "                                </span>\n" +
     "                            </td>\n" +

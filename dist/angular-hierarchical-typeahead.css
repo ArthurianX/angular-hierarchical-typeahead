@@ -129,7 +129,12 @@
     color: #222;
     display: flex;
     position: relative;
-    z-index: 1; }
+    z-index: 1;
+    /*@-webkit-keyframes art-btn-color { 0% { background: #3aa48d; } 99% { background: #3aa48d; } 100% { padding: 12px 10px 10px 10px; color: #979292; background: transparent; } }
+        @-moz-keyframes art-btn-color { 0% { background: #3aa48d; } 99% { background: #3aa48d; } 100% { padding: 12px 10px 10px 10px; color: #979292; background: transparent; } }
+        @-ms-keyframes art-btn-color { 0% { background: #3aa48d; } 99% { background: #3aa48d; } 100% { padding: 12px 10px 10px 10px; color: #979292; background: transparent; } }
+        @-o-keyframes art-btn-color { 0% { background: #3aa48d; } 99% { background: #3aa48d; } 100% { padding: 12px 10px 10px 10px; color: #979292; background: transparent; } }
+        @keyframes art-btn-color { 0% { background: #3aa48d; } 99% { background: #3aa48d; } 100% { padding: 12px 10px 10px 10px; color: #979292; } }*/ }
     .art-typeahead-container .art-search .levels:not(:first-child).ng-enter {
       opacity: 0;
       margin-left: -200px; }
@@ -201,6 +206,31 @@
       outline: none;
       box-shadow: 0 0 0 transparent;
       transition: all 0.5s ease-in-out, opacity 1s ease-in-out; }
+    .art-typeahead-container .art-search .art-clear-text {
+      padding: 12px 10px 10px 10px;
+      color: #979292;
+      font-size: 14px;
+      margin-left: -31px;
+      z-index: 12;
+      cursor: pointer;
+      transition: all 0.5s ease-in-out;
+      text-decoration: none;
+      /*&:focus {
+                !*-webkit-animation: art-btn-color 1s forwards linear;
+                -moz-animation: art-btn-color 1s forwards linear;
+                -ms-animation: art-btn-color 1s forwards linear;
+                -o-animation: art-btn-color 1s forwards linear;*!
+                -webkit-animation: art-btn-color 0.5s linear forwards;
+                -moz-animation: art-btn-color 0.5s linear forwards;
+                -ms-animation: art-btn-color 0.5s linear forwards;
+                -o-animation: art-btn-color 0.5s linear forwards;
+                animation: art-btn-color 0.5s linear forwards;
+            }*/ }
+      .art-typeahead-container .art-search .art-clear-text:hover {
+        border-radius: 32px;
+        color: #fff;
+        background-color: #979292;
+        padding: 11px 15px 10px 15px; }
   .art-typeahead-container .art-results {
     height: 250px;
     overflow: auto;

@@ -43,7 +43,14 @@ module.exports = function (grunt) {
     },
     jasmine: {
       unit: {
-        src: ['./bower_components/jquery/dist/jquery.js','./bower_components/angular/angular.js','./bower_components/angular-animate/angular-animate.js','./bower_components/angular-mocks/angular-mocks.js','./dist/angular-hierarchical-typeahead.js','./demo/demo.js'],
+        src: [
+          './bower_components/jquery/dist/jquery.js',
+          './bower_components/angular/angular.js',
+          './bower_components/angular-animate/angular-animate.js',
+          './bower_components/angular-mocks/angular-mocks.js',
+          './dist/angular-hierarchical-typeahead.js',
+          './demo/demo.js'
+        ],
         options: {
           specs: 'test/*.js'
         }

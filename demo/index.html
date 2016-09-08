@@ -46,10 +46,10 @@
                 <li class="list-group-item">Normal view, mapped table view, key value table property view</li>
                 <li class="list-group-item">Callback on each element select, with it's type and id</li>
                 <li class="list-group-item">Extra Callback on individual elements if mapped data is used</li>
-                <li class="list-group-item">External Service to manipulate actions inside the component <small>go back to level X, go back to item Y on level X</small></li>
+                <li class="list-group-item">External Service to manipulate actions inside the component <small>(go back to level X, go back to item Y on level X)</small></li>
                 <li class="list-group-item">Load More items with external logic to handle `pagination`</li>
                 <li class="list-group-item">Color and Icon customizable levels</li>
-                <li class="list-group-item">i18n support <small>push a specific object with all the translations</small></li>
+                <li class="list-group-item">i18n support <small>(push a specific object with all the translations)</small></li>
             </ul>
         </div>
 
@@ -58,7 +58,7 @@
                 <br>
                 <small>Full Info View with Object Mapping</small>
             </h3>
-            <art-typeahead art-levels="tiers" art-levels-map="tiersMappings" art-pagination="true" art-trigger="callbackID(id, type)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
+            <art-typeahead art-levels="tiers" art-levels-map="tiersMappings" art-pagination="true" art-trigger="callbackID(id, type, fullResponse)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
             <h5>Email Support (first level): <small>{{emailSupport.name}}: {{emailSupport.email}}</small></h5>
             <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
             <hr>
@@ -68,7 +68,7 @@
             <h3 style="padding-bottom: 15px;">
                 <small>Full Info View <strong>without</strong> Object Mapping (properties are used directly). Also, no extra row actions can be used like this</small>
             </h3>
-            <art-typeahead art-levels="tiers" art-pagination="true" art-trigger="callbackID(id, type)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
+            <art-typeahead art-levels="tiers" art-pagination="true" art-trigger="callbackID(id, type, fullResponse)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
             <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
             <hr>
         </div>
@@ -77,7 +77,7 @@
             <h3 style="padding-bottom: 15px;">
                 <small>List View, no object mapping, no extra callbacks.</small>
             </h3>
-            <art-typeahead art-levels="tiers" art-pagination="true" art-trigger="callbackID(id, type)" art-source="dataEndpoint" art-translations="translations" art-display-all="false"></art-typeahead>
+            <art-typeahead art-levels="tiers" art-pagination="true" art-trigger="callbackID(id, type, fullResponse)" art-source="dataEndpoint" art-translations="translations" art-display-all="false"></art-typeahead>
             <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
             <hr>
         </div>
@@ -150,7 +150,7 @@
                         <tr>
                             <td>art-typeahead</td>
                             <td></td>
-                            <td>The main directive declaration. Example usage `< art-typeahead levels="tiers" pagination="true" trigger="callbackID(id, type)" source="dataEndpoint"></ art-typeahead>`</td>
+                            <td>The main directive declaration. Example usage `< art-typeahead levels="tiers" pagination="true" trigger="callbackID(id, type, fullResponse)" source="dataEndpoint"></ art-typeahead>`</td>
                         </tr>
                         <tr>
                             <td>art-levels</td>
@@ -175,7 +175,7 @@
                         <tr>
                             <td>art-trigger</td>
                             <td>function</td>
-                            <td>Mandatory. A function to callback the choice selected in the controller, response is two parameters, `id` and `type`, the latter being the level name. </td>
+                            <td>Mandatory. A function to callback the choice selected in the controller, response consists of three parameters, `id`, `type` and 'fullResponse', the second being the level name and the third is the full response element from the source array. </td>
                         </tr>
                         <tr>
                             <td>art-source</td>
