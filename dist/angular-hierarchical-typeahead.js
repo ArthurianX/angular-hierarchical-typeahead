@@ -156,6 +156,7 @@ angular.module('artTypeahead')
                         var colorApplyOn = false;
                         var icon = false;
                         var iconApplyOn = false;
+                        var individualStyling = false;
 
                         var strippedMap = map.map(function(item, index){
                             if (angular.isFunction(item.value)) {
@@ -171,6 +172,10 @@ angular.module('artTypeahead')
                                 if (item.icon) {
                                     icon = index;
                                     iconApplyOn = item.value;
+                                }
+                                
+                                if (item.individualStyling) {
+                                    individualStyling = item.value;
                                 }
 
                                 return item.value;
@@ -202,6 +207,10 @@ angular.module('artTypeahead')
                             // Does the Cell have a custom icon ?
                             if (icon) {
                                 listItem[iconApplyOn].icon = map[icon].icon;
+                            }
+                            
+                            if (individualStyling) {
+                                listItem[individualStyling].artCustom = list[i].custom;
                             }
 
                             resultingList.push(listItem);
@@ -760,13 +769,16 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                    <tbody>\n" +
     "                        <tr ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\" ng-dblclick=\"selectItem(item, $index, $event)\">\n" +
     "                            <!-- THIS SECTION HAS ALL THE ELEMENTS BOUND ONLY ONCE -->\n" +
-    "                            <td ng-repeat=\"(key, value) in ::item\" ng-if=\"::key != 'id'\" valign=\"middle\">\n" +
+    "                            <td ng-repeat=\"(key, value) in ::item\" ng-if=\"::key != 'id' && key != 'artCustom'\" valign=\"middle\">\n" +
     "\n" +
     "                                <!-- IF is the name cell, show the load next level icon -->\n" +
     "                                <span class=\"open-level\" ng-if=\"::key == 'name' && !lastLevel\" ng-click=\"selectItem(item, $index, $event, true)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
     "\n" +
     "                                <!-- IF there's no callback involved, just show the text itself -->\n" +
-    "                                <span ng-if=\"::!item[key].hasCallback && mappings[activeLevel]\" ng-style=\"{color: item[key].color}\"> <i ng-if=\"::item[key].icon\" class=\"{{::item[key].icon}}\" aria-hidden=\"true\"></i> {{::item[key].value}}</span>\n" +
+    "                                <span ng-if=\"::!item[key].hasCallback && mappings[activeLevel] && !item[key].artCustom\" ng-style=\"{color: item[key].color}\"> <i ng-if=\"::item[key].icon\" class=\"{{::item[key].icon}}\" aria-hidden=\"true\"></i> {{::item[key].value}}</span>\n" +
+    "\n" +
+    "                                <span ng-if=\"::!item[key].hasCallback && mappings[activeLevel] && item[key].artCustom\"> <i ng-if=\"::item[key].artCustom.icon\" ng-style=\"{color: item[key].artCustom.color}\" class=\"{{::item[key].artCustom.icon}}\" aria-hidden=\"true\"></i> {{::item[key].value}}</span>\n" +
+    "\n" +
     "                                <span ng-if=\"::!item[key].hasCallback && !mappings[activeLevel]\">{{item[key]}}</span>\n" +
     "\n" +
     "                                <!-- IF there's a callback involved, show a button with the action on it -->\n" +

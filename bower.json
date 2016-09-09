@@ -1,6 +1,6 @@
 {
   "name": "angular-hierarchical-typeahead",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "main": [
     "dist/angular-hierarchical-typeahead.js",
     "dist/angular-hierarchical-typeahead.css"

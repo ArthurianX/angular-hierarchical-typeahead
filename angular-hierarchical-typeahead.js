@@ -156,6 +156,7 @@ angular.module('artTypeahead')
                         var colorApplyOn = false;
                         var icon = false;
                         var iconApplyOn = false;
+                        var individualStyling = false;
 
                         var strippedMap = map.map(function(item, index){
                             if (angular.isFunction(item.value)) {
@@ -171,6 +172,10 @@ angular.module('artTypeahead')
                                 if (item.icon) {
                                     icon = index;
                                     iconApplyOn = item.value;
+                                }
+                                
+                                if (item.individualStyling) {
+                                    individualStyling = item.value;
                                 }
 
                                 return item.value;
@@ -202,6 +207,10 @@ angular.module('artTypeahead')
                             // Does the Cell have a custom icon ?
                             if (icon) {
                                 listItem[iconApplyOn].icon = map[icon].icon;
+                            }
+                            
+                            if (individualStyling) {
+                                listItem[individualStyling].artCustom = list[i].custom;
                             }
 
                             resultingList.push(listItem);
