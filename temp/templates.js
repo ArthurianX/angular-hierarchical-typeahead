@@ -93,7 +93,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                            <td ng-repeat=\"(key, value) in ::item\" ng-if=\"::key != 'id' && key != 'artCustom'\" valign=\"middle\">\n" +
     "\n" +
     "                                <!-- IF is the name cell, show the load next level icon -->\n" +
-    "                                <span class=\"open-level\" ng-if=\"::key == 'name' && !lastLevel\" ng-click=\"selectItem(item, $index, $event, true)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
+    "                                <span class=\"open-level\" ng-if=\"::key == 'name' && !lastLevel && levelsActive.length > 1\" ng-click=\"selectItem(item, $index, $event, true)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
     "\n" +
     "                                <!-- IF there's no callback involved, just show the text itself -->\n" +
     "                                <span ng-if=\"::!item[key].hasCallback && mappings[activeLevel] && !item[key].artCustom\" ng-style=\"{color: item[key].color}\"> <i ng-if=\"::item[key].icon\" class=\"{{::item[key].icon}}\" aria-hidden=\"true\"></i> {{::item[key].value}}</span>\n" +
@@ -104,7 +104,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "\n" +
     "                                <!-- IF there's a callback involved, show a button with the action on it -->\n" +
     "                                <span ng-if=\"::item[key].hasCallback\">\n" +
-    "                                    <button class=\"art-inner-callback-button\" ng-click=\"item[key].callback($event, item)\">\n" +
+    "                                    <button class=\"art-inner-callback-button\" ng-click=\"item[key].callback($event, item)\" ng-style=\"{'background-color': item[key].color}\">\n" +
     "                                        <i ng-if=\"::item[key].icon\" class=\"{{::item[key].icon}}\" aria-hidden=\"true\"></i>\n" +
     "                                        {{::item[key].action}}\n" +
     "                                    </button>\n" +

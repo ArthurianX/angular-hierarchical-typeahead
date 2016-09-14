@@ -160,7 +160,17 @@ angular.module('artTypeahead')
 
                         var strippedMap = map.map(function(item, index){
                             if (angular.isFunction(item.value)) {
-                                callback = index;
+                                if (typeof callback === 'number') {
+                                    var call = callback;
+                                    callback = [];
+                                    callback.push(call);
+                                    callback.push(index);//TODO: Is it ok ?
+                                } else if (callback.length > 1) {
+                                    callback.push(index);
+                                } else {
+                                    callback = index;
+                                }
+
                                 return false;
                             } else {
 
@@ -195,8 +205,13 @@ angular.module('artTypeahead')
                             listItem.id = list[i].id;
 
                             // Does the Cell have a callback button ?
-                            if (callback) {
-                                listItem.ZZZZZZZ = {hasCallback: true, callback: map[callback].value, action: map[callback].actionName, icon: map[callback].actionIcon};
+                            if (callback && typeof callback === 'number') {
+                                listItem.ZZZZZZZ = {hasCallback: true, callback: map[callback].value, action: map[callback].actionName, icon: map[callback].actionIcon, color: map[callback].actionColor};
+                            } else if (callback && callback.length > 0) {
+                                //Get the first element of the array, use it then delete it.
+                                for (var j=0; j < callback.length; j++) {
+                                    listItem['ZZZZZZZ' + j] = {hasCallback: true, callback: map[callback[j]].value, action: map[callback[j]].actionName, icon: map[callback[j]].actionIcon, color: map[callback[j]].actionColor};
+                                }
                             }
 
                             // Does the Cell have a custom color ?
@@ -434,7 +449,7 @@ angular.module('artTypeahead')
 
                     // Hide search input when last level is reached / item selected.
                     $scope.hideInput = function hideInput(lastLevel){
-                        if (lastLevel && !$scope.query) {
+                        if (lastLevel && !$scope.query && $scope.levelsActive.length > 1) {
                             return {
                                 flex: 0,
                                 width: '0px',
@@ -451,7 +466,7 @@ angular.module('artTypeahead')
                     };
 
                     $scope.hideClearInput = function hideClearInput(lastLevel){
-                        if (lastLevel && !$scope.query) {
+                        if (lastLevel && !$scope.query && $scope.levelsActive.length > 1) {
                             return {
                                 width: '0px',
                                 opacity: 0
@@ -772,7 +787,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                            <td ng-repeat=\"(key, value) in ::item\" ng-if=\"::key != 'id' && key != 'artCustom'\" valign=\"middle\">\n" +
     "\n" +
     "                                <!-- IF is the name cell, show the load next level icon -->\n" +
-    "                                <span class=\"open-level\" ng-if=\"::key == 'name' && !lastLevel\" ng-click=\"selectItem(item, $index, $event, true)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
+    "                                <span class=\"open-level\" ng-if=\"::key == 'name' && !lastLevel && levelsActive.length > 1\" ng-click=\"selectItem(item, $index, $event, true)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
     "\n" +
     "                                <!-- IF there's no callback involved, just show the text itself -->\n" +
     "                                <span ng-if=\"::!item[key].hasCallback && mappings[activeLevel] && !item[key].artCustom\" ng-style=\"{color: item[key].color}\"> <i ng-if=\"::item[key].icon\" class=\"{{::item[key].icon}}\" aria-hidden=\"true\"></i> {{::item[key].value}}</span>\n" +
@@ -783,7 +798,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "\n" +
     "                                <!-- IF there's a callback involved, show a button with the action on it -->\n" +
     "                                <span ng-if=\"::item[key].hasCallback\">\n" +
-    "                                    <button class=\"art-inner-callback-button\" ng-click=\"item[key].callback($event, item)\">\n" +
+    "                                    <button class=\"art-inner-callback-button\" ng-click=\"item[key].callback($event, item)\" ng-style=\"{'background-color': item[key].color}\">\n" +
     "                                        <i ng-if=\"::item[key].icon\" class=\"{{::item[key].icon}}\" aria-hidden=\"true\"></i>\n" +
     "                                        {{::item[key].action}}\n" +
     "                                    </button>\n" +
