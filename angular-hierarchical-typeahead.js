@@ -247,9 +247,9 @@ angular.module('artTypeahead')
                             // Do the whole loading of a new level
                             if ($scope.mappings && $scope.mappings[$scope.activeLevel]) {
                                 // If we have level mapping, I am changing the string to an object to be able to serve icons and colors too
-                                $scope.levelsActive[rightIndex].activeName = item.name.value;
+                                $scope.levelsActive[rightIndex].activeName = item.name ? item.name.value : item[Object.keys(item)[0]].value;
                             } else {
-                                $scope.levelsActive[rightIndex].activeName = item.name;
+                                $scope.levelsActive[rightIndex].activeName = item.name || item[Object.keys(item)[0]];
                             }
 
                             if ($scope.levelsActive[rightIndex+1]) {
@@ -294,18 +294,32 @@ angular.module('artTypeahead')
                                     return false;
                                 }
 
-                                var nameChecks = $scope.results.map(function(item){return item.name;});
+                                //item[Object.keys(item)[0]]
+                                if ($scope.mappings && $scope.mappings[$scope.activeLevel]) {
 
-                                if (nameChecks.indexOf(item.name) < 0) {
-                                    return false;
+                                    var nameChecks = $scope.results.map(function(item){return item.name ? item.name.value : item[Object.keys(item)[0]].value;});
+
+                                    if (nameChecks.indexOf(item.name ? item.name.value : item[Object.keys(item)[0]].value) < 0) {
+                                        return false;
+                                    }
+
+                                } else {
+
+                                    var nameChecks = $scope.results.map(function(item){return item.name || item[Object.keys(item)[0]];});
+
+                                    if (nameChecks.indexOf(item.name || item[Object.keys(item)[0]]) < 0) {
+                                        return false;
+                                    }
+
                                 }
+
 
                                 // This will happen only if we have the right data loaded and clicked on an item
                                 if ($scope.mappings && $scope.mappings[$scope.activeLevel]) {
                                     // If we have level mapping, I am changing the string to an object to be able to serve icons and colors too
-                                    $scope.levelsActive[rightIndex].activeName = item.name.value;
+                                    $scope.levelsActive[rightIndex].activeName = item.name ? item.name.value : item[Object.keys(item)[0]].value;
                                 } else {
-                                    $scope.levelsActive[rightIndex].activeName = item.name;
+                                    $scope.levelsActive[rightIndex].activeName = item.name || item[Object.keys(item)[0]];
                                 }
                                 if ($scope.levelsActive[rightIndex+1]) {
                                     $scope.levelsActive[rightIndex+1].activeId = item.id;
@@ -482,27 +496,33 @@ angular.module('artTypeahead')
 
 
                     // Process levels
-                    $scope.levelsActive = angular.copy($scope.levels);
-                    $scope.levelsActive = $scope.levelsActive.map(function(item){
-                        //{name: "Organisation", icon: "fa fa-users", color: "#fff", bColor: "#222"}
-                        return {
-                            name: item.name,
-                            icon: item.icon,
-                            color: item.color,
-                            bColor: item.bColor,
-                            isActive: false,
-                            isVisible: false,
-                            activeName: false,
-                            activeId: false
-                        };
-                    });
+                    var processLevels = function(level){
+                        $scope.levelsActive = angular.copy(level);
+                        $scope.levelsActive = $scope.levelsActive.map(function(item){
+                            //{name: "Organisation", icon: "fa fa-users", color: "#fff", bColor: "#222"}
+                            return {
+                                name: item.name,
+                                icon: item.icon,
+                                color: item.color,
+                                bColor: item.bColor,
+                                isActive: false,
+                                isVisible: false,
+                                activeName: false,
+                                activeId: false
+                            };
+                        });
+
+                        $scope.levelsActive[0].isVisible = true;
+                    };
+
+                    processLevels($scope.levels);
 
 
                     /* Init Actions
                      * - Make first level visible, with no name
                      * - Get first batch of items in the list
                      * */
-                    $scope.levelsActive[0].isVisible = true;
+
                     getOutsideData(false);
 
 
@@ -517,6 +537,13 @@ angular.module('artTypeahead')
                         if (rightIndex === level) {
                             getOutsideData(false);
                         }
+                    };
+
+                    artTypeExternal.pushLevelAndRefresh = function (level) {
+                        processLevels(level);
+                        $scope.currentPlaceholder = level[0].name;
+                        $scope.actionLevel($scope.levelsActive[0], 0);
+                        getOutsideData(false);
                     };
 
                     artTypeExternal.goBackToItem = function (item) {
