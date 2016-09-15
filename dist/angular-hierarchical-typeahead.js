@@ -517,17 +517,9 @@ angular.module('artTypeahead')
 
                     processLevels($scope.levels);
 
-
-                    /* Init Actions
-                     * - Make first level visible, with no name
-                     * - Get first batch of items in the list
-                     * */
-
                     getOutsideData(false);
 
-
                     // External Factory Component Controls
-
                     artTypeExternal.goBackToLevel = function (level) {
 
                         $scope.actionLevel($scope.levelsActive[level], level);
