@@ -32,7 +32,9 @@ angular.module('artTypeahead')
                     callSize: '@artCallSize',
                     i18n: '=artTranslations',
                     allData: '@artDisplayAll', // Can be true, which means full display for everything, or 'partial', to display only for where there's mappings
-                    mappings: '=artLevelsMap'
+                    mappings: '=artLevelsMap',
+                    disableExtSearch: '=artDisableExtSearch',
+                    sSearchKeys: '@artSearchKeys'
                 },
                 transclude: false,
                 templateUrl: 'angular-hierarchical-typeahead.html',
@@ -47,6 +49,19 @@ angular.module('artTypeahead')
                     $scope.activeLevel = 0;
                     $scope.showTooltip = false;
                     $scope.loadMore = true;
+
+                    if($scope.sSearchKeys) {
+                        $scope.searchKeys = $scope.sSearchKeys.split(",");
+                    }
+
+                    if($scope.disableExtSearch) {
+                        try {
+                            _.isUndefined(Fuse)
+                        } catch(e) {
+                            console.warn("Please add the Fuse.js library to the project to enable local searching https://github.com/krisk/Fuse")
+                        }
+                    }
+
                     var callSize = 0;
                     var previousDataSet = [];
                     var untouchedResults = [];
@@ -364,9 +379,24 @@ angular.module('artTypeahead')
                         }
                     };
 
-                    var getOutsideData = function getOutsideData(query, pagination){
-                        
+                    var getOutsideData = function getOutsideData(query, pagination) {
+
                         $scope.loading = true;
+
+                        if(query && $scope.disableExtSearch && Fuse) {
+                            var fuse = new Fuse($scope.originalResults, {
+                                shouldSort: true,
+                                threshold: 0.3,
+                                location: 0,
+                                distance: 800,
+                                maxPatternLength: 32,
+                                keys: $scope.searchKeys
+                            });
+                            $scope.results = fuse.search(query);
+                            $scope.loading = false;
+                            return false;
+                        }
+
                         if (!pagination) {
                             $scope.results = false;
                         }
@@ -435,6 +465,8 @@ angular.module('artTypeahead')
                             previousDataSet = results;
 
                             $scope.$emit('ART:External:Ready');
+
+                            $scope.originalResults = _.clone($scope.results, true);
 
                         }, function(reject){
                             //console.log('rejected', reject);

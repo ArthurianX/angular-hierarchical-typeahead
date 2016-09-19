@@ -58,7 +58,7 @@
                 <br>
                 <small>Full Info View with Object Mapping</small>
             </h3>
-            <art-typeahead art-levels="tiers" art-levels-map="tiersMappings" art-pagination="true" art-trigger="callbackID(id, type, fullResponse)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
+            <art-typeahead art-search-keys="name.value" art-disable-ext-search="true" art-levels="tiers" art-levels-map="tiersMappings" art-pagination="true" art-trigger="callbackID(id, type, fullResponse)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
             <h5>Email Support (first level): <small>{{emailSupport.name}}: {{emailSupport.email}}</small></h5>
             <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
             <hr>
@@ -243,6 +243,8 @@
 <script src="../bower_components/angular/angular.js"></script>
 <script src="../bower_components/angular-animate/angular-animate.js"></script>
 <script src="../bower_components/angular-vs-repeat/src/angular-vs-repeat.js"></script>
+<script src="../bower_components/lodash/dist/lodash.min.js"></script>
+<script src="../bower_components/fuse.js/src/fuse.min.js"></script>
 <script src="../dist/angular-hierarchical-typeahead.js"></script>
 <script src="demo.js"></script>
 

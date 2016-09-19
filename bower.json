@@ -6,7 +6,9 @@
     "dist/angular-hierarchical-typeahead.css"
   ],
   "dependencies": {
-    "angular": "~1.4.0"
+    "angular": "~1.4.0",
+    "lodash": "^4.15.0",
+    "fuse.js": "^2.5.0"
   },
   "ignore": [
     "**/.*",
