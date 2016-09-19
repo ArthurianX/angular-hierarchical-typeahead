@@ -231,8 +231,8 @@
         background-color: #fff;
         transition: opacity 0.5s ease-in-out;
         .open-level i {
-            font-size: 16px;
-            padding-right: 5px;
+            font-size: 12px;
+            padding-right: 3px;
             color: rgba(41,128,185,1) !important;
         }
         &.art-tooltip-open {
@@ -268,6 +268,14 @@
                     border-color: transparent;
                     thead tr {
                         background-color: darken(#fcfcfc, 5);
+
+                        th {
+                            border-left: 1px solid #ccc;
+                            font-size: 12px;
+                            &:first-child {
+                                border-left: 0px solid #ccc;
+                            }
+                        }
                     }
                     tr {
                         outline: none;
@@ -277,12 +285,19 @@
                     }
                     td {
                         padding: 10px 20px;
-                        height: 40px;
-                        border-bottom: 1px solid #f1f1f1;
+                        height: 30px;
+                        border-bottom: 1px solid #e3e3e3;
                         outline: none;
+                        font-size: 12px;
+                        color: #535353;
+                        vertical-align: middle;
+                        &:first-child {
+                            font-weight: 500;
+                        }
                         span {
                             vertical-align: sub;
                         }
+
 
                         .art-inner-callback-button {
                             background-color: #a6b5bd;
@@ -293,6 +308,11 @@
                             -moz-border-radius: 3px;
                             border-radius: 3px;
                             i {
+                                font-size: 14px;
+                                vertical-align: middle;
+                            }
+                            span {
+                                margin-left: 5px;
                                 margin-right: 5px;
                             }
                             &:hover {

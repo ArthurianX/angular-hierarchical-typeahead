@@ -18,8 +18,8 @@ angular.module('artTypeahead')
 
         return {};
     })
-    .directive('artTypeahead',['$parse', '$document', '$http', '$timeout', '$compile', 'artTypeExternal',
-        function(){
+    .directive('artTypeahead',['$parse', '$document', '$http', '$timeout', '$window','$compile', 'artTypeExternal',
+        function($parse, $document, $http, $timeout, $window,$compile, artTypeExternal){
             return {
                 restrict: 'E',
                 scope: {
@@ -36,7 +36,7 @@ angular.module('artTypeahead')
                 },
                 transclude: false,
                 templateUrl: 'angular-hierarchical-typeahead.html',
-                controller: function($scope, $timeout, artTypeExternal) {
+                controller: function($scope, $timeout, $window, artTypeExternal) {
                     // Initialization
                     $scope.loading = false;
                     $scope.query = null;
@@ -146,6 +146,7 @@ angular.module('artTypeahead')
 
                         return rightIndex;
                     };
+
 
                     var mapActionLogic = function(map, list) {
 
@@ -295,9 +296,10 @@ angular.module('artTypeahead')
                                 }
 
                                 //item[Object.keys(item)[0]]
+                                var nameChecks = [];
                                 if ($scope.mappings && $scope.mappings[$scope.activeLevel]) {
 
-                                    var nameChecks = $scope.results.map(function(item){return item.name ? item.name.value : item[Object.keys(item)[0]].value;});
+                                    nameChecks = $scope.results.map(function(item){return item.name ? item.name.value : item[Object.keys(item)[0]].value;});
 
                                     if (nameChecks.indexOf(item.name ? item.name.value : item[Object.keys(item)[0]].value) < 0) {
                                         return false;
@@ -305,7 +307,7 @@ angular.module('artTypeahead')
 
                                 } else {
 
-                                    var nameChecks = $scope.results.map(function(item){return item.name || item[Object.keys(item)[0]];});
+                                    nameChecks = $scope.results.map(function(item){return item.name || item[Object.keys(item)[0]];});
 
                                     if (nameChecks.indexOf(item.name || item[Object.keys(item)[0]]) < 0) {
                                         return false;
@@ -639,7 +641,7 @@ angular.module('artTypeahead')
                     };
 
                 },
-                link: function(scope, element, attrs, $timeout) {
+                link: function(scope, element, attrs) {
 
                     scope.selectSpecificItem = function(index){
 
@@ -706,6 +708,27 @@ angular.module('artTypeahead')
 
 
                     };
+
+
+                    var tooltipAction = function(event) {
+                        event.stopPropagation();
+                        event.preventDefault();
+                        if (scope.showTooltip) {
+                            scope.showTooltip = false;
+                            $timeout(function(){scope.$apply();});
+                        }
+                    };
+                    scope.openTooltip = function(event) {
+                        //Open the tooltip if it's false
+                        if (!scope.showTooltip) {
+                            scope.showTooltip = true;
+                            //Destroy all instances
+                            angular.element($window).off('mousedown', tooltipAction);
+                            //Hook up a new one
+                            angular.element($window).on('mousedown', tooltipAction);
+                        }
+                    };
+
                 }
             };
         }
