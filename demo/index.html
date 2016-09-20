@@ -58,7 +58,7 @@
                 <br>
                 <small>Full Info View with Object Mapping</small>
             </h3>
-            <art-typeahead art-search-keys="name.value" art-disable-ext-search="true" art-levels="tiers" art-levels-map="tiersMappings" art-pagination="true" art-trigger="callbackID(id, type, fullResponse)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
+            <art-typeahead art-search-keys="name" art-disable-ext-search="true" art-levels="tiers" art-levels-map="tiersMappings" art-pagination="true" art-trigger="callbackID(id, type, fullResponse)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
             <h5>Email Support (first level): <small>{{emailSupport.name}}: {{emailSupport.email}}</small></h5>
             <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
             <hr>

@@ -386,17 +386,25 @@ angular.module('artTypeahead')
                         $scope.loading = true;
 
                         if(query && $scope.disableExtSearch && Fuse) {
+                            var previousResults = _.clone($scope.results, true);
+                            $scope.results = false;
+
                             var fuse = new Fuse($scope.originalResults, {
                                 shouldSort: true,
-                                threshold: 0.3,
+                                threshold: 0.6,
                                 location: 0,
-                                distance: 800,
+                                distance: 200,
                                 maxPatternLength: 32,
                                 keys: $scope.searchKeys
                             });
-                            $scope.results = fuse.search(query);
+
+                            var filteredIds = _(fuse.search(query)).map(function(item) {return item.id;}).value();
+
+                            $scope.results = _(previousResults).filter(function(item) {
+                                return (filteredIds.indexOf(item.id) > -1)
+                            }).value();
                             $scope.loading = false;
-                            return false;
+                            return;
                         }
 
                         if (!pagination) {
@@ -473,7 +481,7 @@ angular.module('artTypeahead')
                                 $scope.callOutside({id: false, type: $scope.levels[rightIndex].name, fullResponse: false});
                             }
 
-                            $scope.originalResults = _.clone($scope.results, true);
+                            $scope.originalResults = _.clone(results);
 
                         }, function(reject){
                             //console.log('rejected', reject);
