@@ -242,8 +242,8 @@
     background-color: #fff;
     transition: opacity 0.5s ease-in-out; }
     .art-typeahead-container .art-results .open-level i {
-      font-size: 16px;
-      padding-right: 5px;
+      font-size: 12px;
+      padding-right: 3px;
       color: #2980b9 !important; }
     .art-typeahead-container .art-results.art-tooltip-open {
       opacity: 0.5;
@@ -271,15 +271,25 @@
           border-color: transparent; }
           .art-typeahead-container .art-results ul li.art-no-height thead tr {
             background-color: #efefef; }
+            .art-typeahead-container .art-results ul li.art-no-height thead tr th {
+              border-left: 1px solid #ccc;
+              font-size: 12px; }
+              .art-typeahead-container .art-results ul li.art-no-height thead tr th:first-child {
+                border-left: 0px solid #ccc; }
           .art-typeahead-container .art-results ul li.art-no-height tr {
             outline: none; }
             .art-typeahead-container .art-results ul li.art-no-height tr:nth-child(even) {
               background-color: #fcfcfc; }
           .art-typeahead-container .art-results ul li.art-no-height td {
             padding: 10px 20px;
-            height: 40px;
-            border-bottom: 1px solid #f1f1f1;
-            outline: none; }
+            height: 30px;
+            border-bottom: 1px solid #e3e3e3;
+            outline: none;
+            font-size: 12px;
+            color: #535353;
+            vertical-align: middle; }
+            .art-typeahead-container .art-results ul li.art-no-height td:first-child {
+              font-weight: 500; }
             .art-typeahead-container .art-results ul li.art-no-height td span {
               vertical-align: sub; }
             .art-typeahead-container .art-results ul li.art-no-height td .art-inner-callback-button {
@@ -291,6 +301,10 @@
               -moz-border-radius: 3px;
               border-radius: 3px; }
               .art-typeahead-container .art-results ul li.art-no-height td .art-inner-callback-button i {
+                font-size: 14px;
+                vertical-align: middle; }
+              .art-typeahead-container .art-results ul li.art-no-height td .art-inner-callback-button span {
+                margin-left: 5px;
                 margin-right: 5px; }
               .art-typeahead-container .art-results ul li.art-no-height td .art-inner-callback-button:hover {
                 background-color: #9aabb4; }

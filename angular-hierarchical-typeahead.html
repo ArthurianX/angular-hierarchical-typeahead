@@ -17,10 +17,9 @@
             <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
         </svg>
     </div>
-    <div style="text-align: right;" class="art-tooltip-helper" ng-click="showTooltip = !showTooltip" ng-class="{'art-open': showTooltip}">
-        <i class="fa fa-question-circle" aria-hidden="true"></i>
+    <div style="text-align: right;" class="art-tooltip-helper" ng-class="{'art-open': showTooltip}">
+        <i class="fa fa-question-circle" aria-hidden="true" ng-click="openTooltip($event)"></i>
         <small class="art-tooltip">
-
             <table class="table table-bordered" style="width: 95%; float: right">
                 <thead>
                 <tr>
@@ -102,7 +101,7 @@
                                 <span ng-if="::item[key].hasCallback">
                                     <button class="art-inner-callback-button" ng-click="item[key].callback($event, item)" ng-style="{'background-color': item[key].color}">
                                         <i ng-if="::item[key].icon" class="{{::item[key].icon}}" aria-hidden="true"></i>
-                                        {{::item[key].action}}
+                                        <span ng-if="::item[key].action">{{::item[key].action}}</span>
                                     </button>
                                 </span>
                             </td>

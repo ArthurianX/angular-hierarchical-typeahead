@@ -18,8 +18,8 @@ angular.module('artTypeahead')
 
         return {};
     })
-    .directive('artTypeahead',['$parse', '$document', '$http', '$timeout', '$compile', 'artTypeExternal',
-        function(){
+    .directive('artTypeahead',['$parse', '$document', '$http', '$timeout', '$window','$compile', 'artTypeExternal',
+        function($parse, $document, $http, $timeout, $window,$compile, artTypeExternal){
             return {
                 restrict: 'E',
                 scope: {
@@ -32,13 +32,11 @@ angular.module('artTypeahead')
                     callSize: '@artCallSize',
                     i18n: '=artTranslations',
                     allData: '@artDisplayAll', // Can be true, which means full display for everything, or 'partial', to display only for where there's mappings
-                    mappings: '=artLevelsMap',
-                    disableExtSearch: '=artDisableExtSearch',
-                    sSearchKeys: '@artSearchKeys'
+                    mappings: '=artLevelsMap'
                 },
                 transclude: false,
                 templateUrl: 'angular-hierarchical-typeahead.html',
-                controller: function($scope, $timeout, artTypeExternal) {
+                controller: function($scope, $timeout, $window, artTypeExternal) {
                     // Initialization
                     $scope.loading = false;
                     $scope.query = null;
@@ -49,19 +47,6 @@ angular.module('artTypeahead')
                     $scope.activeLevel = 0;
                     $scope.showTooltip = false;
                     $scope.loadMore = true;
-
-                    if($scope.sSearchKeys) {
-                        $scope.searchKeys = $scope.sSearchKeys.split(",");
-                    }
-
-                    if($scope.disableExtSearch) {
-                        try {
-                            _.isUndefined(Fuse)
-                        } catch(e) {
-                            console.warn("Please add the Fuse.js library to the project to enable local searching https://github.com/krisk/Fuse")
-                        }
-                    }
-
                     var callSize = 0;
                     var previousDataSet = [];
                     var untouchedResults = [];
@@ -161,6 +146,7 @@ angular.module('artTypeahead')
 
                         return rightIndex;
                     };
+
 
                     var mapActionLogic = function(map, list) {
 
@@ -310,9 +296,10 @@ angular.module('artTypeahead')
                                 }
 
                                 //item[Object.keys(item)[0]]
+                                var nameChecks = [];
                                 if ($scope.mappings && $scope.mappings[$scope.activeLevel]) {
 
-                                    var nameChecks = $scope.results.map(function(item){return item.name ? item.name.value : item[Object.keys(item)[0]].value;});
+                                    nameChecks = $scope.results.map(function(item){return item.name ? item.name.value : item[Object.keys(item)[0]].value;});
 
                                     if (nameChecks.indexOf(item.name ? item.name.value : item[Object.keys(item)[0]].value) < 0) {
                                         return false;
@@ -320,7 +307,7 @@ angular.module('artTypeahead')
 
                                 } else {
 
-                                    var nameChecks = $scope.results.map(function(item){return item.name || item[Object.keys(item)[0]];});
+                                    nameChecks = $scope.results.map(function(item){return item.name || item[Object.keys(item)[0]];});
 
                                     if (nameChecks.indexOf(item.name || item[Object.keys(item)[0]]) < 0) {
                                         return false;
@@ -379,24 +366,9 @@ angular.module('artTypeahead')
                         }
                     };
 
-                    var getOutsideData = function getOutsideData(query, pagination) {
-
+                    var getOutsideData = function getOutsideData(query, pagination){
+                        
                         $scope.loading = true;
-
-                        if(query && $scope.disableExtSearch && Fuse) {
-                            var fuse = new Fuse($scope.originalResults, {
-                                shouldSort: true,
-                                threshold: 0.3,
-                                location: 0,
-                                distance: 800,
-                                maxPatternLength: 32,
-                                keys: $scope.searchKeys
-                            });
-                            $scope.results = fuse.search(query);
-                            $scope.loading = false;
-                            return false;
-                        }
-
                         if (!pagination) {
                             $scope.results = false;
                         }
@@ -466,7 +438,10 @@ angular.module('artTypeahead')
 
                             $scope.$emit('ART:External:Ready');
 
-                            $scope.originalResults = _.clone($scope.results, true);
+                            // At the end of it, if we have no results, do an outside callback with no data, so we know in the application that we have no data.
+                            if (!$scope.results || $scope.results == undefined || $scope.results.length < 1) {
+                                $scope.callOutside({id: false, type: $scope.levels[rightIndex].name, fullResponse: false});
+                            }
 
                         }, function(reject){
                             //console.log('rejected', reject);
@@ -671,7 +646,7 @@ angular.module('artTypeahead')
                     };
 
                 },
-                link: function(scope, element, attrs, $timeout) {
+                link: function(scope, element, attrs) {
 
                     scope.selectSpecificItem = function(index){
 
@@ -738,6 +713,27 @@ angular.module('artTypeahead')
 
 
                     };
+
+
+                    var tooltipAction = function(event) {
+                        event.stopPropagation();
+                        event.preventDefault();
+                        if (scope.showTooltip) {
+                            scope.showTooltip = false;
+                            $timeout(function(){scope.$apply();});
+                        }
+                    };
+                    scope.openTooltip = function(event) {
+                        //Open the tooltip if it's false
+                        if (!scope.showTooltip) {
+                            scope.showTooltip = true;
+                            //Destroy all instances
+                            angular.element($window).off('mousedown', tooltipAction);
+                            //Hook up a new one
+                            angular.element($window).on('mousedown', tooltipAction);
+                        }
+                    };
+
                 }
             };
         }
@@ -766,10 +762,9 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "            <circle class=\"path\" cx=\"50\" cy=\"50\" r=\"20\" fill=\"none\" stroke-width=\"2\" stroke-miterlimit=\"10\"/>\n" +
     "        </svg>\n" +
     "    </div>\n" +
-    "    <div style=\"text-align: right;\" class=\"art-tooltip-helper\" ng-click=\"showTooltip = !showTooltip\" ng-class=\"{'art-open': showTooltip}\">\n" +
-    "        <i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i>\n" +
+    "    <div style=\"text-align: right;\" class=\"art-tooltip-helper\" ng-class=\"{'art-open': showTooltip}\">\n" +
+    "        <i class=\"fa fa-question-circle\" aria-hidden=\"true\" ng-click=\"openTooltip($event)\"></i>\n" +
     "        <small class=\"art-tooltip\">\n" +
-    "\n" +
     "            <table class=\"table table-bordered\" style=\"width: 95%; float: right\">\n" +
     "                <thead>\n" +
     "                <tr>\n" +
@@ -851,7 +846,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                                <span ng-if=\"::item[key].hasCallback\">\n" +
     "                                    <button class=\"art-inner-callback-button\" ng-click=\"item[key].callback($event, item)\" ng-style=\"{'background-color': item[key].color}\">\n" +
     "                                        <i ng-if=\"::item[key].icon\" class=\"{{::item[key].icon}}\" aria-hidden=\"true\"></i>\n" +
-    "                                        {{::item[key].action}}\n" +
+    "                                        <span ng-if=\"::item[key].action\">{{::item[key].action}}</span>\n" +
     "                                    </button>\n" +
     "                                </span>\n" +
     "                            </td>\n" +

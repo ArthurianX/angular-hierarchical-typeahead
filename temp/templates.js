@@ -21,10 +21,9 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "            <circle class=\"path\" cx=\"50\" cy=\"50\" r=\"20\" fill=\"none\" stroke-width=\"2\" stroke-miterlimit=\"10\"/>\n" +
     "        </svg>\n" +
     "    </div>\n" +
-    "    <div style=\"text-align: right;\" class=\"art-tooltip-helper\" ng-click=\"showTooltip = !showTooltip\" ng-class=\"{'art-open': showTooltip}\">\n" +
-    "        <i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i>\n" +
+    "    <div style=\"text-align: right;\" class=\"art-tooltip-helper\" ng-class=\"{'art-open': showTooltip}\">\n" +
+    "        <i class=\"fa fa-question-circle\" aria-hidden=\"true\" ng-click=\"openTooltip($event)\"></i>\n" +
     "        <small class=\"art-tooltip\">\n" +
-    "\n" +
     "            <table class=\"table table-bordered\" style=\"width: 95%; float: right\">\n" +
     "                <thead>\n" +
     "                <tr>\n" +
@@ -106,7 +105,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                                <span ng-if=\"::item[key].hasCallback\">\n" +
     "                                    <button class=\"art-inner-callback-button\" ng-click=\"item[key].callback($event, item)\" ng-style=\"{'background-color': item[key].color}\">\n" +
     "                                        <i ng-if=\"::item[key].icon\" class=\"{{::item[key].icon}}\" aria-hidden=\"true\"></i>\n" +
-    "                                        {{::item[key].action}}\n" +
+    "                                        <span ng-if=\"::item[key].action\">{{::item[key].action}}</span>\n" +
     "                                    </button>\n" +
     "                                </span>\n" +
     "                            </td>\n" +
