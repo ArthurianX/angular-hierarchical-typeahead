@@ -439,7 +439,7 @@ angular.module('artTypeahead')
                             $scope.$emit('ART:External:Ready');
 
                             // At the end of it, if we have no results, do an outside callback with no data, so we know in the application that we have no data.
-                            if ($scope.results == undefined || $scope.results.length < 1) {
+                            if (!$scope.results || $scope.results == undefined || $scope.results.length < 1) {
                                 $scope.callOutside({id: false, type: $scope.levels[rightIndex].name, fullResponse: false});
                             }
 
