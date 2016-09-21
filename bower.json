@@ -1,13 +1,12 @@
 {
   "name": "angular-hierarchical-typeahead",
-  "version": "0.2.20",
+  "version": "0.2.21",
   "main": [
     "dist/angular-hierarchical-typeahead.js",
     "dist/angular-hierarchical-typeahead.css"
   ],
   "dependencies": {
     "angular": "~1.4.0",
-    "lodash": "^4.15.0",
     "fuse.js": "^2.5.0"
   },
   "ignore": [

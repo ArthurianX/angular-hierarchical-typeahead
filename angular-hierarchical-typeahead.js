@@ -18,8 +18,8 @@ angular.module('artTypeahead')
 
         return {};
     })
-    .directive('artTypeahead',['$parse', '$document', '$http', '$timeout', '$window','$compile', 'artTypeExternal',
-        function($parse, $document, $http, $timeout, $window,$compile, artTypeExternal){
+    .directive('artTypeahead',['$parse', '$document', '$http', '$timeout', '$window','$compile', 'artTypeExternal', 'filterFilter',
+        function($parse, $document, $http, $timeout, $window,$compile, artTypeExternal, filterFilter){
             return {
                 restrict: 'E',
                 scope: {
@@ -33,12 +33,12 @@ angular.module('artTypeahead')
                     i18n: '=artTranslations',
                     allData: '@artDisplayAll', // Can be true, which means full display for everything, or 'partial', to display only for where there's mappings
                     mappings: '=artLevelsMap',
-                    disableExtSearch: '=artDisableExtSearch',
-                    sSearchKeys: '@artSearchKeys'
+                    disableExtSearch: '=artLocalFilter',
+                    sSearchKeys: '@artLocalFilterFields'
                 },
                 transclude: false,
                 templateUrl: 'angular-hierarchical-typeahead.html',
-                controller: function($scope, $timeout, $window, artTypeExternal) {
+                controller: function($scope, $timeout, $window, artTypeExternal, filterFilter) {
                     // Initialization
                     $scope.loading = false;
                     $scope.query = null;
@@ -56,9 +56,11 @@ angular.module('artTypeahead')
 
                     if($scope.disableExtSearch) {
                         try {
-                            _.isUndefined(Fuse)
+                            angular.isUndefined(Fuse);
                         } catch(e) {
-                            console.warn("Please add the Fuse.js library to the project to enable local searching https://github.com/krisk/Fuse")
+                            console.warn("Please add the Fuse.js library to the project to enable local searching https://github.com/krisk/Fuse");
+                            // Gracefully degrade, and use filter instead.
+                            window.Fuse = true;
                         }
                     }
 
@@ -386,23 +388,37 @@ angular.module('artTypeahead')
                         $scope.loading = true;
 
                         if(query && $scope.disableExtSearch && Fuse) {
-                            var previousResults = _.clone($scope.results, true);
+                            var previousResults = JSON.parse(JSON.stringify($scope.results));
                             $scope.results = false;
 
-                            var fuse = new Fuse($scope.originalResults, {
-                                shouldSort: true,
-                                threshold: 0.6,
-                                location: 0,
-                                distance: 200,
-                                maxPatternLength: 32,
-                                keys: $scope.searchKeys
-                            });
+                            if (angular.isFunction(Fuse)) {
 
-                            var filteredIds = _(fuse.search(query)).map(function(item) {return item.id;}).value();
+                                var fuse = new Fuse($scope.originalResults, {
+                                    shouldSort: true,
+                                    threshold: 0.6,
+                                    location: 0,
+                                    distance: 200,
+                                    maxPatternLength: 32,
+                                    keys: $scope.searchKeys
+                                });
 
-                            $scope.results = _(previousResults).filter(function(item) {
-                                return (filteredIds.indexOf(item.id) > -1)
-                            }).value();
+                                var filteredIds = [];
+                                fuse.search(query).map(function(item) {filteredIds.push(item.id);});
+
+                                $scope.results = [];
+                                previousResults.filter(function(item) {
+                                    if (filteredIds.indexOf(item.id) > -1) {
+                                        $scope.results.push(item);
+                                    }
+                                });
+
+                            } else {
+                                // Fuse most probably is not available, use angular's filter
+                                $scope.results = filterFilter(previousResults, $scope.query);
+                            }
+
+
+
                             $scope.loading = false;
                             return;
                         }
@@ -477,11 +493,11 @@ angular.module('artTypeahead')
                             $scope.$emit('ART:External:Ready');
 
                             // At the end of it, if we have no results, do an outside callback with no data, so we know in the application that we have no data.
-                            if (!$scope.results || $scope.results == undefined || $scope.results.length < 1) {
+                            if (!$scope.results || $scope.results === undefined || $scope.results.length < 1) {
                                 $scope.callOutside({id: false, type: $scope.levels[rightIndex].name, fullResponse: false});
                             }
 
-                            $scope.originalResults = _.clone(results);
+                            $scope.originalResults = JSON.parse(JSON.stringify(results));
 
                         }, function(reject){
                             //console.log('rejected', reject);

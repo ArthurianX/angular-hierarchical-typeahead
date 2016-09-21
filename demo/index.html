@@ -95,6 +95,29 @@
         </div>
 
 
+        <div class="row" style="margin-top:50px">
+            <h3 style="padding-bottom: 15px;">DEMO: Local search with FUSE:
+                <br>
+                <small>Full Info View with Object Mapping</small>
+            </h3>
+            <art-typeahead art-levels="tiersOneLevel"
+                           art-levels-map="tiersOneLevelMappings"
+                           art-pagination="true"
+                           art-trigger="callbackID(id, type, fullResponse)"
+                           art-source="dataEndpoint"
+                           art-translations="translations"
+                           art-local-filter="true"
+                           art-local-filter-fields="name,headquarters"
+                           art-display-all="true"></art-typeahead>
+            <h5>Email Support (first level): <small>{{emailSupport.name}}: {{emailSupport.email}}</small></h5>
+            <h5>Hide Company (first level): <small>{{hideCompany.name}}: {{hideCompany.id}}</small></h5>
+            <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
+            <hr>
+        </div>
+
+
+
+
 
 
         <div class="row">
