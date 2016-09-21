@@ -32,7 +32,9 @@ angular.module('artTypeahead')
                     callSize: '@artCallSize',
                     i18n: '=artTranslations',
                     allData: '@artDisplayAll', // Can be true, which means full display for everything, or 'partial', to display only for where there's mappings
-                    mappings: '=artLevelsMap'
+                    mappings: '=artLevelsMap',
+                    disableExtSearch: '=artDisableExtSearch',
+                    sSearchKeys: '@artSearchKeys'
                 },
                 transclude: false,
                 templateUrl: 'angular-hierarchical-typeahead.html',
@@ -47,6 +49,19 @@ angular.module('artTypeahead')
                     $scope.activeLevel = 0;
                     $scope.showTooltip = false;
                     $scope.loadMore = true;
+
+                    if($scope.sSearchKeys) {
+                        $scope.searchKeys = $scope.sSearchKeys.split(",");
+                    }
+
+                    if($scope.disableExtSearch) {
+                        try {
+                            _.isUndefined(Fuse)
+                        } catch(e) {
+                            console.warn("Please add the Fuse.js library to the project to enable local searching https://github.com/krisk/Fuse")
+                        }
+                    }
+
                     var callSize = 0;
                     var previousDataSet = [];
                     var untouchedResults = [];
@@ -366,9 +381,32 @@ angular.module('artTypeahead')
                         }
                     };
 
-                    var getOutsideData = function getOutsideData(query, pagination){
-                        
+                    var getOutsideData = function getOutsideData(query, pagination) {
+
                         $scope.loading = true;
+
+                        if(query && $scope.disableExtSearch && Fuse) {
+                            var previousResults = _.clone($scope.results, true);
+                            $scope.results = false;
+
+                            var fuse = new Fuse($scope.originalResults, {
+                                shouldSort: true,
+                                threshold: 0.6,
+                                location: 0,
+                                distance: 200,
+                                maxPatternLength: 32,
+                                keys: $scope.searchKeys
+                            });
+
+                            var filteredIds = _(fuse.search(query)).map(function(item) {return item.id;}).value();
+
+                            $scope.results = _(previousResults).filter(function(item) {
+                                return (filteredIds.indexOf(item.id) > -1)
+                            }).value();
+                            $scope.loading = false;
+                            return;
+                        }
+
                         if (!pagination) {
                             $scope.results = false;
                         }
@@ -442,6 +480,8 @@ angular.module('artTypeahead')
                             if (!$scope.results || $scope.results == undefined || $scope.results.length < 1) {
                                 $scope.callOutside({id: false, type: $scope.levels[rightIndex].name, fullResponse: false});
                             }
+
+                            $scope.originalResults = _.clone(results);
 
                         }, function(reject){
                             //console.log('rejected', reject);
