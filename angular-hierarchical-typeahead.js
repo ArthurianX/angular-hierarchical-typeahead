@@ -582,6 +582,20 @@ angular.module('artTypeahead')
 
                     getOutsideData(false);
 
+                    //Utility
+                    var checkIdContext = function(id){
+
+                        var found = -1;
+                        // Find the ID only in the first 25 results, reloading after that index needs a query first
+                        var length = $scope.results.length <= callSize ? $scope.results.length : callSize;
+                        for (var i=0; i < length; i++) {
+                            if ($scope.results[i].id === id) {
+                                found = i;
+                            }
+                        }
+                        return found;
+                    };
+
                     // External Factory Component Controls
                     artTypeExternal.goBackToLevel = function (level) {
 
@@ -594,28 +608,32 @@ angular.module('artTypeahead')
                         }
                     };
 
-                    artTypeExternal.pushLevelAndRefresh = function (level) {
+                    artTypeExternal.pushLevelAndRefresh = function (level, item) {
                         processLevels(level);
                         $scope.currentPlaceholder = level[0].name;
                         $scope.actionLevel($scope.levelsActive[0], 0);
-                        getOutsideData(false);
+                        if (item && item.id) {
+                            getOutsideData(false);
+                            var sourceListenerInner = $scope.$on('ART:External:Ready', function() {
+                                //Do the actions
+                                var exists = checkIdContext(item.id);
+                                if ($scope.allData) {
+                                    $timeout(function(){ $scope.selectSpecificItem(exists + 1); }, 250);
+                                } else {
+                                    $timeout(function(){
+                                        $scope.selectSpecificItem(exists);
+                                    }, 250);
+                                }
+                                sourceListenerInner();
+                            });
+                        } else {
+                            getOutsideData(false);
+                        }
+
                     };
 
                     artTypeExternal.goBackToItem = function (item) {
 
-                        //Utility
-                        var checkIdContext = function(id){
-
-                            var found = -1;
-                            // Find the ID only in the first 25 results, reloading after that index needs a query first
-                            var length = $scope.results.length <= callSize ? $scope.results.length : callSize;
-                            for (var i=0; i < length; i++) {
-                                if ($scope.results[i].id === id) {
-                                    found = i;
-                                }
-                            }
-                            return found;
-                        };
 
                         /* Item should be in format {id: id, name: name, level: level index} */
 
@@ -669,7 +687,9 @@ angular.module('artTypeahead')
                                     if ($scope.allData) {
                                         $timeout(function(){ $scope.selectSpecificItem(exists + 1); }, 250);
                                     } else {
-                                        $timeout(function(){ $scope.selectSpecificItem(exists); }, 250);
+                                        $timeout(function(){
+                                            $scope.selectSpecificItem(exists);
+                                        }, 250);
                                     }
                                     //Destroy the listener
                                     sourceListenerSimple();

@@ -54,64 +54,86 @@
         </div>
 
         <div class="row" style="margin-top:50px">
-            <h3 style="padding-bottom: 15px;">DEMO: A list of companies and their presence in countries:
+            <h3 style="padding-bottom: 15px;" ng-click="demo1 = !demo1">DEMO: A list of companies and their presence in countries:
                 <br>
                 <small>Full Info View with Object Mapping</small>
+                <br>Click to Open<i ng-if='!demo1'class="fa fa-chevron-right" aria-hidden="true"></i>
+                <i ng-if='demo1' class="fa fa-chevron-down" aria-hidden="true"></i>
             </h3>
-            <art-typeahead art-search-keys="name" art-disable-ext-search="true" art-levels="tiers" art-levels-map="tiersMappings" art-pagination="true" art-trigger="callbackID(id, type, fullResponse)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
-            <h5>Email Support (first level): <small>{{emailSupport.name}}: {{emailSupport.email}}</small></h5>
-            <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
+            <div ng-if="demo1">
+                <art-typeahead art-search-keys="name" art-disable-ext-search="true" art-levels="tiers" art-levels-map="tiersMappings" art-pagination="true" art-trigger="callbackID(id, type, fullResponse)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
+                <h5>Email Support (first level): <small>{{emailSupport.name}}: {{emailSupport.email}}</small></h5>
+                <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
+            </div>
+
             <hr>
         </div>
 
         <div class="row" style="margin-top:50px">
-            <h3 style="padding-bottom: 15px;">
+            <h3 style="padding-bottom: 15px;" ng-click="demo2 = !demo2">
                 <small>Full Info View <strong>without</strong> Object Mapping (properties are used directly). Also, no extra row actions can be used like this</small>
+                <br>Click to Open<i ng-if='!demo2 'class="fa fa-chevron-right" aria-hidden="true"></i>
+                <i ng-if='demo2' class="fa fa-chevron-down" aria-hidden="true"></i>
             </h3>
-            <art-typeahead art-levels="tiers" art-pagination="true" art-trigger="callbackID(id, type, fullResponse)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
-            <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
+            <div ng-if="demo2">
+                <art-typeahead art-levels="tiers" art-pagination="true" art-trigger="callbackID(id, type, fullResponse)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
+                <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
+            </div>
             <hr>
         </div>
 
         <div class="row" style="margin-top:50px">
-            <h3 style="padding-bottom: 15px;">
+            <h3 style="padding-bottom: 15px;" ng-click="demo3 = !demo3">
                 <small>List View, no object mapping, no extra callbacks.</small>
+                <br>Click to Open<i ng-if='!demo3 'class="fa fa-chevron-right" aria-hidden="true"></i>
+                <i ng-if='demo3' class="fa fa-chevron-down" aria-hidden="true"></i>
             </h3>
-            <art-typeahead art-levels="tiers" art-pagination="true" art-trigger="callbackID(id, type, fullResponse)" art-source="dataEndpoint" art-translations="translations" art-display-all="false"></art-typeahead>
-            <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
+            <div ng-if="demo3">
+                <art-typeahead art-levels="tiers" art-pagination="true" art-trigger="callbackID(id, type, fullResponse)" art-source="dataEndpoint" art-translations="translations" art-display-all="false"></art-typeahead>
+                <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
+            </div>
             <hr>
         </div>
 
         <div class="row" style="margin-top:50px">
-            <h3 style="padding-bottom: 15px;">DEMO: Single Level Display:
+            <h3 style="padding-bottom: 15px;" ng-click="demo4 = !demo4">DEMO: Single Level Display:
                 <br>
                 <small>Full Info View with Object Mapping</small>
+                <br>Click to Open<i ng-if='!demo4 'class="fa fa-chevron-right" aria-hidden="true"></i>
+                <i ng-if='demo4' class="fa fa-chevron-down" aria-hidden="true"></i>
             </h3>
-            <art-typeahead art-levels="tiersOneLevel" art-levels-map="tiersOneLevelMappings" art-pagination="true" art-trigger="callbackID(id, type, fullResponse)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
-            <h5>Email Support (first level): <small>{{emailSupport.name}}: {{emailSupport.email}}</small></h5>
-            <h5>Hide Company (first level): <small>{{hideCompany.name}}: {{hideCompany.id}}</small></h5>
-            <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
+            <div ng-if="demo4">
+                <art-typeahead art-levels="tiersOneLevel" art-levels-map="tiersOneLevelMappings" art-pagination="true" art-trigger="callbackID(id, type, fullResponse)" art-source="dataEndpoint" art-translations="translations" art-display-all="true"></art-typeahead>
+                <h5>Email Support (first level): <small>{{emailSupport.name}}: {{emailSupport.email}}</small></h5>
+                <h5>Hide Company (first level): <small>{{hideCompany.name}}: {{hideCompany.id}}</small></h5>
+                <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
+            </div>
             <hr>
         </div>
 
 
         <div class="row" style="margin-top:50px">
-            <h3 style="padding-bottom: 15px;">DEMO: Local search with FUSE:
+            <h3 style="padding-bottom: 15px;" ng-click="demo5 = !demo5">DEMO: Local search with FUSE:
                 <br>
                 <small>Full Info View with Object Mapping</small>
+                <br>Click to Open
+                <i ng-if='!demo5 'class="fa fa-chevron-right" aria-hidden="true"></i>
+                <i ng-if='demo5' class="fa fa-chevron-down" aria-hidden="true"></i>
             </h3>
-            <art-typeahead art-levels="tiersOneLevel"
-                           art-levels-map="tiersOneLevelMappings"
-                           art-pagination="true"
-                           art-trigger="callbackID(id, type, fullResponse)"
-                           art-source="dataEndpoint"
-                           art-translations="translations"
-                           art-local-filter="true"
-                           art-local-filter-fields="name,headquarters"
-                           art-display-all="true"></art-typeahead>
-            <h5>Email Support (first level): <small>{{emailSupport.name}}: {{emailSupport.email}}</small></h5>
-            <h5>Hide Company (first level): <small>{{hideCompany.name}}: {{hideCompany.id}}</small></h5>
-            <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
+            <div ng-if="demo5">
+                <art-typeahead art-levels="tiersOneLevel"
+                               art-levels-map="tiersOneLevelMappings"
+                               art-pagination="true"
+                               art-trigger="callbackID(id, type, fullResponse)"
+                               art-source="dataEndpoint"
+                               art-translations="translations"
+                               art-local-filter="true"
+                               art-local-filter-fields="name,headquarters"
+                               art-display-all="true"></art-typeahead>
+                <h5>Email Support (first level): <small>{{emailSupport.name}}: {{emailSupport.email}}</small></h5>
+                <h5>Hide Company (first level): <small>{{hideCompany.name}}: {{hideCompany.id}}</small></h5>
+                <h5>Load item from list: <small ng-if="loadItem"> ID: {{loadItem.id}} - TYPE: {{loadItem.name}}</small></h5>
+            </div>
             <hr>
         </div>
 
