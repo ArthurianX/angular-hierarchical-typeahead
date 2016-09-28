@@ -796,6 +796,7 @@ angular.module('artTypeahead')
                         event.preventDefault();
                         if (scope.showTooltip) {
                             scope.showTooltip = false;
+                            document.querySelector('.art-tooltip-helper').scrollTop = 0;
                             $timeout(function(){scope.$apply();});
                         }
                     };
