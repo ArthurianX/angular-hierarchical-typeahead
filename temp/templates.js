@@ -75,7 +75,8 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <!-- Map all the existing properties into display if there's no mapping object for this level-->\n" +
     "\n" +
-    "            <li class=\"art-no-height\" ng-if=\"::allData == 'true'\">\n" +
+    "            <!-- TODO: When there's no local search leave the caching on, find a solution to 'true' && undefined and 'true' && 'true' (allData && disableExtSearch)\n" +
+    "            <li class=\"art-no-height\" ng-if=\"allData == 'true'\">\n" +
     "\n" +
     "                <table class=\"table\">\n" +
     "                    <thead>\n" +
@@ -88,20 +89,20 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                    </thead>\n" +
     "                    <tbody>\n" +
     "                        <tr ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\" ng-dblclick=\"selectItem(item, $index, $event)\">\n" +
-    "                            <!-- THIS SECTION HAS ALL THE ELEMENTS BOUND ONLY ONCE -->\n" +
+    "                            &lt;!&ndash; THIS SECTION HAS ALL THE ELEMENTS BOUND ONLY ONCE &ndash;&gt;\n" +
     "                            <td ng-repeat=\"(key, value) in ::item\" ng-if=\"::key != 'id' && key != 'artCustom'\" valign=\"middle\">\n" +
     "\n" +
-    "                                <!-- IF is the name cell, show the load next level icon -->\n" +
+    "                                &lt;!&ndash; IF is the name cell, show the load next level icon &ndash;&gt;\n" +
     "                                <span class=\"open-level\" ng-if=\"::key == 'name' && !lastLevel && levelsActive.length > 1\" ng-click=\"selectItem(item, $index, $event, true)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
     "\n" +
-    "                                <!-- IF there's no callback involved, just show the text itself -->\n" +
+    "                                &lt;!&ndash; IF there's no callback involved, just show the text itself &ndash;&gt;\n" +
     "                                <span ng-if=\"::!item[key].hasCallback && mappings[activeLevel] && !item[key].artCustom\" ng-style=\"{color: item[key].color}\"> <i ng-if=\"::item[key].icon\" class=\"{{::item[key].icon}}\" aria-hidden=\"true\"></i> {{::item[key].value}}</span>\n" +
     "\n" +
     "                                <span ng-if=\"::!item[key].hasCallback && mappings[activeLevel] && item[key].artCustom\"> <i ng-if=\"::item[key].artCustom.icon\" ng-style=\"{color: item[key].artCustom.color}\" class=\"{{::item[key].artCustom.icon}}\" aria-hidden=\"true\"></i> {{::item[key].value}}</span>\n" +
     "\n" +
     "                                <span ng-if=\"::!item[key].hasCallback && !mappings[activeLevel]\">{{item[key]}}</span>\n" +
     "\n" +
-    "                                <!-- IF there's a callback involved, show a button with the action on it -->\n" +
+    "                                &lt;!&ndash; IF there's a callback involved, show a button with the action on it &ndash;&gt;\n" +
     "                                <span ng-if=\"::item[key].hasCallback\">\n" +
     "                                    <button class=\"art-inner-callback-button\" ng-click=\"item[key].callback($event, item)\" ng-style=\"{'background-color': item[key].color}\">\n" +
     "                                        <i ng-if=\"::item[key].icon\" class=\"{{::item[key].icon}}\" aria-hidden=\"true\"></i>\n" +
@@ -110,6 +111,44 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                                </span>\n" +
     "                            </td>\n" +
     "                        </tr>\n" +
+    "                    </tbody>\n" +
+    "                </table>\n" +
+    "            </li>-->\n" +
+    "            <li class=\"art-no-height\" ng-if=\"allData == 'true'\">\n" +
+    "\n" +
+    "                <table class=\"table\">\n" +
+    "                    <thead>\n" +
+    "                    <tr>\n" +
+    "                        <th ng-if=\"::!mappings[activeLevel] && key != 'id'\" ng-repeat=\"(key, value) in ::results[0]\">{{key}}</th>\n" +
+    "                        <th ng-if=\"::mappings && mappings[activeLevel]\" ng-repeat=\"heading in ::mappings[activeLevel]\">\n" +
+    "                            {{heading.name}}\n" +
+    "                        </th>\n" +
+    "                    </tr>\n" +
+    "                    </thead>\n" +
+    "                    <tbody>\n" +
+    "                    <tr ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\" ng-dblclick=\"selectItem(item, $index, $event)\">\n" +
+    "                        <!-- THIS SECTION HAS ALL THE ELEMENTS BOUND ONLY ONCE -->\n" +
+    "                        <td ng-repeat=\"(key, value) in item\" ng-if=\"key != 'id' && key != 'artCustom'\" valign=\"middle\">\n" +
+    "\n" +
+    "                            <!-- IF is the name cell, show the load next level icon -->\n" +
+    "                            <span class=\"open-level\" ng-if=\"key == 'name' && !lastLevel && levelsActive.length > 1\" ng-click=\"selectItem(item, $index, $event, true)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
+    "\n" +
+    "                            <!-- IF there's no callback involved, just show the text itself -->\n" +
+    "                            <span ng-if=\"!item[key].hasCallback && mappings[activeLevel] && !item[key].artCustom\" ng-style=\"{color: item[key].color}\"> <i ng-if=\"item[key].icon\" class=\"{{item[key].icon}}\" aria-hidden=\"true\"></i> {{item[key].value}}</span>\n" +
+    "\n" +
+    "                            <span ng-if=\"!item[key].hasCallback && mappings[activeLevel] && item[key].artCustom\"> <i ng-if=\"item[key].artCustom.icon\" ng-style=\"{color: item[key].artCustom.color}\" class=\"{{item[key].artCustom.icon}}\" aria-hidden=\"true\"></i> {{item[key].value}}</span>\n" +
+    "\n" +
+    "                            <span ng-if=\"!item[key].hasCallback && !mappings[activeLevel]\">{{item[key]}}</span>\n" +
+    "\n" +
+    "                            <!-- IF there's a callback involved, show a button with the action on it -->\n" +
+    "                            <span ng-if=\"item[key].hasCallback\">\n" +
+    "                                    <button class=\"art-inner-callback-button\" ng-click=\"item[key].callback($event, item)\" ng-style=\"{'background-color': item[key].color}\">\n" +
+    "                                        <i ng-if=\"item[key].icon\" class=\"{{item[key].icon}}\" aria-hidden=\"true\"></i>\n" +
+    "                                        <span ng-if=\"item[key].action\">{{item[key].action}}</span>\n" +
+    "                                    </button>\n" +
+    "                                </span>\n" +
+    "                        </td>\n" +
+    "                    </tr>\n" +
     "                    </tbody>\n" +
     "                </table>\n" +
     "            </li>\n" +

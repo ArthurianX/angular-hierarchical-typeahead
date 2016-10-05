@@ -50,16 +50,12 @@ angular.module('artTypeahead')
                     $scope.showTooltip = false;
                     $scope.loadMore = true;
 
-                    if($scope.sSearchKeys) {
-                        $scope.searchKeys = $scope.sSearchKeys.split(",");
-                    }
-
                     if($scope.disableExtSearch) {
                         try {
                             angular.isUndefined(Fuse);
                         } catch(e) {
                             console.warn("Please add the Fuse.js library to the project to enable local searching https://github.com/krisk/Fuse");
-                            // Gracefully degrade, and use filter instead.
+                            // Gracefully fallback, and use angular filter instead.
                             window.Fuse = true;
                         }
                     }
@@ -306,7 +302,7 @@ angular.module('artTypeahead')
                                 //Call outside the choice made
                                 $scope.callOutside({id: item.id, type: $scope.levels[rightIndex].name, fullResponse: sendProperData(item.id)});
                                 $scope.lastLevel = true;
-                                $scope.query = null;
+                                //$scope.query = null; // Arthur: This breaks the click to open on 1 level setup with local search
 
                                 if (!$scope.results || $scope.results.length < 1) {
                                     return false;
@@ -391,26 +387,34 @@ angular.module('artTypeahead')
                             var previousResults = JSON.parse(JSON.stringify($scope.results));
                             $scope.results = false;
 
+                            if($scope.sSearchKeys) {
+                                $scope.searchKeys = $scope.sSearchKeys.split(",");
+                            }
+
                             if (angular.isFunction(Fuse)) {
 
                                 var fuse = new Fuse($scope.originalResults, {
                                     shouldSort: true,
-                                    threshold: 0.6,
+                                    threshold: 0.3,
                                     location: 0,
-                                    distance: 200,
+                                    distance: 100,
                                     maxPatternLength: 32,
                                     keys: $scope.searchKeys
                                 });
 
-                                var filteredIds = [];
-                                fuse.search(query).map(function(item) {filteredIds.push(item.id);});
+                                /*var filteredIds = [];
+                                 fuse.search(query).map(function(item) {filteredIds.push(item.id);});*/
 
-                                $scope.results = [];
-                                previousResults.filter(function(item) {
-                                    if (filteredIds.indexOf(item.id) > -1) {
-                                        $scope.results.push(item);
-                                    }
-                                });
+                                $scope.results = fuse.search(query);
+                                if ($scope.results && $scope.mappings && $scope.mappings[$scope.activeLevel]) {
+                                    $scope.results = mapActionLogic($scope.mappings[$scope.activeLevel], $scope.results);
+                                }
+
+                                /*previousResults.filter(function(item) {
+                                 if (filteredIds.indexOf(item.id) > -1) {
+                                 $scope.results.push(item);
+                                 }
+                                 });*/
 
                             } else {
                                 // Fuse most probably is not available, use angular's filter
@@ -445,7 +449,7 @@ angular.module('artTypeahead')
                                 } else {
                                     if (!angular.equals(previousDataSet, results)) {
 
-                                        $scope.results = $scope.results.concat(results);
+                                        $scope.results = previousDataSet.concat(results);
                                         $scope.addedElements = true;
                                         $scope.elementsAdded = results.length;
                                         $timeout(function(){
