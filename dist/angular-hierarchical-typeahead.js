@@ -26,10 +26,10 @@ angular.module('artTypeahead')
                     levels: "=artLevels", // the levels the component can go too, array of e.g.: {name: "Organisation", icon: "fa fa-users", color: "#fff", bColor: "#222"}
                     callOutside: "&artTrigger", //It will do an outside callback with the selected element id and level, e.g.: {level: 'Building', id: 123}
                     source: "=artSource", //Service that will be called to fetch data depending on the level
-                    pagination: "@artPagination",
+                    pagination: "=artPagination",
                     minQuery: '@artMinQuery',
                     maxResults: '@artMaxResults',
-                    callSize: '@artCallSize',
+                    callSize: '=artCallSize',
                     i18n: '=artTranslations',
                     allData: '@artDisplayAll', // Can be true, which means full display for everything, or 'partial', to display only for where there's mappings
                     mappings: '=artLevelsMap',
@@ -92,15 +92,15 @@ angular.module('artTypeahead')
                             HELP_GO_BACK_CLICKED: 'Go back to the selected level',
                             HELP_ANY_KEY_PART1: 'While on the',
                             HELP_ANY_KEY_PART2: 'list any key you press will focus the search input and make a new search.'
-                        }                         
+                        }
                     };
 
 
                     // Configuration
                     $scope.currentPlaceholder = $scope.levels[0].name;
-                    
+
                     if ($scope.minQuery) {
-                        defaultValues.minQuery = parseInt($scope.minQuery); 
+                        defaultValues.minQuery = parseInt($scope.minQuery);
                     }
 
                     if ($scope.maxResults) {
@@ -121,7 +121,7 @@ angular.module('artTypeahead')
                     }
 
                     // Utilities
-                    
+
                     var sendProperData = function(id) {
                         //console.log('sendProperData start', id);
                         // As I alter the data a lot for display, I am keeping a copy of the data and send the proper response from the copy on a callback event.
@@ -136,9 +136,9 @@ angular.module('artTypeahead')
                                     //console.log('sendProperData found', sendData);
                                 }
                             }
-                            
+
                             return sendData;
-                            
+
                         }
                     };
 
@@ -197,7 +197,7 @@ angular.module('artTypeahead')
                                     icon = index;
                                     iconApplyOn = item.value;
                                 }
-                                
+
                                 if (item.individualStyling) {
                                     individualStyling = item.value;
                                 }
@@ -237,7 +237,7 @@ angular.module('artTypeahead')
                             if (icon) {
                                 listItem[iconApplyOn].icon = map[icon].icon;
                             }
-                            
+
                             if (individualStyling) {
                                 listItem[individualStyling].artCustom = list[i].custom;
                             }
@@ -445,7 +445,7 @@ angular.module('artTypeahead')
                                     $scope.results = results;
                                     $scope.callOutside({id: results[0].id, type: $scope.levels[rightIndex].name, fullResponse: sendProperData(results[0].id)});
                                     $scope.levels[rightIndex].dataSet = results;
-                                    
+
                                 } else {
                                     if (!angular.equals(previousDataSet, results)) {
 
@@ -458,7 +458,7 @@ angular.module('artTypeahead')
 
                                     }
 
-                                    
+
                                     // If the user loads too many elements, hide everything and suggest filtering
                                     if ($scope.results.length > defaultValues.maxResults) {
                                         $scope.tooMany = true;
@@ -469,19 +469,19 @@ angular.module('artTypeahead')
                             } else {
                                 // If there's no pagination, delete the results, if there's pagination leave the results intact
                                 if (!pagination) {
-                                    $scope.results = false;    
-                                } 
-                                
+                                    $scope.results = false;
+                                }
+
                             }
 
 
                             if ($scope.results) {
                                 // Create a copy of the results to use later for callbacks.
-                                untouchedResults = angular.copy($scope.results);    
+                                untouchedResults = angular.copy($scope.results);
                             }
-                            
+
                             if ($scope.results && $scope.mappings && $scope.mappings[$scope.activeLevel]) {
-                                
+
                                 $scope.results = mapActionLogic($scope.mappings[$scope.activeLevel], $scope.results);
                             }
 
@@ -508,7 +508,7 @@ angular.module('artTypeahead')
                             $scope.results = false;
                             $scope.loading = false;
                         });
-                        
+
                     };
 
                     $scope.getOutsideData = getOutsideData;
