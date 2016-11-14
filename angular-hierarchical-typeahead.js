@@ -347,9 +347,12 @@ angular.module('artTypeahead')
                         //$scope.transitElement(rightIndex); TODO: This does not work well yet, fix.
                     };
 
-                    $scope.actionLevel = function actionLevel(level, index, resetBackspace){
-                        if (!level.activeName && !resetBackspace) {
-                            return false;
+                    $scope.actionLevel = function actionLevel(level, index, resetBackspace, fromGoBackToItem){
+
+                        if (!fromGoBackToItem) {
+                            if (!level.activeName && !resetBackspace) {
+                                return false;
+                            }
                         }
 
                         // Get the current active level
@@ -644,7 +647,7 @@ angular.module('artTypeahead')
                         if (item.level !== undefined) {
                             /** Means we need to change the levels also */
 
-                            $scope.actionLevel($scope.levelsActive[item.level], item.level);
+                            $scope.actionLevel($scope.levelsActive[item.level], item.level, false, true);
 
                             var sourceListener = $scope.$on('ART:External:Ready', function() {
                                 //Do the actions
