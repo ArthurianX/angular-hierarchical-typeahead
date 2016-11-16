@@ -770,13 +770,19 @@ angular.module('artTypeahead')
                             var index = null;
 
                             if (scope.allData) {
-                                index = parseInt(angular.element(element[0].querySelectorAll('.art-results tr'))[1].getAttribute('data-has-index'));
+                                if (angular.element(element[0].querySelectorAll('.art-results tr'))[1] != undefined) {
+                                    index = parseInt(angular.element(element[0].querySelectorAll('.art-results tr'))[1].getAttribute('data-has-index'));
+                                }
                             } else {
-                                index = parseInt(angular.element(element[0].querySelector('.art-results li.kb-active'))[0].getAttribute('data-has-index'));
+                                if (angular.element(element[0].querySelector('.art-results li.kb-active'))[0] != undefined) {
+                                    index = parseInt(angular.element(element[0].querySelector('.art-results li.kb-active'))[0].getAttribute('data-has-index'));
+                                }
                             }
 
-                            scope.selectItem(scope.results[index], index, {keyCode: 13});
-                            scope.$apply();
+                            if (index) {
+                                scope.selectItem(scope.results[index], index, {keyCode: 13});
+                                scope.$apply();
+                            }
                         }
 
                     }, false);
