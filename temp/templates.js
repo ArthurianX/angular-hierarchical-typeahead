@@ -158,7 +158,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "            </li>\n" +
     "        </ul>\n" +
     "        <ul>\n" +
-    "            <li ng-if=\"!results && !loading && !tooMany\">\n" +
+    "            <li ng-if=\"!results.length && !loading && !tooMany\">\n" +
     "                <i class=\"fa fa-ban\" aria-hidden=\"true\"></i> {{translations.NO_RESULTS}}\n" +
     "            </li>\n" +
     "\n" +
@@ -175,7 +175,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "\n" +
     "\n" +
     "\n" +
-    "</div>"
+    "</div>\n"
   );
 
 }]);

@@ -412,6 +412,11 @@ angular.module('artTypeahead')
                                 if ($scope.results && $scope.mappings && $scope.mappings[$scope.activeLevel]) {
                                     $scope.results = mapActionLogic($scope.mappings[$scope.activeLevel], $scope.results);
                                 }
+                                // Just show a no results message if nothing found
+                                if (!$scope.results.length) {
+                                    $scope.tooMany = false;
+                                    $scope.loading = false;
+                                }
 
                                 /*previousResults.filter(function(item) {
                                  if (filteredIds.indexOf(item.id) > -1) {
@@ -422,6 +427,11 @@ angular.module('artTypeahead')
                             } else {
                                 // Fuse most probably is not available, use angular's filter
                                 $scope.results = filterFilter(previousResults, $scope.query);
+                                // Just show a no results message if nothing found
+                                if (!$scope.results.length) {
+                                    $scope.tooMany = false;
+                                    $scope.loading = false;
+                                }
                             }
 
 
@@ -989,7 +999,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "            </li>\n" +
     "        </ul>\n" +
     "        <ul>\n" +
-    "            <li ng-if=\"!results && !loading && !tooMany\">\n" +
+    "            <li ng-if=\"!results.length && !loading && !tooMany\">\n" +
     "                <i class=\"fa fa-ban\" aria-hidden=\"true\"></i> {{translations.NO_RESULTS}}\n" +
     "            </li>\n" +
     "\n" +
@@ -1006,7 +1016,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "\n" +
     "\n" +
     "\n" +
-    "</div>"
+    "</div>\n"
   );
 
 }]);
