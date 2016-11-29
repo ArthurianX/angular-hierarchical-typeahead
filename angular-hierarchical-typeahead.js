@@ -166,6 +166,7 @@ angular.module('artTypeahead')
                         // Filter the list and leave only the elements from the map
                         var resultingList = [];
                         var callback = false; // False or the index number where the callback is found
+                        var isHidden = false
                         var color = false;
                         var colorApplyOn = false;
                         var icon = false;
@@ -185,6 +186,9 @@ angular.module('artTypeahead')
                                     callback = index;
                                 }
 
+                                if (item.actionHideCondition) {
+                                    isHidden = item.actionHideCondition
+                                }
                                 return false;
                             } else {
 
@@ -219,6 +223,12 @@ angular.module('artTypeahead')
                             listItem.id = list[i].id;
 
                             // Does the Cell have a callback button ?
+                            if (isHidden && list[i][isHidden]) {
+                                listItem.hideAction = true
+                            } else {
+                                listItem.hideAction = false
+                            }
+
                             if (callback && typeof callback === 'number') {
                                 listItem.ZZZZZZZ = {hasCallback: true, callback: map[callback].value, action: map[callback].actionName, icon: map[callback].actionIcon, color: map[callback].actionColor};
                             } else if (callback && callback.length > 0) {

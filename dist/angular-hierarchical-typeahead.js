@@ -166,6 +166,7 @@ angular.module('artTypeahead')
                         // Filter the list and leave only the elements from the map
                         var resultingList = [];
                         var callback = false; // False or the index number where the callback is found
+                        var isHidden = false
                         var color = false;
                         var colorApplyOn = false;
                         var icon = false;
@@ -185,6 +186,9 @@ angular.module('artTypeahead')
                                     callback = index;
                                 }
 
+                                if (item.actionHideCondition) {
+                                    isHidden = item.actionHideCondition
+                                }
                                 return false;
                             } else {
 
@@ -219,6 +223,12 @@ angular.module('artTypeahead')
                             listItem.id = list[i].id;
 
                             // Does the Cell have a callback button ?
+                            if (isHidden && list[i][isHidden]) {
+                                listItem.hideAction = true
+                            } else {
+                                listItem.hideAction = false
+                            }
+
                             if (callback && typeof callback === 'number') {
                                 listItem.ZZZZZZZ = {hasCallback: true, callback: map[callback].value, action: map[callback].actionName, icon: map[callback].actionIcon, color: map[callback].actionColor};
                             } else if (callback && callback.length > 0) {
@@ -969,7 +979,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                    <tbody>\n" +
     "                    <tr ng-repeat=\"item in results track by $index\" kb-item kb-invoke=\"selectItem(item, $index, $event)\" data-has-index=\"{{$index}}\" ng-keydown=\"focusOnSearch($event)\" ng-dblclick=\"selectItem(item, $index, $event)\">\n" +
     "                        <!-- THIS SECTION HAS ALL THE ELEMENTS BOUND ONLY ONCE -->\n" +
-    "                        <td ng-repeat=\"(key, value) in item\" ng-if=\"key != 'id' && key != 'artCustom'\" valign=\"middle\">\n" +
+    "                        <td ng-repeat=\"(key, value) in item\" ng-if=\"key != 'id' && key != 'artCustom' && key != 'hideAction'\" valign=\"middle\">\n" +
     "\n" +
     "                            <!-- IF is the name cell, show the load next level icon -->\n" +
     "                            <span class=\"open-level\" ng-if=\"key == 'name' && !lastLevel && levelsActive.length > 1\" ng-click=\"selectItem(item, $index, $event, true)\"><i class=\"fa fa-external-link-square\" aria-hidden=\"true\"></i></span>\n" +
@@ -982,7 +992,7 @@ angular.module('artTypeahead').run(['$templateCache', function($templateCache) {
     "                            <span ng-if=\"!item[key].hasCallback && !mappings[activeLevel]\">{{item[key]}}</span>\n" +
     "\n" +
     "                            <!-- IF there's a callback involved, show a button with the action on it -->\n" +
-    "                            <span ng-if=\"item[key].hasCallback\">\n" +
+    "                            <span ng-if=\"item[key].hasCallback && !item.hideAction\">\n" +
     "                                    <button class=\"art-inner-callback-button\" ng-click=\"item[key].callback($event, item)\" ng-style=\"{'background-color': item[key].color}\">\n" +
     "                                        <i ng-if=\"item[key].icon\" class=\"{{item[key].icon}}\" aria-hidden=\"true\"></i>\n" +
     "                                        <span ng-if=\"item[key].action\">{{item[key].action}}</span>\n" +
