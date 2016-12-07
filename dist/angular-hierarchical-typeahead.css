@@ -254,6 +254,8 @@
         background: rgba(41, 128, 185, 0.5) !important; }
     .art-typeahead-container .art-results.art-loading ul {
       opacity: 0.4; }
+    .art-typeahead-container .art-results.art-loading .load-more {
+      pointer-events: none; }
     .art-typeahead-container .art-results ul {
       list-style: none;
       margin: 0px;

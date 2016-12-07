@@ -249,6 +249,9 @@
             ul {
                 opacity: 0.4;
             }
+            .load-more {
+              pointer-events: none;
+            }
         }
         ul {
             list-style: none;

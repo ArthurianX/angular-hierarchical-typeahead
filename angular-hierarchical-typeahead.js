@@ -61,7 +61,7 @@ angular.module('artTypeahead')
                     }
 
                     var callSize = 0;
-                    var previousDataSet = [];
+                    var previousDataSet = {index0: [], index1: [], index2: [], index3: [], index4: [], index5: []};
                     var untouchedResults = [];
 
                     var defaultValues = {
@@ -470,9 +470,9 @@ angular.module('artTypeahead')
                                     $scope.levels[rightIndex].dataSet = results;
 
                                 } else {
-                                    if (!angular.equals(previousDataSet, results)) {
-
-                                        $scope.results = previousDataSet.concat(results);
+                                    var cacheIndex = $scope.whichLevel();
+                                    if (!angular.equals(previousDataSet['index' + cacheIndex], results)) {
+                                        $scope.results = previousDataSet['index' + cacheIndex].concat(results);
                                         $scope.addedElements = true;
                                         $scope.elementsAdded = results.length;
                                         $timeout(function(){
@@ -515,7 +515,11 @@ angular.module('artTypeahead')
                                 $scope.loadMore = false;
                             }
 
-                            previousDataSet = results;
+                            // Mitigate set duplication and keep them properly, each piece in its own index.
+                            var cacheIndex = $scope.whichLevel();
+                            if (!angular.equals(previousDataSet['index' + cacheIndex], results)) {
+                                previousDataSet['index' + cacheIndex] = previousDataSet['index' + cacheIndex].concat(results);
+                            }
 
                             $scope.$emit('ART:External:Ready');
 
