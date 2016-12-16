@@ -64,6 +64,12 @@ angular.module('artTypeahead')
                     var previousDataSet = {index0: [], index1: [], index2: [], index3: [], index4: [], index5: []};
                     var untouchedResults = [];
 
+                    var emptyCache = function() {
+                      var previousDataSet = {index0: [], index1: [], index2: [], index3: [], index4: [], index5: []};
+                      var untouchedResults = [];
+                      return true;
+                    }
+
                     var defaultValues = {
                         maxResults: 200,
                         dblClickTime: 400,
@@ -397,6 +403,7 @@ angular.module('artTypeahead')
                         $scope.loading = true;
 
                         if(query && $scope.disableExtSearch && Fuse) {
+                            emptyCache()
                             var previousResults = JSON.parse(JSON.stringify($scope.results));
                             $scope.results = false;
 
@@ -543,6 +550,7 @@ angular.module('artTypeahead')
 
                     $scope.$watch('query', function(newVal){
                         if (newVal && newVal.length > defaultValues.minQuery) {
+                            emptyCache()
                             getOutsideData(newVal);
 
                             //When you search for something, deselect the current item
@@ -606,6 +614,7 @@ angular.module('artTypeahead')
                             };
                         });
 
+                        $scope.levels = $scope.levelsActive;
                         $scope.levelsActive[0].isVisible = true;
                     };
 
@@ -639,7 +648,7 @@ angular.module('artTypeahead')
                         }
                     };
 
-                    artTypeExternal.pushLevelAndRefresh = function (level, item) {
+                    artTypeExternal.pushLevelAndRefresh = function (level, item, mapping) {
                         processLevels(level);
                         $scope.currentPlaceholder = level[0].name;
                         $scope.actionLevel($scope.levelsActive[0], 0);
@@ -657,6 +666,9 @@ angular.module('artTypeahead')
                                 }
                                 sourceListenerInner();
                             });
+                        } else if (mapping) {
+                            $scope.mappings = mapping;
+                            getOutsideData(false);
                         } else {
                             getOutsideData(false);
                         }
